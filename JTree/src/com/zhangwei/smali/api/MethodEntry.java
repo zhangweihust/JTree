@@ -1,0 +1,14 @@
+package com.zhangwei.smali.api;
+
+/**
+ * classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / clssMethodName) optPadding classMethodProto optPadding CRLF methodBody optPadding dirEndMethod optPadding CRLF;
+ * classMethod = *accessMode [classConstructorName] classMethodProto methodBody
+ * 
+ * */
+public class MethodEntry extends CommonEntry {
+	String classConstructorName; //用来标识该函数是否为构造函数
+	String classMethodName; //函数名
+	String classMethodProto;    //用来表示该函数的原型，参数及返回值
+	
+
+}
