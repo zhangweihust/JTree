@@ -119,12 +119,7 @@ public class SmaliEntry {
 	}
 	
 	public String toString() {
-		if (isFile) {
-			return name;
-		} else {
-			String packageName = file.getAbsolutePath();
-			return packageName.replace(rootPath, "").replace("\\", ".");
-		}
+		return name;
 	}
 
 /*	public String getName() {

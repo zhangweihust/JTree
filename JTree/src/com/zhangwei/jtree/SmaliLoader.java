@@ -70,7 +70,17 @@ public class SmaliLoader {
 	            	}
 	            	
 	            	if(!found){
-	            		packageEntry = new SmaliEntry(file.getParentFile(), false, file.getParentFile().getName());
+						String pathOfParent = file.getParent();
+						if(!pathOfParent.endsWith("\\")){
+							pathOfParent = pathOfParent + '\\';
+						}
+						String packageName = pathOfParent.replace(SmaliEntry.rootPath, "").replace("\\", ".");
+						if(packageName.equals("")){
+							packageName = ".";
+						}else if(packageName.endsWith(".")){
+							packageName = packageName.substring(0, packageName.length()-1);
+						}
+	            		packageEntry = new SmaliEntry(file.getParentFile(), false, packageName);
 	            		root.children.add(packageEntry);
 	            		smailMap.put(packageEntry.file.getAbsolutePath(), packageEntry);
 	            	}
@@ -95,7 +105,7 @@ public class SmaliLoader {
 			File[] filelist = parent.listFiles();
 			if(filelist!=null && filelist.length>0){
 				for (File f : filelist) {
-					if(f.isFile()){
+					if(f.isFile() && f.getName().endsWith(".smali")){
 						//EntryVector 里装的必定是文件或函数
 						list.add(f);
 
