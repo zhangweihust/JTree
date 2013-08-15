@@ -12,7 +12,6 @@ public class DirLoader {
 	
 	private ArrayList<File> list;
 	private HashMap<String, SmaliEntry> smailMap;
-	private EntryVector<String, Object> root;
 	
 	
 	private DirLoader(){
@@ -31,14 +30,14 @@ public class DirLoader {
 	}
 	
 	
-	public EntryVector<String, Object> Load(String root_path){
+	public void Load(EntryVector<String, Object> entryVector, String root_path){
 		
 		if(root_path!=null ){
 			if(!root_path.endsWith("\\")){
 				root_path = root_path + '\\';
 			}
 		}else{
-			return null;
+			return ;
 		}
 
 		if(list!=null){
@@ -49,14 +48,15 @@ public class DirLoader {
 			smailMap.clear();
 		}
 
-		if(root!=null){
-			root.clear();
+		if(entryVector!=null){
+			entryVector.clear();
 		}
 		
 		try{
 			File rootdir = new File(root_path);
 			if(rootdir.exists() && rootdir.isDirectory()){
-				root = new EntryVector<String, Object>(new SmaliEntry(rootdir, false));
+				entryVector.put(rootdir.getAbsolutePath(), new SmaliEntry(rootdir, false));
+				//root = new EntryVector<String, Object>(new SmaliEntry(rootdir, false));
 				
 				loadChildren(rootdir);
 				
@@ -71,11 +71,11 @@ public class DirLoader {
 							pathOfParent = "(default)";
 						}
 						
-						EntryVector<String, Object> packageitem = (EntryVector<String, Object>) root.get(pathOfParent);
+						EntryVector<String, Object> packageitem = (EntryVector<String, Object>) entryVector.get(pathOfParent);
 
 						if(packageitem==null){
 							packageitem =  new EntryVector<String, Object>(new SmaliEntry(file.getParentFile(), false));
-							root.put(pathOfParent, packageitem);
+							entryVector.put(pathOfParent, packageitem);
 
 						}
 						SmaliEntry item = new SmaliEntry(file, true);
@@ -92,7 +92,7 @@ public class DirLoader {
 		
 		
 
-		return root;
+		return;
 	}
 	
 	private void loadChildren(File parent){

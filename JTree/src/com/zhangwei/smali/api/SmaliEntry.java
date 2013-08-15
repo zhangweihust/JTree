@@ -2,11 +2,16 @@ package com.zhangwei.smali.api;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  *  代表一个smali文件
  * */
 public class SmaliEntry {
+	public static String rootPath = "";
+	
+	public Vector<SmaliEntry> children; //!isFile 才有效
+    public String name;
 
 	public File file;
 	public boolean isFile;
@@ -16,9 +21,11 @@ public class SmaliEntry {
 	ArrayList<FieldEntry> entry_field_array;
 	ArrayList<MethodEntry> entry_method_array;
 	
-	public SmaliEntry(File file, boolean isFile){
+	public SmaliEntry(File file, boolean isFile, String name){
 		this.file = file;	
 		this.isFile = isFile;
+		this.name = name;
+		this.children = new Vector<SmaliEntry>(); 
 	}
 
 	// ------------------------classHeader --------------------- 
@@ -109,6 +116,45 @@ public class SmaliEntry {
 		// TODO Auto-generated method stub
 		MethodEntry last = entry_method_array.get(entry_method_array.size()-1);
 		last.classMethodName = classMethodName;
+	}
+	
+	public String toString() {
+		if (isFile) {
+			return name;
+		} else {
+			String packageName = file.getAbsolutePath();
+			return packageName.replace(rootPath, "").replace("\\", ".");
+		}
+	}
+
+/*	public String getName() {
+		if (isFile) {
+			return name;
+		} else {
+			String packageName = file.getAbsolutePath();
+			return packageName.replace(rootPath, "").replace("\\", ".");
+		}
+
+	}*/
+
+	public Object getChildAt(int index) {
+		// TODO Auto-generated method stub
+		return (SmaliEntry)children.elementAt(index);
+	}
+
+	public int getChildCount() {
+		// TODO Auto-generated method stub
+		return children.size();
+	}
+
+	public int getIndexOfChild(SmaliEntry child) {
+		// TODO Auto-generated method stub
+		return children.indexOf(child);
+	}
+
+	public boolean isFile() {
+		// TODO Auto-generated method stub
+		return isFile;
 	}
 
 

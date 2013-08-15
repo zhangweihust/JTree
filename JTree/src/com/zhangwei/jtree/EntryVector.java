@@ -30,6 +30,11 @@ public class EntryVector<K, E> extends Hashtable<K, E> {
 
 
 
+	public EntryVector() {
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public String toString() {
 		String ret = "unkonw";
 		if(DirLoader.rootpath!=null){
@@ -40,6 +45,12 @@ public class EntryVector<K, E> extends Hashtable<K, E> {
 		return this.type + ret;
 
 		
+	}
+
+
+	public Object getChildAt(int index) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

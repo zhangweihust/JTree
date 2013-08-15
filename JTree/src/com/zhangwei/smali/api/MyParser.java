@@ -63,7 +63,7 @@ public class MyParser  {
 			ParserContext context = new ParserContext(out.toString(), false);
 			Rule rule = Rule_smali.parse(context);
 			
-			Visitor visitor = new com.zhangwei.smali.api.MyDisplayer(new SmaliEntry(smali_file, true));
+			Visitor visitor = new com.zhangwei.smali.api.MyDisplayer(new SmaliEntry(smali_file, true, smali_file.getName()));
 			rule.accept(visitor);
 			ret = true;
 		}catch(Exception e){
