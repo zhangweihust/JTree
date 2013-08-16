@@ -17,15 +17,41 @@ public class SmaliEntry {
 	public boolean isFile;
 	
 	//smali = classHeader *(classField / skipLine) *(classMethod / skipLine);
-	HeadEntry classHeader;
-	ArrayList<FieldEntry> entry_field_array;
-	ArrayList<MethodEntry> entry_method_array;
+	public HeadEntry classHeader;
+	public ArrayList<FieldEntry> entry_field_array;
+	public ArrayList<MethodEntry> entry_method_array;
 	
 	public SmaliEntry(File file, boolean isFile, String name){
 		this.file = file;	
 		this.isFile = isFile;
 		this.name = name;
 		this.children = new Vector<SmaliEntry>(); 
+	}
+	
+	public CommonEntry getHeader(){
+		return (CommonEntry)classHeader;
+	}
+	
+	public ArrayList<CommonEntry> getFieldList(){
+		ArrayList<CommonEntry> ret = new ArrayList<CommonEntry>();
+		if(entry_method_array!=null && entry_method_array.size()>0){
+			for(CommonEntry item : entry_method_array){
+				ret.add(item);
+			}
+		}
+		
+		return ret;
+	}
+	
+	public ArrayList<CommonEntry> getMethodList(){
+		ArrayList<CommonEntry> ret = new ArrayList<CommonEntry>();
+		if(entry_field_array!=null && entry_field_array.size()>0){
+			for(CommonEntry item : entry_field_array){
+				ret.add(item);
+			}
+		}
+		
+		return ret;
 	}
 
 	// ------------------------classHeader --------------------- 
@@ -53,7 +79,12 @@ public class SmaliEntry {
 		classHeader.classSuper = classSuper;
 	}
 
+	public void close_classHeader() {
+		// TODO Auto-generated method stub
 
+		classHeader.close();
+	}
+	
 	
 	// ---------------      classField ---------------------   
 	public void new_classField(){

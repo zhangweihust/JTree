@@ -1,7 +1,14 @@
 package com.zhangwei.smali.api;
 
 public abstract class CommonEntry {
+	public String id;
+	
+	public int type; //1 head  2 field  3 head
 	public String content;
+	
+	public CommonEntry(int type){
+		this.type = type;
+	}
 	
 	//.class public final Lcom/b/f/a;
 	//.super Ljava/lang/Object;

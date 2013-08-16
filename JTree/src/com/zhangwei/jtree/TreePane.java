@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.swing.ImageIcon;
@@ -13,11 +14,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultTreeSelectionModel;
+import javax.swing.tree.RowMapper;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.ui.JavaFileView;
@@ -39,10 +45,41 @@ public class TreePane extends JPanel implements ActionListener {
 		SmaliEntry root = new SmaliEntry(new File("."), false, "root/.");
         tree = new SmaliTree();
         model = new SmaliTreeModel(root);
-
         tree.setModel(model);
         tree.setRootVisible(true);
         tree.setShowsRootHandles(true);
+
+        DefaultTreeSelectionModel dtm = new DefaultTreeSelectionModel() {
+
+			
+			@Override
+			public boolean isPathSelected(TreePath path) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			
+			@Override
+			public TreePath getSelectionPath() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		
+
+		};
+        
+		dtm.addTreeSelectionListener(new TreeSelectionListener() {
+			
+			@Override
+			public void valueChanged(TreeSelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		dtm.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		
+        tree.setSelectionModel(dtm);
 
         add(new JScrollPane(tree));
 

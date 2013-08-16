@@ -57,21 +57,21 @@ public class TreeSample {
 				UIManager.put("Tree.collapsedIcon", new ImageIcon("collapsedIcon.png"));
 				UIManager.put("Tree.expandedIcon", new ImageIcon("expandedIcon.png"));
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-				//tree = new JTree(entryVector);
-				//tree.setRootVisible(true);
 
+				JPanel jp = new JPanel(new GridBagLayout());
+		        addComponent(jp, testpane, 0, 0, 1, 0,
+		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+		        
+		        JList list = new JList();
 
-				//DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
-
-				//renderer.setLeafIcon(new ImageIcon("leafIcon.png"));
-				//renderer.setOpenIcon(new ImageIcon("package.png"));
-				//renderer.setClosedIcon(new ImageIcon("package.png"));
-
-				//JScrollPane scrollPane = new JScrollPane(tree);
-
-				//frame.add(scrollPane, BorderLayout.CENTER);
-				frame.add(testpane, BorderLayout.CENTER);
+		        addComponent(jp, list, 1, 0, 1, 0,
+		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+		        
+		        JLabel jl2 = new JLabel("ddd");
+		        addComponent(jp, jl2, 2, 0, 2, 0,
+		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);
+				
+				frame.add(jp, BorderLayout.CENTER);
 //
 		        frame.add(menuBar, BorderLayout.NORTH);
 
@@ -84,5 +84,15 @@ public class TreeSample {
 		
 		EventQueue.invokeLater(runner);
 	}
+	
+	private static final Insets insets = new Insets(0,0,0,0);
+	
+	  private static void addComponent(Container container, Component component,
+		      int gridx, int gridy, int gridwidth, int gridheight, int anchor,
+		      int fill) {
+		    GridBagConstraints gbc = new GridBagConstraints(gridx, gridy,
+		      gridwidth, gridheight, 1.0, 1.0, anchor, fill, insets, 0, 0);
+		    container.add(component, gbc);
+		  }
 
 }

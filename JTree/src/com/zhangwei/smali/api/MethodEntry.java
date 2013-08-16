@@ -6,6 +6,11 @@ package com.zhangwei.smali.api;
  * 
  * */
 public class MethodEntry extends CommonEntry {
+	
+	public MethodEntry(){
+		super(3);
+	}
+	
 	String classConstructorName; //用来标识该函数是否为构造函数
 	String classMethodName; //函数名
 	String classMethodProto;    //用来表示该函数的原型，参数及返回值
