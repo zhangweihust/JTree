@@ -1,11 +1,13 @@
 package com.zhangwei.ui.jlist;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -31,6 +33,8 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
     	listmodel = new SmaliListDataModel();
     	jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     	jlist.setModel(listmodel);
+    	
+        add(new JScrollPane(jlist));
     }
 
 	@Override
@@ -49,4 +53,8 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
 
 	}
 
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(200, 200);
+    }
 }

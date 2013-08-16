@@ -18,4 +18,8 @@ public abstract class CommonEntry {
 	public void Rename(String content_before, String content_after){
 		content = content.replace(content_before, content_after);
 	}
+	
+	public String toString(){
+		return id;
+	}
 }

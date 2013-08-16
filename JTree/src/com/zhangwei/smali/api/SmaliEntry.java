@@ -32,7 +32,7 @@ public class SmaliEntry {
 		return (CommonEntry)classHeader;
 	}
 	
-	public ArrayList<CommonEntry> getFieldList(){
+	public ArrayList<CommonEntry>  getMethodList(){
 		ArrayList<CommonEntry> ret = new ArrayList<CommonEntry>();
 		if(entry_method_array!=null && entry_method_array.size()>0){
 			for(CommonEntry item : entry_method_array){
@@ -43,7 +43,7 @@ public class SmaliEntry {
 		return ret;
 	}
 	
-	public ArrayList<CommonEntry> getMethodList(){
+	public ArrayList<CommonEntry> getFieldList(){
 		ArrayList<CommonEntry> ret = new ArrayList<CommonEntry>();
 		if(entry_field_array!=null && entry_field_array.size()>0){
 			for(CommonEntry item : entry_field_array){
@@ -81,7 +81,6 @@ public class SmaliEntry {
 
 	public void close_classHeader() {
 		// TODO Auto-generated method stub
-
 		classHeader.close();
 	}
 	
@@ -99,7 +98,6 @@ public class SmaliEntry {
 		// TODO Auto-generated method stub
 		FieldEntry last = entry_field_array.get(entry_field_array.size()-1);
 		last.content = content;
-
 	}
 	
 	public void put_classField_Name(String classFieldName) {
@@ -112,6 +110,12 @@ public class SmaliEntry {
 		// TODO Auto-generated method stub
 		FieldEntry last = entry_field_array.get(entry_field_array.size()-1);
 		last.classFieldType= classFieldType;
+	}
+	
+	public void close_classField() {
+		// TODO Auto-generated method stub
+		FieldEntry last = entry_field_array.get(entry_field_array.size()-1);
+		last.close();
 	}
 
 	// ---------------      classMethod ---------------------   
@@ -128,7 +132,6 @@ public class SmaliEntry {
 		// TODO Auto-generated method stub
 		MethodEntry last = entry_method_array.get(entry_method_array.size()-1);
 		last.content = content;
-
 	}
 
 	public void put_classMethod_classConstructorName(String classConstructorName) {
@@ -147,6 +150,12 @@ public class SmaliEntry {
 		// TODO Auto-generated method stub
 		MethodEntry last = entry_method_array.get(entry_method_array.size()-1);
 		last.classMethodName = classMethodName;
+	}
+	
+	public void close_classMethod() {
+		// TODO Auto-generated method stub
+		MethodEntry last = entry_method_array.get(entry_method_array.size()-1);
+		last.close();
 	}
 	
 	public String toString() {

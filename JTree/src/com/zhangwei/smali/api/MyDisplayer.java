@@ -38,7 +38,8 @@ public class MyDisplayer extends Displayer {
 		int end = DisplayDumper.getInstance().getIndex();
 
 		smali_entry.add_classHeader_content(DisplayDumper.getInstance().getSubStr(begin, end));
-
+		
+		smali_entry.close_classHeader();
 		return ret;
 	}
 
@@ -87,6 +88,7 @@ public class MyDisplayer extends Displayer {
 		
 		smali_entry.add_classField_content(DisplayDumper.getInstance().getSubStr(begin, end));
 
+		smali_entry.close_classField();
 		return ret;
 	}
 
@@ -125,6 +127,7 @@ public class MyDisplayer extends Displayer {
 		
 		smali_entry.add_classMethod_content(DisplayDumper.getInstance().getSubStr(begin, end));
 
+		smali_entry.close_classMethod();
 		return ret;
 
 	}

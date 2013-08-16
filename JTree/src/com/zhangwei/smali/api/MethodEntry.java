@@ -15,5 +15,13 @@ public class MethodEntry extends CommonEntry {
 	String classMethodName; //函数名
 	String classMethodProto;    //用来表示该函数的原型，参数及返回值
 	
+	public void close() {
+		// TODO Auto-generated method stub
+		if(classConstructorName!=null){
+			super.id = classConstructorName + "_" + classMethodProto;
+		}else{
+			super.id = classMethodName + "_" + classMethodProto;
+		}
 
+	}
 }

@@ -9,4 +9,9 @@ public class FieldEntry extends CommonEntry {
 	
 	String classFieldName;
 	String classFieldType;
+	
+	public void close() {
+		// TODO Auto-generated method stub
+		super.id = classFieldName + "_" + classFieldType;
+	}
 }
