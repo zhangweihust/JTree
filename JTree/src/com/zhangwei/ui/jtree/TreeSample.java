@@ -6,6 +6,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import com.zhangwei.ui.JavaFileView;
 import com.zhangwei.ui.jlist.ListPane;
+import com.zhangwei.ui.jtext.JText;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -65,13 +66,16 @@ public class TreeSample {
 		        
 		        ListPane listPane = new ListPane();
 		        listPane.setVisible(true);
-		        treePane.setSmaliEntryChangedListener(listPane);
+		        treePane.addSmaliEntryChangedListener(listPane);
+		        
+		        JText textPane = new JText();
+		        textPane.setVisible(true);
+		        treePane.addSmaliEntryChangedListener(textPane);
 
 		        addComponent(jp, listPane, 1, 0, 1, 0,
 		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		        
-		        JLabel jl2 = new JLabel("ddd");
-		        addComponent(jp, jl2, 2, 0, 2, 0,
+		        addComponent(jp, textPane, 2, 0, 2, 0,
 		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 				
 				frame.add(jp, BorderLayout.CENTER);

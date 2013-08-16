@@ -22,4 +22,8 @@ public abstract class CommonEntry {
 	public String toString(){
 		return id;
 	}
+	
+	public String getContent(){
+		return content;
+	}
 }

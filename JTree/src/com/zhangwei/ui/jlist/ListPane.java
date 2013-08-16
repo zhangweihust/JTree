@@ -9,6 +9,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -17,7 +19,7 @@ import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.ui.jtree.SmaliTree;
 import com.zhangwei.ui.jtree.SmaliTreeModel;
 
-public class ListPane extends JPanel implements ActionListener, SmaliEntryChanged {
+public class ListPane extends JPanel implements ActionListener, SmaliEntryChanged, ListSelectionListener{
 
 	/**
 	 * 
@@ -27,6 +29,8 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
 	private JList<CommonEntry> jlist;
     private SmaliListDataModel listmodel;
     
+    private SmaliEntryChanged JTextDataNotify;
+    
     public ListPane() {
     	super(new BorderLayout());
     	jlist = new JList<CommonEntry>();
@@ -35,6 +39,10 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
     	jlist.setModel(listmodel);
     	
         add(new JScrollPane(jlist));
+    }
+    
+    public void setSmaliEntryChangedListener(SmaliEntryChanged listener){
+    	JTextDataNotify = listener;
     }
 
 	@Override
@@ -49,6 +57,11 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
 		// TODO Auto-generated method stub
 		if(newEntry.isFile){
 			listmodel.ChangeSmaliEntry(newEntry);
+			
+			if(JTextDataNotify!=null){
+				JTextDataNotify.EntryChanged(newEntry);
+			}
+			
 		}
 
 	}
@@ -57,4 +70,10 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
     public Dimension getPreferredSize() {
         return new Dimension(200, 200);
     }
+
+	@Override
+	public void valueChanged(ListSelectionEvent event) {
+		// TODO Auto-generated method stub
+		System.out.print(event.toString());
+	}
 }

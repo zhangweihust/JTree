@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -39,7 +40,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     private SmaliTreeModel model;
     private DefaultTreeSelectionModel dtm;
     
-    private SmaliEntryChanged JListDataNotify;
+    private ArrayList<SmaliEntryChanged> JListDataNotify;
     
     private String last_dir_for_chose = ".";
     
@@ -51,7 +52,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 		SmaliEntry root = new SmaliEntry(new File("."), false, "root");
         tree = new SmaliTree();
         model = new SmaliTreeModel(root);
-
+        JListDataNotify = new ArrayList<SmaliEntryChanged>();
 
         dtm = new DefaultTreeSelectionModel() {
 
@@ -87,8 +88,8 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 
     }
     
-    public void setSmaliEntryChangedListener(SmaliEntryChanged listener){
-    	JListDataNotify = listener;
+    public void addSmaliEntryChangedListener(SmaliEntryChanged listener){
+    	JListDataNotify.add(listener);
     }
     
 	@Override
@@ -98,8 +99,11 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 		TreePath tp = event.getNewLeadSelectionPath();
 		if(tp!=null){
 			SmaliEntry newEntry = (SmaliEntry) tp.getLastPathComponent();
-			if(JListDataNotify!=null){
-				JListDataNotify.EntryChanged(newEntry);
+			if(JListDataNotify!=null && JListDataNotify.size()>0){
+				for(SmaliEntryChanged listener : JListDataNotify){
+					listener.EntryChanged(newEntry);
+				}
+
 			}
 		}
 

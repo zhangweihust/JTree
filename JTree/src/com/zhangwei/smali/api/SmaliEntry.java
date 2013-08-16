@@ -1,8 +1,15 @@
 package com.zhangwei.smali.api;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Vector;
+
+import com.zhangwei.parser.ParserContext;
+import com.zhangwei.parser.Rule;
+import com.zhangwei.parser.Rule_smali;
+import com.zhangwei.parser.Visitor;
 
 /**
  *  代表一个smali文件
@@ -194,6 +201,22 @@ public class SmaliEntry {
 
 
 
+	public String getFileContent(){
+		try{
+		    BufferedReader in = new BufferedReader(new FileReader(file));
+		    int ch = 0;
+		    StringBuffer out = new StringBuffer();
+		    while ((ch = in.read()) != -1)
+		      out.append((char)ch);
+
+		    in.close();
+		    return out.toString();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
 
 
