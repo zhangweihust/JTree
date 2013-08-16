@@ -1,4 +1,4 @@
-package com.zhangwei.jtree;
+package com.zhangwei.ui.jtree;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileView;

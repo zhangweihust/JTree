@@ -1,4 +1,4 @@
-package com.zhangwei.jtree;
+package com.zhangwei.ui.jtree;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

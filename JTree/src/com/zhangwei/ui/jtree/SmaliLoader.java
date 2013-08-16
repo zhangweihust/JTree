@@ -1,4 +1,4 @@
-package com.zhangwei.jtree;
+package com.zhangwei.ui.jtree;
 
 import java.io.File;
 import java.util.ArrayList;
