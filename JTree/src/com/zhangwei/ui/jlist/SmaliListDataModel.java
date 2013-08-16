@@ -12,6 +12,10 @@ public class SmaliListDataModel extends DefaultListModel<CommonEntry> {
 	 */
 	private static final long serialVersionUID = 681316880209418688L;
 	
+    public SmaliListDataModel() {
+        super();
+        
+    }
 	
     public SmaliListDataModel(SmaliEntry entry) {
         super();

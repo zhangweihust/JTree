@@ -5,6 +5,7 @@ import javax.swing.filechooser.FileView;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import com.zhangwei.ui.JavaFileView;
+import com.zhangwei.ui.jlist.ListPane;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,7 +29,7 @@ public class TreeSample {
 				String title = ("JTree Sample");
 				frame = new JFrame(title);
 
-				TreePane testpane = new TreePane();
+				TreePane treePane = new TreePane();
 
 				JMenuBar menuBar = new JMenuBar();
 				JMenu fileMenu = new JMenu("File");
@@ -38,7 +39,7 @@ public class TreeSample {
 
 				// File->Open, O - Mnemonic
 				JMenuItem openMenuItem = new JMenuItem("Open", KeyEvent.VK_O);
-				openMenuItem.addActionListener(testpane);
+				openMenuItem.addActionListener(treePane);
 				fileMenu.add(openMenuItem);
 				
 		        // Separator
@@ -46,7 +47,7 @@ public class TreeSample {
 				
 		        // File->Close, C - Mnemonic
 		        JMenuItem closeMenuItem = new JMenuItem("Close", KeyEvent.VK_C);
-		        closeMenuItem.addActionListener(testpane);
+		        closeMenuItem.addActionListener(treePane);
 		        fileMenu.add(closeMenuItem);
 
 				// UIManager.put("Tree.leafIcon", new
@@ -59,12 +60,14 @@ public class TreeSample {
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 				JPanel jp = new JPanel(new GridBagLayout());
-		        addComponent(jp, testpane, 0, 0, 1, 0,
+		        addComponent(jp, treePane, 0, 0, 1, 0,
 		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		        
-		        JList list = new JList();
+		        ListPane listPane = new ListPane();
+		        listPane.setVisible(true);
+		        treePane.setSmaliEntryChangedListener(listPane);
 
-		        addComponent(jp, list, 1, 0, 1, 0,
+		        addComponent(jp, listPane, 1, 0, 1, 0,
 		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);
 		        
 		        JLabel jl2 = new JLabel("ddd");

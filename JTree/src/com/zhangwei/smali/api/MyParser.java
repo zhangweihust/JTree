@@ -10,7 +10,7 @@ import com.zhangwei.parser.Rule_smali;
 import com.zhangwei.parser.Visitor;
 
 public class MyParser  {
-	  public static void main(final String args[]) {
+/*	  public static void main(final String args[]) {
 		  boolean ret = Paser_file(args[0]);
 		  if(ret){
 			  System.exit(0);
@@ -47,12 +47,12 @@ public class MyParser  {
 		}
 		
 		return ret;
-	}
+	}*/
 	
-	private boolean paser(File smali_file){
+	public boolean paser(SmaliEntry smaliEntry){
 		boolean ret = false;
 		try{
-		    BufferedReader in = new BufferedReader(new FileReader(smali_file));
+		    BufferedReader in = new BufferedReader(new FileReader(smaliEntry.file));
 		    int ch = 0;
 		    StringBuffer out = new StringBuffer();
 		    while ((ch = in.read()) != -1)
@@ -62,8 +62,7 @@ public class MyParser  {
 		    
 			ParserContext context = new ParserContext(out.toString(), false);
 			Rule rule = Rule_smali.parse(context);
-			
-			Visitor visitor = new com.zhangwei.smali.api.MyDisplayer(new SmaliEntry(smali_file, true, smali_file.getName()));
+			Visitor visitor = new com.zhangwei.smali.api.MyDisplayer(smaliEntry);
 			rule.accept(visitor);
 			ret = true;
 		}catch(Exception e){
@@ -73,7 +72,7 @@ public class MyParser  {
 		return ret;
 	}
 	
-	private void loadChildren(File parent){
+/*	private void loadChildren(File parent){
 		if(parent==null){
 			return;
 		}
@@ -100,6 +99,6 @@ public class MyParser  {
 			//EntryVector 里装的必定是文件或函数， 以后加入smali解析的功能
 			
 		}
-	}
+	}*/
 
 }

@@ -27,13 +27,19 @@ import javax.swing.tree.TreeSelectionModel;
 
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.ui.JavaFileView;
+import com.zhangwei.ui.jlist.SmaliEntryChanged;
 
-public class TreePane extends JPanel implements ActionListener {
-    //private DefaultTreeModel model;
-    //private DefaultTreeCellRenderer renderer;
-    //private JTree tree;
+public class TreePane extends JPanel implements ActionListener, TreeSelectionListener {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8375461163958980443L;
+
 	private SmaliTree tree;
     private SmaliTreeModel model;
+    private DefaultTreeSelectionModel dtm;
+    
+    private SmaliEntryChanged JListDataNotify;
     
     private String last_dir_for_chose = ".";
     
@@ -42,16 +48,16 @@ public class TreePane extends JPanel implements ActionListener {
 		UIManager.put("Tree.collapsedIcon", new ImageIcon("collapsedIcon.png"));
 		UIManager.put("Tree.expandedIcon", new ImageIcon("expandedIcon.png"));
 		
-		SmaliEntry root = new SmaliEntry(new File("."), false, "root/.");
+		SmaliEntry root = new SmaliEntry(new File("."), false, "root");
         tree = new SmaliTree();
         model = new SmaliTreeModel(root);
-        tree.setModel(model);
-        tree.setRootVisible(true);
-        tree.setShowsRootHandles(true);
 
-        DefaultTreeSelectionModel dtm = new DefaultTreeSelectionModel() {
 
-			
+        dtm = new DefaultTreeSelectionModel() {
+
+			private static final long serialVersionUID = 5208506471560059640L;
+
+
 			@Override
 			public boolean isPathSelected(TreePath path) {
 				// TODO Auto-generated method stub
@@ -68,22 +74,36 @@ public class TreePane extends JPanel implements ActionListener {
 
 		};
         
-		dtm.addTreeSelectionListener(new TreeSelectionListener() {
-			
-			@Override
-			public void valueChanged(TreeSelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+		dtm.addTreeSelectionListener(this);
 		
 		dtm.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		
         tree.setSelectionModel(dtm);
-
+        tree.setModel(model);
+        tree.setRootVisible(true);
+        tree.setShowsRootHandles(true);
+        
         add(new JScrollPane(tree));
 
     }
+    
+    public void setSmaliEntryChangedListener(SmaliEntryChanged listener){
+    	JListDataNotify = listener;
+    }
+    
+	@Override
+	public void valueChanged(TreeSelectionEvent event) {
+		// TODO Auto-generated method stub
+		System.err.println(event.getNewLeadSelectionPath());
+		TreePath tp = event.getNewLeadSelectionPath();
+		if(tp!=null){
+			SmaliEntry newEntry = (SmaliEntry) tp.getLastPathComponent();
+			if(JListDataNotify!=null){
+				JListDataNotify.EntryChanged(newEntry);
+			}
+		}
+
+	}
 
     @Override
     public Dimension getPreferredSize() {
