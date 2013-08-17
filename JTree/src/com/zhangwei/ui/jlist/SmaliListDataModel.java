@@ -34,14 +34,18 @@ public class SmaliListDataModel extends DefaultListModel<CommonEntry> {
     
     public void ChangeSmaliEntry(SmaliEntry newEntry){
     	removeAllElements();
-        addElement(newEntry.getHeader());
-        
-        for(CommonEntry item : newEntry.getFieldList()){
-        	addElement(item);
-        }
-        
-        for(CommonEntry item : newEntry.getMethodList()){
-        	addElement(item);
-        }
+    	
+    	if(newEntry!=null){
+            addElement(newEntry.getHeader());
+            
+            for(CommonEntry item : newEntry.getFieldList()){
+            	addElement(item);
+            }
+            
+            for(CommonEntry item : newEntry.getMethodList()){
+            	addElement(item);
+            }
+    	}
+
     }
 }

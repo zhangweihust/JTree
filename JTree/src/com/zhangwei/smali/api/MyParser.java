@@ -3,8 +3,11 @@ package com.zhangwei.smali.api;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.Stack;
 
 import com.zhangwei.parser.ParserContext;
+import com.zhangwei.parser.ParserException;
 import com.zhangwei.parser.Rule;
 import com.zhangwei.parser.Rule_smali;
 import com.zhangwei.parser.Visitor;
@@ -49,6 +52,69 @@ public class MyParser  {
 		return ret;
 	}*/
 	
+	public boolean paser(File file){
+		boolean ret = false;
+		try{
+			SmaliEntry smaliEntry = new SmaliEntry(file, true, file.getName());
+		    BufferedReader in = new BufferedReader(new FileReader(file));
+		    int ch = 0;
+		    StringBuffer out = new StringBuffer();
+		    while ((ch = in.read()) != -1)
+		      out.append((char)ch);
+
+		    in.close();
+		    
+			ParserContext context = new ParserContext(out.toString(), false);
+			Rule rule = null;
+			rule = Rule_smali.parse(context);
+			
+		    if (rule == null)
+		    {
+		      throw new ParserException(
+		        "rule \"" + (String)context.getErrorStack().peek() + "\" failed",
+		        context.text,
+		        context.getErrorIndex(),
+		        context.getErrorStack());
+		    }
+
+		    if (context.text.length() > context.index)
+		    {
+		      ParserException primaryError = 
+		        new ParserException(
+		          "extra data found",
+		          context.text,
+		          context.index,
+		          new Stack<String>());
+
+		      if (context.getErrorIndex() > context.index)
+		      {
+		        ParserException secondaryError = 
+		          new ParserException(
+		            "rule \"" + (String)context.getErrorStack().peek() + "\" failed",
+		            context.text,
+		            context.getErrorIndex(),
+		            context.getErrorStack());
+
+		        primaryError.initCause(secondaryError);
+		      }
+
+		      throw primaryError;
+		    }
+		    
+			Visitor visitor = new com.zhangwei.smali.api.MyDisplayer(smaliEntry );
+			rule.accept(visitor);
+			ret = true;
+		} catch (IllegalArgumentException e) {
+			System.out.println("argument error: " + e.getMessage());
+		} catch (IOException e) {
+			System.out.println("io error: " + e.getMessage());
+		} catch (ParserException e) {
+			System.out.println("parser error: " + e.getMessage());
+		}
+
+		return ret;
+	}
+	
 	public boolean paser(SmaliEntry smaliEntry){
 		boolean ret = false;
 		try{
@@ -61,12 +127,55 @@ public class MyParser  {
 		    in.close();
 		    
 			ParserContext context = new ParserContext(out.toString(), false);
-			Rule rule = Rule_smali.parse(context);
+			Rule rule = null;
+			rule = Rule_smali.parse(context);
+			
+		    if (rule == null)
+		    {
+		      throw new ParserException(
+		        smaliEntry.file.getAbsolutePath() + ":\n" + 
+		        "rule \"" + (String)context.getErrorStack().peek() + "\" failed",
+		        context.text,
+		        context.getErrorIndex(),
+		        context.getErrorStack());
+		    }
+
+		    if (context.text.length() > context.index)
+		    {
+		      ParserException primaryError = 
+		        new ParserException(
+		          smaliEntry.file.getAbsolutePath() + ":\n" + 
+		          "extra data found",
+		          context.text,
+		          context.index,
+		          new Stack<String>());
+
+		      if (context.getErrorIndex() > context.index)
+		      {
+		        ParserException secondaryError = 
+		          new ParserException(
+		            smaliEntry.file.getAbsolutePath() + ":\n" + 
+		            "rule \"" + (String)context.getErrorStack().peek() + "\" failed",
+		            context.text,
+		            context.getErrorIndex(),
+		            context.getErrorStack());
+
+		        primaryError.initCause(secondaryError);
+		      }
+
+		      throw primaryError;
+		    }
+			
+			
 			Visitor visitor = new com.zhangwei.smali.api.MyDisplayer(smaliEntry);
 			rule.accept(visitor);
 			ret = true;
-		}catch(Exception e){
-			e.printStackTrace();
+		}catch (IllegalArgumentException e) {
+			System.out.println("argument error: " + e.getMessage());
+		} catch (IOException e) {
+			System.out.println("io error: " + e.getMessage());
+		} catch (ParserException e) {
+			System.out.println("parser error: " + e.getMessage());
 		}
 
 		return ret;

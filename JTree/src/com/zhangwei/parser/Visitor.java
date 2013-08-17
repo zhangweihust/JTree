@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Wed Aug 14 15:27:11 CST 2013
+ * Produced : Sat Aug 17 11:49:47 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -61,6 +61,8 @@ public interface Visitor
   public Object visit(Rule_dirSubannotation rule);
   public Object visit(Rule_dirSuper rule);
   public Object visit(Rule_dirSource rule);
+  public Object visit(Rule_dirArrayData rule);
+  public Object visit(Rule_dirEndArrayData rule);
   public Object visit(Rule_smali rule);
   public Object visit(Rule_todoStubLine rule);
   public Object visit(Rule_classHeader rule);
@@ -80,6 +82,13 @@ public interface Visitor
   public Object visit(Rule_classFieldName rule);
   public Object visit(Rule_classFieldType rule);
   public Object visit(Rule_classField rule);
+  public Object visit(Rule_array rule);
+  public Object visit(Rule_arrayHead rule);
+  public Object visit(Rule_arrayValue rule);
+  public Object visit(Rule_arrayBody rule);
+  public Object visit(Rule_arrayTail rule);
+  public Object visit(Rule_catch rule);
+  public Object visit(Rule_catchall rule);
   public Object visit(Rule_classMethodName rule);
   public Object visit(Rule_classMethod rule);
   public Object visit(Rule_classConstructorName rule);
@@ -108,6 +117,8 @@ public interface Visitor
   public Object visit(Rule_HEXDIG rule);
   public Object visit(Rule_VCHAR rule);
   public Object visit(Rule_SUB rule);
+  public Object visit(Rule_BRACE_PRE rule);
+  public Object visit(Rule_BRACE_POS rule);
   public Object visit(Rule_cmdAny rule);
   public Object visit(Rule_cmdAddFloat rule);
   public Object visit(Rule_cmdAddFloat2addr rule);
@@ -329,6 +340,8 @@ public interface Visitor
   public Object visit(Rule_cmdXorIntLit8 rule);
   public Object visit(Rule_cmdXorLong rule);
   public Object visit(Rule_cmdXorLong2addr rule);
+  public Object visit(Rule_cmdPrefixAny rule);
+  public Object visit(Rule_cmdCommon rule);
 
   public Object visit(Terminal_StringValue value);
   public Object visit(Terminal_NumericValue value);

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.Document;
 
@@ -19,23 +20,28 @@ public class JText extends JPanel implements SmaliEntryChanged{
 	 */
 	private static final long serialVersionUID = -8123960294134045973L;
 	
-	private JTextField jtextField;
+	private JTextArea  jtextArea;
 	private SmaliDocument doc;
 	
 	public JText() {
     	super(new BorderLayout());
-		jtextField = new JTextField();
+		jtextArea = new JTextArea();
 		doc = new SmaliDocument();
 		
-		jtextField.setDocument(doc);
+		jtextArea.setDocument(doc);
 		
-        add(new JScrollPane(jtextField));
+        add(new JScrollPane(jtextArea));
 	}
 
 	@Override
 	public void EntryChanged(SmaliEntry newEntry) {
 		// TODO Auto-generated method stub
-		jtextField.setText(newEntry.getFileContent());
+		if(newEntry.isFile()){
+			jtextArea.setText(newEntry.getFileContent());
+		}else{
+			jtextArea.setText(null);
+		}
+
 	}
 	
     @Override

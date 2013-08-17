@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Wed Aug 14 15:27:11 CST 2013
+ * Produced : Sat Aug 17 11:49:47 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -604,6 +604,30 @@ public class XmlDisplayer implements Visitor
     return null;
   }
 
+  public Object visit(Rule_dirArrayData rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<dirArrayData>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</dirArrayData>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_dirEndArrayData rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<dirEndArrayData>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</dirEndArrayData>");
+    terminal = false;
+    return null;
+  }
+
   public Object visit(Rule_smali rule)
   {
     if (!terminal) System.out.println();
@@ -828,6 +852,90 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</classField>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_array rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<array>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</array>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_arrayHead rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<arrayHead>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</arrayHead>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_arrayValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<arrayValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</arrayValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_arrayBody rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<arrayBody>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</arrayBody>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_arrayTail rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<arrayTail>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</arrayTail>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_catch rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<catch>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</catch>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_catchall rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<catchall>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</catchall>");
     terminal = false;
     return null;
   }
@@ -1164,6 +1272,30 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</SUB>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_BRACE_PRE rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<BRACE_PRE>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</BRACE_PRE>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_BRACE_POS rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<BRACE_POS>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</BRACE_POS>");
     terminal = false;
     return null;
   }
@@ -3816,6 +3948,30 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</cmdXorLong2addr>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_cmdPrefixAny rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<cmdPrefixAny>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</cmdPrefixAny>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_cmdCommon rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<cmdCommon>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</cmdCommon>");
     terminal = false;
     return null;
   }

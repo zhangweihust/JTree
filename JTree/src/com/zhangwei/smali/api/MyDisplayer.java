@@ -27,14 +27,14 @@ public class MyDisplayer extends Displayer {
 
 	@Override
 	public Object visit(Rule_classHeader rule) {
-		// System.out.println("<classHeader>");
+		Log("<classHeader>");
 		smali_entry.new_classHeader();
 		
 		int begin = DisplayDumper.getInstance().getIndex();
 
 		Object ret = visitRules(rule.rules);
 
-		// System.out.println("</classHeader>");
+		Log("</classHeader>");
 		int end = DisplayDumper.getInstance().getIndex();
 
 		smali_entry.add_classHeader_content(DisplayDumper.getInstance().getSubStr(begin, end));
@@ -44,12 +44,12 @@ public class MyDisplayer extends Displayer {
 	}
 
 	public Object visit(Rule_classClass rule) {
-		// System.out.println("<classHeader>");
+		Log("<classClass>");
 		int begin = DisplayDumper.getInstance().getIndex();
 
 		Object ret = visitRules(rule.rules);
 
-		// System.out.println("</classHeader>");
+		Log("</classClass>");
 		int end = DisplayDumper.getInstance().getIndex();
 
 		smali_entry.add_classHeader_classClass(DisplayDumper.getInstance().getSubStr(begin, end));
@@ -58,12 +58,12 @@ public class MyDisplayer extends Displayer {
 	}
 
 	public Object visit(Rule_classSuper rule) {
-		// System.out.println("<classHeader>");
+		Log("<classSuper>");
 		int begin = DisplayDumper.getInstance().getIndex();
 
 		Object ret = visitRules(rule.rules);
 
-		// System.out.println("</classHeader>");
+		Log("</classSuper>");
 		int end = DisplayDumper.getInstance().getIndex();
 
 		smali_entry.add_classHeader_classSuper(DisplayDumper.getInstance().getSubStr(begin, end));
@@ -76,14 +76,14 @@ public class MyDisplayer extends Displayer {
 	//-----------------------------classField----------------------------
 	@Override
 	public Object visit(Rule_classField rule) {
-		// System.out.println("<classField>");
+		Log("<classField>");
 		smali_entry.new_classField();
 		
 		int begin = DisplayDumper.getInstance().getIndex();
 
 		Object ret =  visitRules(rule.rules);
 
-		// System.out.println("</classField>");
+		Log("</classField>");
 		int end = DisplayDumper.getInstance().getIndex();
 		
 		smali_entry.add_classField_content(DisplayDumper.getInstance().getSubStr(begin, end));
@@ -93,20 +93,22 @@ public class MyDisplayer extends Displayer {
 	}
 
 	public Object visit(Rule_classFieldName rule) {
+		Log("<classFieldName>");
 		int begin = DisplayDumper.getInstance().getIndex();
 		Object ret = visitRules(rule.rules);
 		int end = DisplayDumper.getInstance().getIndex();
-		
+		Log("</classFieldName>");
 		smali_entry.put_classField_Name(DisplayDumper.getInstance().getSubStr(begin, end));
 		
 		return ret;
 	}
 
 	public Object visit(Rule_classFieldType rule) {
+		Log("<classFieldType>");
 		int begin = DisplayDumper.getInstance().getIndex();
 		Object ret = visitRules(rule.rules);
 		int end = DisplayDumper.getInstance().getIndex();
-		
+		Log("</classFieldType>");
 		smali_entry.put_classField_Type(DisplayDumper.getInstance().getSubStr(begin, end));
 		
 		return ret;
@@ -115,14 +117,14 @@ public class MyDisplayer extends Displayer {
 	//------------------------------classMethod----------------------------
 	@Override
 	public Object visit(Rule_classMethod rule) {
-		//System.out.println("<classMethod>");
+		Log("<classMethod>");
 		smali_entry.new_classMethod();
 		
 		int begin = DisplayDumper.getInstance().getIndex();
 
 		Object ret = visitRules(rule.rules);
 
-		//System.out.println("</classMethod>");
+		Log("</classMethod>");
 		int end = DisplayDumper.getInstance().getIndex();
 		
 		smali_entry.add_classMethod_content(DisplayDumper.getInstance().getSubStr(begin, end));
@@ -134,31 +136,33 @@ public class MyDisplayer extends Displayer {
 	
 	@Override
 	public Object visit(Rule_classConstructorName rule) {
-		
+		Log("<classConstructorName>");
 		int begin = DisplayDumper.getInstance().getIndex();
 		Object ret = visitRules(rule.rules);
 		int end = DisplayDumper.getInstance().getIndex();
-		
+		Log("</classConstructorName>");
 		smali_entry.put_classMethod_classConstructorName(DisplayDumper.getInstance().getSubStr(begin, end));
 		
 		return ret;
 	}
 
 	public Object visit(Rule_classMethodProto rule) {
+		Log("<classMethodProto>");
 		int begin = DisplayDumper.getInstance().getIndex();
 		Object ret = visitRules(rule.rules);
 		int end = DisplayDumper.getInstance().getIndex();
-		
+		Log("</classMethodProto>");
 		smali_entry.put_classMethod_classMethodProto(DisplayDumper.getInstance().getSubStr(begin, end));
 		
 		return ret;
 	}
 
 	public Object visit(Rule_classMethodName rule) {
+		Log("<classMethodName>");
 		int begin = DisplayDumper.getInstance().getIndex();
 		Object ret = visitRules(rule.rules);
 		int end = DisplayDumper.getInstance().getIndex();
-		
+		Log("</classMethodName>");
 		smali_entry.put_classMethod_classMethodName(DisplayDumper.getInstance().getSubStr(begin, end));
 		
 		return ret;
@@ -168,16 +172,18 @@ public class MyDisplayer extends Displayer {
 
 	@Override
 	public Object visit(Terminal_StringValue value) {
-		// System.out.print(value.spelling);
 		DisplayDumper.getInstance().writeStr(value.spelling);
 		return null;
 	}
 
 	@Override
 	public Object visit(Terminal_NumericValue value) {
-		// System.out.print(value.spelling);
 		DisplayDumper.getInstance().writeStr(value.spelling);
 		return null;
+	}
+	
+	private void Log(String str){
+		//System.out.println(str);
 	}
 
 }

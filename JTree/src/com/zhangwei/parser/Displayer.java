@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Wed Aug 14 15:27:11 CST 2013
+ * Produced : Sat Aug 17 11:49:47 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -260,6 +260,16 @@ public class Displayer implements Visitor
     return visitRules(rule.rules);
   }
 
+  public Object visit(Rule_dirArrayData rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_dirEndArrayData rule)
+  {
+    return visitRules(rule.rules);
+  }
+
   public Object visit(Rule_smali rule)
   {
     return visitRules(rule.rules);
@@ -351,6 +361,41 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_classField rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_array rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_arrayHead rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_arrayValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_arrayBody rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_arrayTail rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_catch rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_catchall rule)
   {
     return visitRules(rule.rules);
   }
@@ -491,6 +536,16 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_SUB rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_BRACE_PRE rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_BRACE_POS rule)
   {
     return visitRules(rule.rules);
   }
@@ -1596,6 +1651,16 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_cmdXorLong2addr rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_cmdPrefixAny rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_cmdCommon rule)
   {
     return visitRules(rule.rules);
   }

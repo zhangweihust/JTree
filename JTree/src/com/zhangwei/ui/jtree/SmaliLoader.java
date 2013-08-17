@@ -94,7 +94,7 @@ public class SmaliLoader {
     	            	packageEntry.children.add(smaliEntry);
     	            	smailMap.put(file.getAbsolutePath(), smaliEntry);
                 	}else{
-                		System.err.println("Parser err: " + file.getAbsolutePath());
+                		return;
                 	}
 
                

@@ -17,3 +17,5 @@ DIGIT = %x30-39;
 HEXDIG = DIGIT / "A" / "B" / "C" / "D" / "E" / "F" ;
 VCHAR = %x21-7e;
 SUB = %x2d;
+BRACE_PRE = %x7b;
+BRACE_POS = %x7d;

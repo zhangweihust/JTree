@@ -41,6 +41,7 @@ public class DisplayDumper {
 	}
 	
 	public int writeStr(String str){
+		//System.out.print(str);
 		if(str!=null){
 			buffer.append(str);
 			index+=str.length();

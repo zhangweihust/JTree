@@ -58,12 +58,13 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
 		if(newEntry.isFile){
 			listmodel.ChangeSmaliEntry(newEntry);
 			
-			if(JTextDataNotify!=null){
-				JTextDataNotify.EntryChanged(newEntry);
-			}
-			
+		}else{
+			listmodel.ChangeSmaliEntry(null);
 		}
 
+		if(JTextDataNotify!=null){
+			JTextDataNotify.EntryChanged(newEntry);
+		}
 	}
 
     @Override

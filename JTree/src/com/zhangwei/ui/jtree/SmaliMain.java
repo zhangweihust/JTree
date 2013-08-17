@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
-public class TreeSample {
+public class SmaliMain {
 	static JFrame frame;
 
 	public static void main(final String args[]) {
