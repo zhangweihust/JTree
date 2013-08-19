@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Sat Aug 17 11:49:47 CST 2013
+ * Produced : Mon Aug 19 09:22:45 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -106,7 +106,22 @@ final public class Rule_catch extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_catchall.parse(context);
+            rule = Rule_optPadding.parse(context);
+            if ((f1 = rule != null))
+            {
+              e1.add(rule);
+              c1++;
+            }
+          }
+          parsed = c1 == 1;
+        }
+        if (parsed)
+        {
+          boolean f1 = true;
+          int c1 = 0;
+          for (int i1 = 0; i1 < 1 && f1; i1++)
+          {
+            rule = Rule_catchClause.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);

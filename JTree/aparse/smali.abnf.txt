@@ -29,7 +29,7 @@ comment = optPadding commentSequence CRLF;
 emptyLine = optPadding CRLF;
 skipLine = comment / emptyLine;
 fileName = QUOT *(ALPHA / DIGIT) DOT *(ALPHA / DIGIT) QUOT;
-accessMode = "public" / "private" / "protected" / "static" / "final" / "abstract" / "synthetic" / "enum" / "annotation" / "declared-synchronized";
+accessMode = "public" / "private" / "protected" / "static" / "final" / "abstract" / "synthetic" / "enum" / "annotation" / "declared-synchronized" / "bridge";
 interfaceMode = "interface";
 type = "V" / "Z" / "B" / "S" / "C" / "I" / "J" / "F" / "D" / className / "[" type;
 boolValue = "true" / "false";
@@ -71,6 +71,9 @@ dirSource = ".source";
 dirArrayData = ".array-data";
 dirEndArrayData = dirEnd optPadding "array-data";
 
+dirSparseswitch = ".sparse-switch";
+dirEndSparseswitch = dirEnd padding "sparse-switch";
+
 #####SMALI GENERAL RULES#####
 smali = classHeader *(classField / skipLine) *(classMethod / skipLine);
 todoStubLine = *(VCHAR / padding);
@@ -108,17 +111,25 @@ arrayValue = intValue ["t" / "x" / "d" / "b"];
 arrayBody = *(padding / arrayValue)  CRLF;
 arrayTail = optPadding  dirEndArrayData optPadding CRLF;
 
+switch = optPadding "packed-switch" optPadding value listSeparator codeLabel optPadding CRLF;
+packedswitch =  [optPadding ".end"] optPadding [ "packed-switch" / (".packed-switch" optPadding value) ] optPadding CRLF;
+
+#0x1 -> :sswitch_7
+SparseswitchBody = *(optPadding intValue optPadding "->" optPadding codeLabel optPadding CRLF);
+Sparseswitch = optPadding dirSparseswitch optPadding CRLF  SparseswitchBody optPadding dirEndSparseswitch optPadding CRLF;
+
 #.catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 #.catchall {:try_start_1 .. :try_end_1} :catchall_1
-catch = optPadding ".catch" optPadding className catchall;
-catchall = optPadding BRACE_PRE optPadding codeLabel  optPadding DOT DOT optPadding codeLabel optPadding BRACE_POS optPadding codeLabel optPadding CRLF;
+catchClause = BRACE_PRE optPadding codeLabel  optPadding DOT DOT optPadding codeLabel optPadding BRACE_POS optPadding codeLabel optPadding CRLF;
+catch = optPadding ".catch" optPadding className optPadding catchClause;
+catchall = optPadding ".catchall" optPadding catchClause;
 
 #####SMALI METHOD RULES#####
 classMethodName = qualifier;
 classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / classMethodName) optPadding classMethodProto optPadding CRLF methodBody optPadding dirEndMethod optPadding CRLF;
 classConstructorName = "constructor" padding smaliConstructorName;
 classMethodProto = %x28 *type %x29 type;
-methodBody = *skipLine [methodLocals] *skipLine [methodRegisters] *(methodParam / annotation / skipLine) [methodPrologue] *(methodLine / methodLocal / cmdAny / label / catch / catchall / array / skipLine);
+methodBody = *skipLine [methodLocals] *skipLine [methodRegisters] *(methodParam / annotation / skipLine) [methodPrologue] *(methodLine / methodLocal / cmdAny / label / catch / catchall / switch / packedswitch / Sparseswitch / array / skipLine);
 
 label = optPadding codeLabel optPadding [commentSequence] CRLF;
 

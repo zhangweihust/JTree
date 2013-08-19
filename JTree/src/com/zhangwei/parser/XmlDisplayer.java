@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Sat Aug 17 11:49:47 CST 2013
+ * Produced : Mon Aug 19 09:22:45 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -628,6 +628,30 @@ public class XmlDisplayer implements Visitor
     return null;
   }
 
+  public Object visit(Rule_dirSparseswitch rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<dirSparseswitch>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</dirSparseswitch>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_dirEndSparseswitch rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<dirEndSparseswitch>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</dirEndSparseswitch>");
+    terminal = false;
+    return null;
+  }
+
   public Object visit(Rule_smali rule)
   {
     if (!terminal) System.out.println();
@@ -912,6 +936,66 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</arrayTail>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_switch rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<switch>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</switch>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_packedswitch rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<packedswitch>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</packedswitch>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_SparseswitchBody rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<SparseswitchBody>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</SparseswitchBody>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_Sparseswitch rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<Sparseswitch>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</Sparseswitch>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_catchClause rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<catchClause>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</catchClause>");
     terminal = false;
     return null;
   }

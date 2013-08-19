@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Sat Aug 17 11:49:47 CST 2013
+ * Produced : Mon Aug 19 09:22:45 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -211,6 +211,8 @@ public class Parser
     else if (rulename.equalsIgnoreCase("dirSource")) rule = Rule_dirSource.parse(context);
     else if (rulename.equalsIgnoreCase("dirArrayData")) rule = Rule_dirArrayData.parse(context);
     else if (rulename.equalsIgnoreCase("dirEndArrayData")) rule = Rule_dirEndArrayData.parse(context);
+    else if (rulename.equalsIgnoreCase("dirSparseswitch")) rule = Rule_dirSparseswitch.parse(context);
+    else if (rulename.equalsIgnoreCase("dirEndSparseswitch")) rule = Rule_dirEndSparseswitch.parse(context);
     else if (rulename.equalsIgnoreCase("smali")) rule = Rule_smali.parse(context);
     else if (rulename.equalsIgnoreCase("todoStubLine")) rule = Rule_todoStubLine.parse(context);
     else if (rulename.equalsIgnoreCase("classHeader")) rule = Rule_classHeader.parse(context);
@@ -235,6 +237,11 @@ public class Parser
     else if (rulename.equalsIgnoreCase("arrayValue")) rule = Rule_arrayValue.parse(context);
     else if (rulename.equalsIgnoreCase("arrayBody")) rule = Rule_arrayBody.parse(context);
     else if (rulename.equalsIgnoreCase("arrayTail")) rule = Rule_arrayTail.parse(context);
+    else if (rulename.equalsIgnoreCase("switch")) rule = Rule_switch.parse(context);
+    else if (rulename.equalsIgnoreCase("packedswitch")) rule = Rule_packedswitch.parse(context);
+    else if (rulename.equalsIgnoreCase("SparseswitchBody")) rule = Rule_SparseswitchBody.parse(context);
+    else if (rulename.equalsIgnoreCase("Sparseswitch")) rule = Rule_Sparseswitch.parse(context);
+    else if (rulename.equalsIgnoreCase("catchClause")) rule = Rule_catchClause.parse(context);
     else if (rulename.equalsIgnoreCase("catch")) rule = Rule_catch.parse(context);
     else if (rulename.equalsIgnoreCase("catchall")) rule = Rule_catchall.parse(context);
     else if (rulename.equalsIgnoreCase("classMethodName")) rule = Rule_classMethodName.parse(context);

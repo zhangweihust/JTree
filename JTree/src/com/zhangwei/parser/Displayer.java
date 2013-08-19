@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Sat Aug 17 11:49:47 CST 2013
+ * Produced : Mon Aug 19 09:22:45 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -270,6 +270,16 @@ public class Displayer implements Visitor
     return visitRules(rule.rules);
   }
 
+  public Object visit(Rule_dirSparseswitch rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_dirEndSparseswitch rule)
+  {
+    return visitRules(rule.rules);
+  }
+
   public Object visit(Rule_smali rule)
   {
     return visitRules(rule.rules);
@@ -386,6 +396,31 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_arrayTail rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_switch rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_packedswitch rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_SparseswitchBody rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_Sparseswitch rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_catchClause rule)
   {
     return visitRules(rule.rules);
   }
