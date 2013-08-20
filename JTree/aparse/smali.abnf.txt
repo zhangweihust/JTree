@@ -126,7 +126,8 @@ catchall = optPadding ".catchall" optPadding catchClause;
 
 #####SMALI METHOD RULES#####
 classMethodName = qualifier;
-classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / classMethodName) optPadding classMethodProto optPadding CRLF methodBody optPadding dirEndMethod optPadding CRLF;
+classMethodProtoOfMethod = classMethodProto;
+classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / classMethodName) optPadding classMethodProtoOfMethod optPadding CRLF methodBody optPadding dirEndMethod optPadding CRLF;
 classConstructorName = "constructor" padding smaliConstructorName;
 classMethodProto = %x28 *type %x29 type;
 methodBody = *skipLine [methodLocals] *skipLine [methodRegisters] *(methodParam / annotation / skipLine) [methodPrologue] *(methodLine / methodLocal / cmdAny / label / catch / catchall / switch / packedswitch / Sparseswitch / array / skipLine);

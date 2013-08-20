@@ -10,6 +10,7 @@ import com.zhangwei.parser.Rule_classHeader;
 import com.zhangwei.parser.Rule_classMethod;
 import com.zhangwei.parser.Rule_classMethodName;
 import com.zhangwei.parser.Rule_classMethodProto;
+import com.zhangwei.parser.Rule_classMethodProtoOfMethod;
 import com.zhangwei.parser.Rule_classSuper;
 import com.zhangwei.parser.Rule_smali;
 import com.zhangwei.parser.Terminal_NumericValue;
@@ -146,12 +147,12 @@ public class MyDisplayer extends Displayer {
 		return ret;
 	}
 
-	public Object visit(Rule_classMethodProto rule) {
-		Log("<classMethodProto>");
+	public Object visit(Rule_classMethodProtoOfMethod rule) {
+		Log("<classMethodProtoOfMethod>");
 		int begin = DisplayDumper.getInstance().getIndex();
 		Object ret = visitRules(rule.rules);
 		int end = DisplayDumper.getInstance().getIndex();
-		Log("</classMethodProto>");
+		Log("</classMethodProtoOfMethod>");
 		smali_entry.put_classMethod_classMethodProto(DisplayDumper.getInstance().getSubStr(begin, end));
 		
 		return ret;

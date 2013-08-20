@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Mon Aug 19 09:22:45 CST 2013
+ * Produced : Tue Aug 20 08:38:05 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -245,6 +245,7 @@ public class Parser
     else if (rulename.equalsIgnoreCase("catch")) rule = Rule_catch.parse(context);
     else if (rulename.equalsIgnoreCase("catchall")) rule = Rule_catchall.parse(context);
     else if (rulename.equalsIgnoreCase("classMethodName")) rule = Rule_classMethodName.parse(context);
+    else if (rulename.equalsIgnoreCase("classMethodProtoOfMethod")) rule = Rule_classMethodProtoOfMethod.parse(context);
     else if (rulename.equalsIgnoreCase("classMethod")) rule = Rule_classMethod.parse(context);
     else if (rulename.equalsIgnoreCase("classConstructorName")) rule = Rule_classConstructorName.parse(context);
     else if (rulename.equalsIgnoreCase("classMethodProto")) rule = Rule_classMethodProto.parse(context);
