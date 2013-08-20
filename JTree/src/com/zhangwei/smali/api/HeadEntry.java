@@ -6,8 +6,8 @@ public class HeadEntry extends CommonEntry{
 	String classClass;
 	String classSuper;
 	
-	public HeadEntry(){
-		super(1);
+	public HeadEntry(int offset){
+		super(1, offset);
 	}
 	
 	public void add_content(String content) {

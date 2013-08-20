@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -13,7 +14,7 @@ import javax.swing.text.Document;
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.ui.jlist.SmaliEntryChanged;
 
-public class JText extends JPanel implements SmaliEntryChanged{
+public class JText extends JPanel implements SmaliEntryChanged, SmaliMemberChanged{
 
 	/**
 	 * 
@@ -22,6 +23,8 @@ public class JText extends JPanel implements SmaliEntryChanged{
 	
 	private JTextArea  jtextArea;
 	private SmaliDocument doc;
+	JScrollPane scrollPane;
+	JScrollBar verticalScrollBar;//= scrollPane.getVerticalScrollBar();
 	
 	public JText() {
     	super(new BorderLayout());
@@ -30,7 +33,10 @@ public class JText extends JPanel implements SmaliEntryChanged{
 		
 		jtextArea.setDocument(doc);
 		
-        add(new JScrollPane(jtextArea));
+		scrollPane = new JScrollPane(jtextArea);
+		verticalScrollBar = scrollPane.getVerticalScrollBar();
+		
+        add(scrollPane);
 	}
 
 	@Override
@@ -38,8 +44,24 @@ public class JText extends JPanel implements SmaliEntryChanged{
 		// TODO Auto-generated method stub
 		if(newEntry.isFile()){
 			jtextArea.setText(newEntry.getFileContent());
+			verticalScrollBar.setValue(0);
 		}else{
 			jtextArea.setText(null);
+		}
+
+	}
+	
+	@Override
+	public void MemberChanged(int offset) {
+		// TODO Auto-generated method stub
+		String content = jtextArea.getText();
+		if(content!=null){
+
+			float percent = (float)offset / content.length();
+			verticalScrollBar.setValue((int) (percent*verticalScrollBar.getMaximum()));
+
+		}else{
+			verticalScrollBar.setValue(0);
 		}
 
 	}

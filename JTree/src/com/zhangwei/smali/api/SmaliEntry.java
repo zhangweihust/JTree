@@ -62,10 +62,10 @@ public class SmaliEntry {
 	}
 
 	// ------------------------classHeader --------------------- 
-	public void new_classHeader() {
+	public void new_classHeader(int offset) {
 		// TODO Auto-generated method stub
 		if(classHeader==null){
-			classHeader = new HeadEntry();
+			classHeader = new HeadEntry(offset);
 		}
 	}
 		
@@ -93,12 +93,12 @@ public class SmaliEntry {
 	
 	
 	// ---------------      classField ---------------------   
-	public void new_classField(){
+	public void new_classField(int offset){
 		if(entry_field_array==null){
 			entry_field_array = new ArrayList<FieldEntry>();
 		}
 		
-		entry_field_array.add(new FieldEntry());
+		entry_field_array.add(new FieldEntry(offset));
 	}
 
 	public void add_classField_content(String content) {
@@ -126,13 +126,13 @@ public class SmaliEntry {
 	}
 
 	// ---------------      classMethod ---------------------   
-	public void new_classMethod() {
+	public void new_classMethod(int offset) {
 		// TODO Auto-generated method stub
 		if(entry_method_array==null){
 			entry_method_array = new ArrayList<MethodEntry>();
 		}
 		
-		entry_method_array.add(new MethodEntry());
+		entry_method_array.add(new MethodEntry(offset));
 	}
 
 	public void add_classMethod_content(String content) {

@@ -6,8 +6,11 @@ public abstract class CommonEntry {
 	public int type; //1 head  2 field  3 head
 	public String content;
 	
-	public CommonEntry(int type){
+	public int offset;
+	
+	public CommonEntry(int type, int offset){
 		this.type = type;
+		this.offset = offset;
 	}
 	
 	//.class public final Lcom/b/f/a;

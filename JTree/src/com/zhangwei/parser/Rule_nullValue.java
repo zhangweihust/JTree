@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- * Rule_dirEndAnnotation.java
+ * Rule_nullValue.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
@@ -12,9 +12,9 @@ package com.zhangwei.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_dirEndAnnotation extends Rule
+final public class Rule_nullValue extends Rule
 {
-  private Rule_dirEndAnnotation(String spelling, ArrayList<Rule> rules)
+  private Rule_nullValue(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_dirEndAnnotation extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_dirEndAnnotation parse(ParserContext context)
+  public static Rule_nullValue parse(ParserContext context)
   {
-    context.push("dirEndAnnotation");
+    context.push("nullValue");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -46,37 +46,7 @@ final public class Rule_dirEndAnnotation extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_dirEnd.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Rule_padding.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Terminal_StringValue.parse(context, "annotation");
+            rule = Terminal_StringValue.parse(context, "null");
             if ((f1 = rule != null))
             {
               e1.add(rule);
@@ -94,13 +64,13 @@ final public class Rule_dirEndAnnotation extends Rule
 
     rule = null;
     if (parsed)
-      rule = new Rule_dirEndAnnotation(context.text.substring(s0, context.index), e0);
+      rule = new Rule_nullValue(context.text.substring(s0, context.index), e0);
     else
       context.index = s0;
 
-    context.pop("dirEndAnnotation", parsed);
+    context.pop("nullValue", parsed);
 
-    return (Rule_dirEndAnnotation)rule;
+    return (Rule_nullValue)rule;
   }
 }
 

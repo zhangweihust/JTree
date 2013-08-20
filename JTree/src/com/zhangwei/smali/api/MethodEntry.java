@@ -7,8 +7,8 @@ package com.zhangwei.smali.api;
  * */
 public class MethodEntry extends CommonEntry {
 	
-	public MethodEntry(){
-		super(3);
+	public MethodEntry(int offset){
+		super(3, offset);
 	}
 	
 	String classConstructorName; //用来标识该函数是否为构造函数

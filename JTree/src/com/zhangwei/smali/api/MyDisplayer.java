@@ -29,9 +29,10 @@ public class MyDisplayer extends Displayer {
 	@Override
 	public Object visit(Rule_classHeader rule) {
 		Log("<classHeader>");
-		smali_entry.new_classHeader();
-		
+
 		int begin = DisplayDumper.getInstance().getIndex();
+		smali_entry.new_classHeader(begin);
+		
 
 		Object ret = visitRules(rule.rules);
 
@@ -78,9 +79,8 @@ public class MyDisplayer extends Displayer {
 	@Override
 	public Object visit(Rule_classField rule) {
 		Log("<classField>");
-		smali_entry.new_classField();
-		
 		int begin = DisplayDumper.getInstance().getIndex();
+		smali_entry.new_classField(begin);
 
 		Object ret =  visitRules(rule.rules);
 
@@ -119,9 +119,9 @@ public class MyDisplayer extends Displayer {
 	@Override
 	public Object visit(Rule_classMethod rule) {
 		Log("<classMethod>");
-		smali_entry.new_classMethod();
-		
+
 		int begin = DisplayDumper.getInstance().getIndex();
+		smali_entry.new_classMethod(begin);
 
 		Object ret = visitRules(rule.rules);
 

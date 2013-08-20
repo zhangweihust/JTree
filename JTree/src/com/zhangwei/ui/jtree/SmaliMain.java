@@ -70,7 +70,9 @@ public class SmaliMain {
 		        
 		        JText textPane = new JText();
 		        textPane.setVisible(true);
+		        
 		        treePane.addSmaliEntryChangedListener(textPane);
+		        listPane.setSmaliMemberChangedListener(textPane);
 
 		        addComponent(jp, listPane, 1, 0, 1, 0,
 		                GridBagConstraints.CENTER, GridBagConstraints.BOTH);

@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Aug 20 08:38:05 CST 2013
+ * Produced : Tue Aug 20 11:38:17 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -264,6 +264,18 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</strValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_nullValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<nullValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</nullValue>");
     terminal = false;
     return null;
   }

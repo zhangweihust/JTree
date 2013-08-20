@@ -1,4 +1,2 @@
 Selected: Open
-[root, a, a.smali]
-[root, a, b.smali]
-[root, viewpagerindicator, CirclePageIndicator.smali]
+[root, ., a.smali]
