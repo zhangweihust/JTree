@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Aug 20 11:38:17 CST 2013
+ * Produced : Tue Sep 17 14:51:07 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -220,6 +220,42 @@ public class XmlDisplayer implements Visitor
     return null;
   }
 
+  public Object visit(Rule_charValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<charValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</charValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_byteValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<byteValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</byteValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_shortValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<shortValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</shortValue>");
+    terminal = false;
+    return null;
+  }
+
   public Object visit(Rule_intDecValue rule)
   {
     if (!terminal) System.out.println();
@@ -252,6 +288,42 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</intValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_doubleValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<doubleValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</doubleValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_floatValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<floatValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</floatValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_longValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<longValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</longValue>");
     terminal = false;
     return null;
   }
@@ -516,6 +588,18 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</dirEndSubannotation>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_dirEndParameter rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<dirEndParameter>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</dirEndParameter>");
     terminal = false;
     return null;
   }
@@ -852,6 +936,30 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</annotationBody>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_subannotation rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<subannotation>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</subannotation>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_subannotationBody rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<subannotationBody>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</subannotationBody>");
     terminal = false;
     return null;
   }
@@ -1236,6 +1344,18 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</QUOT>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_SINGLE_QUOT rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<SINGLE_QUOT>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</SINGLE_QUOT>");
     terminal = false;
     return null;
   }

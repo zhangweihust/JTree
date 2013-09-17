@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Aug 20 11:38:17 CST 2013
+ * Produced : Tue Sep 17 14:51:07 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -100,6 +100,21 @@ public class Displayer implements Visitor
     return visitRules(rule.rules);
   }
 
+  public Object visit(Rule_charValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_byteValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_shortValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
   public Object visit(Rule_intDecValue rule)
   {
     return visitRules(rule.rules);
@@ -111,6 +126,21 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_intValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_doubleValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_floatValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_longValue rule)
   {
     return visitRules(rule.rules);
   }
@@ -221,6 +251,11 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_dirEndSubannotation rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_dirEndParameter rule)
   {
     return visitRules(rule.rules);
   }
@@ -361,6 +396,16 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_annotationBody rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_subannotation rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_subannotationBody rule)
   {
     return visitRules(rule.rules);
   }
@@ -521,6 +566,11 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_QUOT rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_SINGLE_QUOT rule)
   {
     return visitRules(rule.rules);
   }

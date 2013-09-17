@@ -1,2 +1,21 @@
 Selected: Open
-[root, ., a.smali]
+[root, RecursiveExceptionHandler, Main.smali]
+[root, RecursiveAnnotation, RecursiveAnnotation.smali]
+[root, Enums, Enum.smali]
+[root, Enums, Main.smali]
+[root, AnnotationTypes, ClassAnnotation.smali]
+[root, AnnotationTypes, FieldAnnotation.smali]
+[root, AnnotationTypes, MethodAnnotation.smali]
+[root, AnnotationTypes, ParameterAnnotation.smali]
+[root, AnnotationTypes, MethodAnnotation.smali]
+[root, AnnotationTypes, Main.smali]
+id:testParameterAnnotation_(Ljava/lang/String;)V, offset:2565
+id:testParameterAnnotation_(Ljava/lang/String;)V, offset:2565
+id:testFieldAnnotation_()V, offset:1935
+id:testFieldAnnotation_()V, offset:1935
+id:testMethodAnnotation_()V, offset:1019
+id:testMethodAnnotation_()V, offset:1019
+id:testClassAnnotation_()V, offset:569
+id:testClassAnnotation_()V, offset:569
+id:null_null, offset:514
+id:null_null, offset:514

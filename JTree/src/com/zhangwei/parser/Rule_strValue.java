@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Aug 20 11:38:17 CST 2013
+ * Produced : Tue Sep 17 14:51:07 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -58,18 +58,17 @@ final public class Rule_strValue extends Rule
         if (parsed)
         {
           boolean f1 = true;
-          @SuppressWarnings("unused")
           int c1 = 0;
-          while (f1)
+          for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_escSymbol.parse(context);
+            rule = Rule_DIGIT.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);
               c1++;
             }
           }
-          parsed = true;
+          parsed = c1 == 1;
         }
         if (parsed)
         {

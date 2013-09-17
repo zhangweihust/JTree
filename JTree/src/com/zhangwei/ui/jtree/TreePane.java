@@ -42,7 +42,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     
     private ArrayList<SmaliEntryChanged> JListDataNotify;
     
-    private String last_dir_for_chose = ".";
+    private String last_dir_for_chose = "D:\\android\\crack\\guosen_dir\\examples";
     
     public TreePane() {
     	super(new BorderLayout());

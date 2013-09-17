@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Aug 20 11:38:17 CST 2013
+ * Produced : Tue Sep 17 14:51:07 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -29,9 +29,15 @@ public interface Visitor
   public Object visit(Rule_interfaceMode rule);
   public Object visit(Rule_type rule);
   public Object visit(Rule_boolValue rule);
+  public Object visit(Rule_charValue rule);
+  public Object visit(Rule_byteValue rule);
+  public Object visit(Rule_shortValue rule);
   public Object visit(Rule_intDecValue rule);
   public Object visit(Rule_intHexValue rule);
   public Object visit(Rule_intValue rule);
+  public Object visit(Rule_doubleValue rule);
+  public Object visit(Rule_floatValue rule);
+  public Object visit(Rule_longValue rule);
   public Object visit(Rule_strValue rule);
   public Object visit(Rule_nullValue rule);
   public Object visit(Rule_value rule);
@@ -54,6 +60,7 @@ public interface Visitor
   public Object visit(Rule_dirEndField rule);
   public Object visit(Rule_dirEndMethod rule);
   public Object visit(Rule_dirEndSubannotation rule);
+  public Object visit(Rule_dirEndParameter rule);
   public Object visit(Rule_dirImplements rule);
   public Object visit(Rule_dirField rule);
   public Object visit(Rule_dirLocal rule);
@@ -82,6 +89,8 @@ public interface Visitor
   public Object visit(Rule_annotation rule);
   public Object visit(Rule_annotationVisibility rule);
   public Object visit(Rule_annotationBody rule);
+  public Object visit(Rule_subannotation rule);
+  public Object visit(Rule_subannotationBody rule);
   public Object visit(Rule_classFieldName rule);
   public Object visit(Rule_classFieldType rule);
   public Object visit(Rule_classField rule);
@@ -114,6 +123,7 @@ public interface Visitor
   public Object visit(Rule_SP rule);
   public Object visit(Rule_CRLF rule);
   public Object visit(Rule_QUOT rule);
+  public Object visit(Rule_SINGLE_QUOT rule);
   public Object visit(Rule_HASH rule);
   public Object visit(Rule_COMMA rule);
   public Object visit(Rule_DOT rule);
