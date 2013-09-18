@@ -1,8 +1,11 @@
 package com.zhangwei.smali.api;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -33,6 +36,115 @@ public class SmaliEntry {
 		this.isFile = isFile;
 		this.name = name;
 		this.children = new Vector<SmaliEntry>(); 
+	}
+	
+	/**
+	 * @param src_className eg: "Lcom/a/b/c;"
+	 * @param dst_className eg: "Lcom/d/e/f/g;"
+	 * 
+	 * @return 是否需要有被替换的，让ui更新
+	 * */
+	public boolean renameClassVar(String src_className, String dst_className){
+		if(isFile){
+			//step1 process content:
+
+			String content = getFileContent();
+			
+			if(content.contains(src_className)){
+				String newContent = content.replaceAll(src_className, dst_className);
+				setFileContent(newContent);
+				return true;
+			}else{
+				return false;
+			}
+			
+		}else{
+			return false;
+		}
+
+	}
+	
+	/**
+	 * 将该类中出现的src类名或方法，替换为dst的类名或方法
+	 * 
+	 * @param src_className eg: "Lcom/a/b/c;"
+	 * @param dst_className eg: "Lcom/d/e/f/g;"
+	 * */
+	public boolean renameClassFile(String src_className, String dst_className){
+		if(isFile){
+			//step1 process content:
+			renameClassVar(src_className, dst_className);
+			
+			//step2 process file
+			File rootDir = findRoot();
+			File newFile = getNewFile(rootDir, dst_className);
+			file.renameTo(newFile);
+			
+			
+			cleanEmptyDir(file);
+			
+			return true;
+		}else{
+			return false;
+		}
+
+	}
+	
+	public void cleanEmptyDir(File file){
+		File parent = file.getParentFile();
+		if(parent.listFiles().length==0){
+			file.delete();
+			cleanEmptyDir(parent);
+		}
+	}
+	
+	/**
+	 * 
+	 * 得到新类对应文件的File对象，并创建相应的父级目录
+	 * @param cls_name eg: "Lcom/a/b/c;"
+	 * */
+	public File getNewFile(File root, String cls_name){
+		StringBuilder leaf = new StringBuilder();
+		leaf.append(root.getAbsolutePath());
+		String classNameTmp = cls_name.substring(1, cls_name.length()-1); // com/b/a/a
+		String[] classNameArray = classNameTmp.split("/");
+		if(classNameArray!=null && classNameArray.length>0){
+			for(int i = 0; i<classNameArray.length; i++){
+				String item = classNameArray[i];
+				leaf.append(File.separator + item);
+			}
+			leaf.append(".smali");
+		}
+		
+		File ret = new File(leaf.toString());
+
+		if(!ret.getParentFile().exists()) {
+			ret.getParentFile().mkdirs();
+		}
+		
+		return ret;
+	}
+	
+	public File findRoot(){
+		File fileOfRoot = null;
+
+		if(classHeader!=null && classHeader.classNameSelf!=null && file!=null && file.isFile()){
+			fileOfRoot = file;
+			String classNameTmp = classHeader.classNameSelf.substring(1, classHeader.classNameSelf.length()-1); //Lcom/b/a/a;
+			String[] classNameArray = classNameTmp.split("/");
+			if(classNameArray!=null && classNameArray.length>0){
+				for(int i = classNameArray.length-1; i>=0; i--){
+					String item = classNameArray[i];
+					String lastItem = fileOfRoot.isFile()?fileOfRoot.getName().replaceAll(".smali", ""):fileOfRoot.getName();
+					if(item!=null && item.equals(lastItem)){
+						fileOfRoot = fileOfRoot.getParentFile(); //up a level
+					}
+				}
+			}
+			
+		}
+
+		return fileOfRoot;
 	}
 	
 	public CommonEntry getHeader(){
@@ -81,9 +193,19 @@ public class SmaliEntry {
 		classHeader.classClass = classClass;
 	}
 	
+	public void add_classHeader_classNameSelf(String classNameSelf) {
+		// TODO Auto-generated method stub
+		classHeader.classNameSelf = classNameSelf;
+	}
+	
 	public void add_classHeader_classSuper(String classSuper) {
 		// TODO Auto-generated method stub
 		classHeader.classSuper = classSuper;
+	}
+	
+	public void add_classHeader_classNameSuper(String classNameSuper) {
+		// TODO Auto-generated method stub
+		classHeader.classNameSuper = classNameSuper;
 	}
 
 	public void close_classHeader() {
@@ -217,6 +339,24 @@ public class SmaliEntry {
 		
 		return null;
 	}
+
+	public String setFileContent(String newContent){
+		try{
+			BufferedWriter out = new BufferedWriter(new FileWriter(file, false));
+
+		    out.write(newContent);
+
+		    out.close();
+		    return out.toString();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+
+
 
 
 

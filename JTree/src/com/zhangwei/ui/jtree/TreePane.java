@@ -5,15 +5,22 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -43,6 +50,8 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     private ArrayList<SmaliEntryChanged> JListDataNotify;
     
     private String last_dir_for_chose = "D:\\android\\crack\\guosen_dir\\examples";
+    
+    private static final String ACTION_KEY = "theAction";
     
     public TreePane() {
     	super(new BorderLayout());
@@ -83,6 +92,27 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
         tree.setModel(model);
         tree.setRootVisible(true);
         tree.setShowsRootHandles(true);
+        
+        Action actionListener = new AbstractAction() {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -2993268334156314079L;
+
+			public void actionPerformed(ActionEvent actionEvent) {
+              SmaliTree source = (SmaliTree)actionEvent.getSource();
+              SmaliEntry item = (SmaliEntry)source.getLeadSelectionPath().getLastPathComponent();
+              System.out.println("Activated: " + item.file.getAbsolutePath());
+            }
+          };
+        
+        KeyStroke F2 = KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0 , true);
+        ActionMap actionMap = tree.getActionMap();
+        actionMap.put(ACTION_KEY, actionListener);
+        
+        InputMap inputMap = tree.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        inputMap.put(F2, ACTION_KEY);
+        tree.setActionMap(actionMap);
         
         add(new JScrollPane(tree));
 

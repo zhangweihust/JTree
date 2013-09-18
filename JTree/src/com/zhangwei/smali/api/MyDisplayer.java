@@ -11,6 +11,8 @@ import com.zhangwei.parser.Rule_classMethod;
 import com.zhangwei.parser.Rule_classMethodName;
 import com.zhangwei.parser.Rule_classMethodProto;
 import com.zhangwei.parser.Rule_classMethodProtoOfMethod;
+import com.zhangwei.parser.Rule_classNameSelf;
+import com.zhangwei.parser.Rule_classNameSuper;
 import com.zhangwei.parser.Rule_classSuper;
 import com.zhangwei.parser.Rule_smali;
 import com.zhangwei.parser.Terminal_NumericValue;
@@ -58,6 +60,20 @@ public class MyDisplayer extends Displayer {
 
 		return ret;
 	}
+	
+	public Object visit(Rule_classNameSelf rule) {
+		Log("<classNameSelf>");
+		int begin = DisplayDumper.getInstance().getIndex();
+
+		Object ret = visitRules(rule.rules);
+
+		Log("</classNameSelf>");
+		int end = DisplayDumper.getInstance().getIndex();
+
+		smali_entry.add_classHeader_classNameSelf(DisplayDumper.getInstance().getSubStr(begin, end));
+
+		return ret;
+	}
 
 	public Object visit(Rule_classSuper rule) {
 		Log("<classSuper>");
@@ -69,6 +85,20 @@ public class MyDisplayer extends Displayer {
 		int end = DisplayDumper.getInstance().getIndex();
 
 		smali_entry.add_classHeader_classSuper(DisplayDumper.getInstance().getSubStr(begin, end));
+
+		return ret;
+	}
+	
+	public Object visit(Rule_classNameSuper rule) {
+		Log("<classNameSuper>");
+		int begin = DisplayDumper.getInstance().getIndex();
+
+		Object ret = visitRules(rule.rules);
+
+		Log("</classNameSuper>");
+		int end = DisplayDumper.getInstance().getIndex();
+
+		smali_entry.add_classHeader_classNameSuper(DisplayDumper.getInstance().getSubStr(begin, end));
 
 		return ret;
 	}

@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Wed Sep 18 12:02:05 CST 2013
+ * Produced : Wed Sep 18 15:17:10 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -91,7 +91,7 @@ final public class Rule_classSuper extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_className.parse(context);
+            rule = Rule_classNameSuper.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);

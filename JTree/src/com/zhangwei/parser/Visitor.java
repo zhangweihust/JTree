@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Wed Sep 18 12:02:05 CST 2013
+ * Produced : Wed Sep 18 15:17:10 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -78,6 +78,8 @@ public interface Visitor
   public Object visit(Rule_smali rule);
   public Object visit(Rule_todoStubLine rule);
   public Object visit(Rule_classHeader rule);
+  public Object visit(Rule_classNameSelf rule);
+  public Object visit(Rule_classNameSuper rule);
   public Object visit(Rule_classClass rule);
   public Object visit(Rule_classSuper rule);
   public Object visit(Rule_classSource rule);

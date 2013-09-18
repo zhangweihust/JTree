@@ -1,45 +1,7 @@
 Selected: Open
-Selected: Open
-[root, com.ccit.mmwlan.a, b.smali]
-[root, com.ccit.mmwlan.a, e.smali]
-[root, com.ccit.mmwlan.a, g.smali]
-[root, com.ccit.mmwlan.a, e.smali]
-[root, com.ccit.mmwlan.a, d.smali]
-[root, com.ccit.mmwlan.a, c.smali]
-id:startElement_(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/xml/sax/Attributes;)V, offset:6407
-id:startElement_(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/xml/sax/Attributes;)V, offset:6407
-id:startDocument_()V, offset:5866
-id:startDocument_()V, offset:5866
-id:endElement_(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V, offset:1813
-id:endElement_(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V, offset:1813
-id:characters_([CII)V, offset:1014
-id:characters_([CII)V, offset:1014
-id:e_Z, offset:290
-id:e_Z, offset:290
-id:d_Ljava/lang/String;, offset:251
-id:c_Ljava/lang/StringBuilder;, offset:205
-id:c_Ljava/lang/StringBuilder;, offset:205
-id:b_Ljava/util/ArrayList;, offset:163
-id:b_Ljava/util/ArrayList;, offset:163
-Selected: Open
-null
-[root, com.guosen.android.receivers]
-[root, com.guosen.android.h]
-[root, com.guosen.android.h, a.smali]
-id:a_(Ljava/io/InputStream;)[B, offset:739
-id:a_(Ljava/io/InputStream;)[B, offset:739
-id:a_(Ljava/lang/String;Lcom/b/e/b;)V, offset:226
-id:a_(Ljava/lang/String;Lcom/b/e/b;)V, offset:226
-id:.class public final Lcom/guosen/android/h/a;
-, offset:0
-id:.class public final Lcom/guosen/android/h/a;
-, offset:0
-id:constructor <init>_()V, offset:90
-id:constructor <init>_()V, offset:90
-[root, com.b.e]
-[root, com.b.e, a.smali]
-[root, com.b.e, b.smali]
-[root, com.b.c]
-[root, com.b.e, a.smali]
-[root, com.b.f]
-[root, com.guosen.android.h, b.smali]
+[root, AnnotationValues]
+Activated: [root, AnnotationValues]
+[root, Interface]
+Activated: [root, Interface]
+[root, Interface, Interface.smali]
+Activated: [root, Interface, Interface.smali]

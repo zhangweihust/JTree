@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- * Rule_codeRegisterV64.java
+ * Rule_classNameSuper.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
@@ -12,9 +12,9 @@ package com.zhangwei.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_codeRegisterV64 extends Rule
+final public class Rule_classNameSuper extends Rule
 {
-  private Rule_codeRegisterV64(String spelling, ArrayList<Rule> rules)
+  private Rule_classNameSuper(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_codeRegisterV64 extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_codeRegisterV64 parse(ParserContext context)
+  public static Rule_classNameSuper parse(ParserContext context)
   {
-    context.push("codeRegisterV64");
+    context.push("classNameSuper");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -46,22 +46,7 @@ final public class Rule_codeRegisterV64 extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Terminal_StringValue.parse(context, "v");
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Rule_intDecValue.parse(context);
+            rule = Rule_className.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);
@@ -79,13 +64,13 @@ final public class Rule_codeRegisterV64 extends Rule
 
     rule = null;
     if (parsed)
-      rule = new Rule_codeRegisterV64(context.text.substring(s0, context.index), e0);
+      rule = new Rule_classNameSuper(context.text.substring(s0, context.index), e0);
     else
       context.index = s0;
 
-    context.pop("codeRegisterV64", parsed);
+    context.pop("classNameSuper", parsed);
 
-    return (Rule_codeRegisterV64)rule;
+    return (Rule_classNameSuper)rule;
   }
 }
 

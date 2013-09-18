@@ -8,7 +8,7 @@ public class TestMain {
 	private static MyParser myParser;
 	
 	public static void main(final String args[]) {
-		try{
+/*		try{
 			myParser = new MyParser();
 			File file = new File("D:\\android\\crack\\guosen3.6\\smali\\com\\a\\a.smali");
 			if(file.exists() && file.isFile()){
@@ -16,7 +16,19 @@ public class TestMain {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}
+		}*/
+		
+		findRoot("D:\\android\\crack\\guosen3.6\\smali\\android\\support\\v4\\android\\accessibilityservice\\AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl.smali", "Landroid/support/v4/android/accessibilityservice/AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl;");
 
+	}
+	
+	public static String findRoot(String filePath, String className){
+		String ret = null;
+		String path = filePath.replaceAll(".smali", "");
+		String className2 = className.substring(1, className.length()-1); //Lcom/b/a/a;
+		int i = path.lastIndexOf(className2);
+		ret = path.substring(0, i);
+		System.out.println(ret);
+		return ret;
 	}
 }
