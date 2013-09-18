@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Sep 17 14:51:07 CST 2013
+ * Produced : Wed Sep 18 12:02:05 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -278,6 +278,21 @@ final public class Rule_packedswitch extends Rule
                 ArrayList<Rule> e2 = new ArrayList<Rule>();
                 int s2 = context.index;
                 parsed = true;
+                if (parsed)
+                {
+                  boolean f2 = true;
+                  int c2 = 0;
+                  for (int i2 = 0; i2 < 1 && f2; i2++)
+                  {
+                    rule = Rule_optPadding.parse(context);
+                    if ((f2 = rule != null))
+                    {
+                      e2.add(rule);
+                      c2++;
+                    }
+                  }
+                  parsed = c2 == 1;
+                }
                 if (parsed)
                 {
                   boolean f2 = true;

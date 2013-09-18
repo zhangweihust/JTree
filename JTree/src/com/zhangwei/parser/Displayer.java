@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Sep 17 14:51:07 CST 2013
+ * Produced : Wed Sep 18 12:02:05 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -121,6 +121,16 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_intHexValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_longDecValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_longHexValue rule)
   {
     return visitRules(rule.rules);
   }
@@ -410,6 +420,11 @@ public class Displayer implements Visitor
     return visitRules(rule.rules);
   }
 
+  public Object visit(Rule_subannotationBodyValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
   public Object visit(Rule_classFieldName rule)
   {
     return visitRules(rule.rules);
@@ -626,6 +641,11 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_VCHAR rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_VCHAR_WITHOUT_QUOT rule)
   {
     return visitRules(rule.rules);
   }

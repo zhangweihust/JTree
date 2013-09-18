@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Sep 17 14:51:07 CST 2013
+ * Produced : Wed Sep 18 12:02:05 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -73,6 +73,7 @@ final public class Rule_methodParam extends Rule
         if (parsed)
         {
           boolean f1 = true;
+          @SuppressWarnings("unused")
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
@@ -286,7 +287,7 @@ final public class Rule_methodParam extends Rule
             f1 = context.index > g1;
             if (parsed) c1++;
           }
-          parsed = c1 == 1;
+          parsed = true;
         }
         if (parsed)
         {

@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Sep 17 14:51:07 CST 2013
+ * Produced : Wed Sep 18 12:02:05 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -34,6 +34,8 @@ public interface Visitor
   public Object visit(Rule_shortValue rule);
   public Object visit(Rule_intDecValue rule);
   public Object visit(Rule_intHexValue rule);
+  public Object visit(Rule_longDecValue rule);
+  public Object visit(Rule_longHexValue rule);
   public Object visit(Rule_intValue rule);
   public Object visit(Rule_doubleValue rule);
   public Object visit(Rule_floatValue rule);
@@ -91,6 +93,7 @@ public interface Visitor
   public Object visit(Rule_annotationBody rule);
   public Object visit(Rule_subannotation rule);
   public Object visit(Rule_subannotationBody rule);
+  public Object visit(Rule_subannotationBodyValue rule);
   public Object visit(Rule_classFieldName rule);
   public Object visit(Rule_classFieldType rule);
   public Object visit(Rule_classField rule);
@@ -135,6 +138,7 @@ public interface Visitor
   public Object visit(Rule_DIGIT rule);
   public Object visit(Rule_HEXDIG rule);
   public Object visit(Rule_VCHAR rule);
+  public Object visit(Rule_VCHAR_WITHOUT_QUOT rule);
   public Object visit(Rule_SUB rule);
   public Object visit(Rule_BRACE_PRE rule);
   public Object visit(Rule_BRACE_POS rule);

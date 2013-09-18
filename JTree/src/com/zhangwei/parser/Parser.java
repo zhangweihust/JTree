@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Sep 17 14:51:07 CST 2013
+ * Produced : Wed Sep 18 12:02:05 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -182,6 +182,8 @@ public class Parser
     else if (rulename.equalsIgnoreCase("shortValue")) rule = Rule_shortValue.parse(context);
     else if (rulename.equalsIgnoreCase("intDecValue")) rule = Rule_intDecValue.parse(context);
     else if (rulename.equalsIgnoreCase("intHexValue")) rule = Rule_intHexValue.parse(context);
+    else if (rulename.equalsIgnoreCase("longDecValue")) rule = Rule_longDecValue.parse(context);
+    else if (rulename.equalsIgnoreCase("longHexValue")) rule = Rule_longHexValue.parse(context);
     else if (rulename.equalsIgnoreCase("intValue")) rule = Rule_intValue.parse(context);
     else if (rulename.equalsIgnoreCase("doubleValue")) rule = Rule_doubleValue.parse(context);
     else if (rulename.equalsIgnoreCase("floatValue")) rule = Rule_floatValue.parse(context);
@@ -239,6 +241,7 @@ public class Parser
     else if (rulename.equalsIgnoreCase("annotationBody")) rule = Rule_annotationBody.parse(context);
     else if (rulename.equalsIgnoreCase("subannotation")) rule = Rule_subannotation.parse(context);
     else if (rulename.equalsIgnoreCase("subannotationBody")) rule = Rule_subannotationBody.parse(context);
+    else if (rulename.equalsIgnoreCase("subannotationBodyValue")) rule = Rule_subannotationBodyValue.parse(context);
     else if (rulename.equalsIgnoreCase("classFieldName")) rule = Rule_classFieldName.parse(context);
     else if (rulename.equalsIgnoreCase("classFieldType")) rule = Rule_classFieldType.parse(context);
     else if (rulename.equalsIgnoreCase("classField")) rule = Rule_classField.parse(context);
@@ -283,6 +286,7 @@ public class Parser
     else if (rulename.equalsIgnoreCase("DIGIT")) rule = Rule_DIGIT.parse(context);
     else if (rulename.equalsIgnoreCase("HEXDIG")) rule = Rule_HEXDIG.parse(context);
     else if (rulename.equalsIgnoreCase("VCHAR")) rule = Rule_VCHAR.parse(context);
+    else if (rulename.equalsIgnoreCase("VCHAR_WITHOUT_QUOT")) rule = Rule_VCHAR_WITHOUT_QUOT.parse(context);
     else if (rulename.equalsIgnoreCase("SUB")) rule = Rule_SUB.parse(context);
     else if (rulename.equalsIgnoreCase("BRACE_PRE")) rule = Rule_BRACE_PRE.parse(context);
     else if (rulename.equalsIgnoreCase("BRACE_POS")) rule = Rule_BRACE_POS.parse(context);

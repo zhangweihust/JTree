@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Sep 17 14:51:07 CST 2013
+ * Produced : Wed Sep 18 12:02:05 CST 2013
  *
  * -----------------------------------------------------------------------------
  */
@@ -276,6 +276,30 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</intHexValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_longDecValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<longDecValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</longDecValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_longHexValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<longHexValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</longHexValue>");
     terminal = false;
     return null;
   }
@@ -964,6 +988,18 @@ public class XmlDisplayer implements Visitor
     return null;
   }
 
+  public Object visit(Rule_subannotationBodyValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<subannotationBodyValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</subannotationBodyValue>");
+    terminal = false;
+    return null;
+  }
+
   public Object visit(Rule_classFieldName rule)
   {
     if (!terminal) System.out.println();
@@ -1488,6 +1524,18 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</VCHAR>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_VCHAR_WITHOUT_QUOT rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<VCHAR_WITHOUT_QUOT>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</VCHAR_WITHOUT_QUOT>");
     terminal = false;
     return null;
   }
