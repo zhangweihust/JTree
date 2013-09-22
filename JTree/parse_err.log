@@ -1,31 +1,44 @@
 Selected: Open
-[root, Interface]
-[root, HelloWorld]
-[root, HelloWorld, HelloWorld.smali]
-id:main_([Ljava/lang/String;)V, offset:449
-id:main_([Ljava/lang/String;)V, offset:449
-Activated: after: null
-id:.class public LHelloWorld;
-, offset:0
-id:.class public LHelloWorld;
-, offset:0
-Activated: after: null
-[root, MethodOverloading, Main.smali]
-id:overloadTest_()Ljava/lang/String;, offset:890
-id:overloadTest_()Ljava/lang/String;, offset:890
-Activated: after: null
-id:main_([Ljava/lang/String;)V, offset:228
-id:main_([Ljava/lang/String;)V, offset:228
-Activated: after: null
-id:.class public LMain;
-, offset:0
-id:.class public LMain;
-, offset:0
-Activated: after: null
-Activated: after: .class public LMain; 
 [root, Enums]
-Activated: after: null
 [root, Enums, Enum.smali]
-id:VALUE1_LEnum;, offset:230
-id:VALUE1_LEnum;, offset:230
+id:VALUE2_LEnum;, offset:276
+id:VALUE2_LEnum;, offset:276
+Activated: after: null
+id:constructor <clinit>_()V, offset:323
+id:constructor <clinit>_()V, offset:323
+Activated: after: null
+id:constructor <init>_(Ljava/lang/String;I)V, offset:1343
+id:constructor <init>_(Ljava/lang/String;I)V, offset:1343
+Activated: after: null
+id:valueof_(Ljava/lang/String;)LEnum;, offset:1525
+id:valueof_(Ljava/lang/String;)LEnum;, offset:1525
+Activated: after: null
+id:values_()[LEnum;, offset:1818
+id:values_()[LEnum;, offset:1818
+Activated: after: null
+id:.class public final enum LEnum;
+, offset:0
+id:.class public final enum LEnum;
+, offset:0
+Activated: after: null
+[root, Enums, Main.smali]
+id:.class public LMain;
+, offset:0
+id:.class public LMain;
+, offset:0
+Activated: after: null
+Activated: after: LMain;
+[root, HelloWorld, HelloWorld.smali]
+[root, Interface, Interface.smali]
+[root, AnnotationTypes, ClassAnnotation.smali]
+[root, AnnotationTypes, FieldAnnotation.smali]
+[root, AnnotationTypes, Main.smali]
+id:null_null, offset:514
+id:null_null, offset:514
+Activated: after: null
+id:testClassAnnotation_()V, offset:569
+id:testClassAnnotation_()V, offset:569
+Activated: after: null
+id:testMethodAnnotation_()V, offset:1019
+id:testMethodAnnotation_()V, offset:1019
 Activated: after: null

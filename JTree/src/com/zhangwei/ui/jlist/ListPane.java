@@ -24,6 +24,9 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import com.zhangwei.smali.api.CommonEntry;
+import com.zhangwei.smali.api.FieldEntry;
+import com.zhangwei.smali.api.HeadEntry;
+import com.zhangwei.smali.api.MethodEntry;
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.ui.jtext.SmaliMemberChanged;
 import com.zhangwei.ui.jtree.SmaliTree;
@@ -73,60 +76,48 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
 
 			public void actionPerformed(ActionEvent actionEvent) {
 
-				int i=0;
-				i++;
-				JList<CommonEntry> source = (JList<CommonEntry>)actionEvent.getSource();
+
+			  JList<CommonEntry> source = (JList<CommonEntry>)actionEvent.getSource();
 			  
 			  
 			  if(selectedCommonEntry!=null){
 				  String s = null;
 				  if(selectedCommonEntry.type==1){ //head
+					  HeadEntry he = (HeadEntry) selectedCommonEntry;
 		              s = (String)JOptionPane.showInputDialog(
 		                      ListPane.this,
-		                      "Rename class head: " + selectedCommonEntry.id,
+		                      "Rename class head: " + he.classNameSelf,
 		                      "Rename",
 		                      JOptionPane.PLAIN_MESSAGE,
 		                      null,
 		                      null,
-		                      selectedCommonEntry.id);
+		                      he.classNameSelf);
 				  }else if(selectedCommonEntry.type==2){ //field
+					  FieldEntry fe = (FieldEntry) selectedCommonEntry;
 		              s = (String)JOptionPane.showInputDialog(
 		                      ListPane.this,
-		                      "Rename class field" + selectedCommonEntry.id,
+		                      "Rename class field" + fe.classFieldName,
 		                      "Rename",
 		                      JOptionPane.PLAIN_MESSAGE,
 		                      null,
 		                      null,
-		                      selectedCommonEntry.id);
+		                      fe.classFieldName);
 				  }else if(selectedCommonEntry.type==3){ //method
+					  MethodEntry me = (MethodEntry)selectedCommonEntry;
 		              s = (String)JOptionPane.showInputDialog(
 		                      ListPane.this,
-		                      "Rename class method" + selectedCommonEntry.id,
+		                      "Rename class method" + me.classConstructorName!=null?me.classConstructorName:me.classMethodName,
 		                      "Rename",
 		                      JOptionPane.PLAIN_MESSAGE,
 		                      null,
 		                      null,
-		                      selectedCommonEntry.id);
+		                      me.classConstructorName!=null?me.classConstructorName:me.classMethodName);
 				  }
 				  
 
 	              System.out.println("Activated: after: " + s);
 			  }
-/*              SmaliEntry item = (SmaliEntry)source.getLeadSelectionPath().getLastPathComponent();
-              String rename_item_str = item.file.getName();
-              if(item.isFile()){
-            	  rename_item_str = rename_item_str.replace(".smali", "");
-              }
-              
-              String s = (String)JOptionPane.showInputDialog(
-                      ListPane.this,
-                      item.isFile()?"Rename class":"Rename package" + rename_item_str,
-                      "Rename",
-                      JOptionPane.PLAIN_MESSAGE,
-                      null,
-                      null,
-                      rename_item_str);
-              System.out.println("Activated: after: " + s);*/
+
             }
           };
         

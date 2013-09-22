@@ -11,9 +11,11 @@ public class MethodEntry extends CommonEntry {
 		super(3, offset);
 	}
 	
-	String classConstructorName; //用来标识该函数是否为构造函数
-	String classMethodName; //函数名
-	String classMethodProto;    //用来表示该函数的原型，参数及返回值
+	//.method public constructor <init>()V
+	//.method public final endDocument()V
+	public String classConstructorName; //用来标识该函数是否为构造函数,  constructor <init>
+	public String classMethodName; //函数名 endDocument
+	public String classMethodProto;    //用来表示该函数的原型，参数及返回值 ()V
 	
 	public void close() {
 		// TODO Auto-generated method stub

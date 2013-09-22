@@ -7,8 +7,10 @@ public class FieldEntry extends CommonEntry {
 		super(2, offset);
 	}
 	
-	String classFieldName;
-	String classFieldType;
+	
+	//eg: .field private c:Ljava/lang/StringBuilder;
+	public String classFieldName; // c
+	public String classFieldType; // Ljava/lang/StringBuilder;
 	
 	public void close() {
 		// TODO Auto-generated method stub
