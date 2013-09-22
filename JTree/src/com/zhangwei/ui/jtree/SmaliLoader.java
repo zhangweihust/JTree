@@ -1,9 +1,14 @@
 package com.zhangwei.ui.jtree;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.ProgressMonitor;
+import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.zhangwei.smali.api.MyParser;
@@ -18,6 +23,8 @@ public class SmaliLoader {
 	
 	private MyParser myParser;
 	
+	private ProgressMonitor monitor;
+	private int progress;
 	
 	private SmaliLoader(){
 		list = new ArrayList<File>();
@@ -33,7 +40,7 @@ public class SmaliLoader {
 		return ins;
 	}
 	
-	public void loadRoot(SmaliEntry root){
+	public void loadRoot(Component parent, SmaliEntry root){
 		String root_path = root.file.getAbsolutePath();
 		
 		if(root_path!=null ){
@@ -59,7 +66,19 @@ public class SmaliLoader {
 		
 		try{
 			if(list.size()>0){
+				monitor = new ProgressMonitor(parent, "Loading Progress", "Getting Started...", 0, list.size());
+
+				progress = 0;
+				int i = 0;
+				
 	            for (File file : list) {
+	            	i++;
+	            	progress = i;
+	            	monitor.setProgress(progress);
+	            	monitor.setNote("Loaded num:" + progress + " file:" + file.getAbsolutePath());
+	            	if(monitor.isCanceled()){
+	            		break;
+	            	}
                 	//add non-leaf package if not exist
                 	SmaliEntry packageEntry = null;
                 	SmaliEntry smaliEntry = new SmaliEntry(file, true, file.getName());
@@ -94,11 +113,12 @@ public class SmaliLoader {
     	            	packageEntry.children.add(smaliEntry);
     	            	smailMap.put(file.getAbsolutePath(), smaliEntry);
                 	}else{
-                		return;
+                		break;
                 	}
 
                
 	            }
+
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -127,4 +147,6 @@ public class SmaliLoader {
 			}
 		}
 	}
+	
+
 }

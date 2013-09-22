@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.ProgressMonitor;
 import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -52,6 +53,8 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     private String last_dir_for_chose = "D:\\android\\crack\\guosen_dir\\examples";
     
     private static final String ACTION_KEY = "theAction";
+    
+    private ProgressMonitor monitor;
     
     public TreePane() {
     	super(new BorderLayout());
@@ -171,21 +174,46 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
         int status = fileChooser.showOpenDialog(parent);
         if (status == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
+            LoadThread t = new LoadThread();
+            t.startThread(selectedFile);
+/*            File selectedFile = fileChooser.getSelectedFile();
           
             last_dir_for_chose = selectedFile.getAbsolutePath();
 			//DirLoader.getInstance().Load(entryVector, selectedFile.getAbsolutePath());
             SmaliEntry root = new SmaliEntry(selectedFile, false, "root");
-            SmaliLoader.getInstance().loadRoot(root);
+            SmaliLoader.getInstance().loadRoot(parent, root);
+
+            tree.changeRoot(root);
+            
+            tree.expandPath(new TreePath(root));*/
+
+         } 
+    
+	}
+	
+	class LoadThread extends Thread {
+		
+		private File selectedFile;
+
+		void startThread(File selectedFile ){
+			this.selectedFile = selectedFile;
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            
+            last_dir_for_chose = selectedFile.getAbsolutePath();
+			//DirLoader.getInstance().Load(entryVector, selectedFile.getAbsolutePath());
+            SmaliEntry root = new SmaliEntry(selectedFile, false, "root");
+            SmaliLoader.getInstance().loadRoot(TreePane.this, root);
 
             tree.changeRoot(root);
             
             tree.expandPath(new TreePath(root));
-
-         } 
-
-
-
-    
+		}
 	}
 }
 

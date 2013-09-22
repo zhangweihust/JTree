@@ -1,7 +1,8 @@
 Selected: Open
-[root, AnnotationValues]
-Activated: [root, AnnotationValues]
-[root, Interface]
-Activated: [root, Interface]
-[root, Interface, Interface.smali]
-Activated: [root, Interface, Interface.smali]
+[root, android.support.v4.view]
+[root, android.support.v4.view, KeyEventCompat$BaseKeyEventVersionImpl.smali]
+null
+[root, android.support.v4.view]
+Selected: Open
+null
+Selected: Open
