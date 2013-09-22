@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -52,7 +53,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     
     private String last_dir_for_chose = "D:\\android\\crack\\guosen_dir\\examples";
     
-    private static final String ACTION_KEY = "theAction";
+    private static final String ACTION_KEY = "theJTreeAction";
     
     private ProgressMonitor monitor;
     
@@ -103,9 +104,23 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 			private static final long serialVersionUID = -2993268334156314079L;
 
 			public void actionPerformed(ActionEvent actionEvent) {
+
               SmaliTree source = (SmaliTree)actionEvent.getSource();
               SmaliEntry item = (SmaliEntry)source.getLeadSelectionPath().getLastPathComponent();
-              System.out.println("Activated: " + item.file.getAbsolutePath());
+              String rename_item_str = item.file.getName();
+              if(item.isFile()){
+            	  rename_item_str = rename_item_str.replace(".smali", "");
+              }
+              
+              String s = (String)JOptionPane.showInputDialog(
+                      TreePane.this,
+                      item.isFile()?"Rename class":"Rename package" + rename_item_str,
+                      "Rename",
+                      JOptionPane.PLAIN_MESSAGE,
+                      null,
+                      null,
+                      rename_item_str);
+              System.out.println("Activated: after: " + s);
             }
           };
         
