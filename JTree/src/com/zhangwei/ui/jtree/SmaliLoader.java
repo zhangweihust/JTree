@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.ProgressMonitor;
 import javax.swing.Timer;
@@ -38,6 +39,16 @@ public class SmaliLoader {
 		}
 		
 		return ins;
+	}
+	
+	public void renameClass(SmaliEntry se, String src_className, String dst_className){
+		
+		for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
+			SmaliEntry se_item = item.getValue();
+			se_item.renameClassVar(src_className, dst_className);
+		}
+		
+		se.renameClassFile(src_className, dst_className);
 	}
 	
 	public void loadRoot(Component parent, SmaliEntry root){
@@ -106,7 +117,7 @@ public class SmaliLoader {
     						}
     	            		packageEntry = new SmaliEntry(file.getParentFile(), false, packageName);
     	            		root.children.add(packageEntry);
-    	            		smailMap.put(packageEntry.file.getAbsolutePath(), packageEntry);
+    	            		//smailMap.put(packageEntry.file.getAbsolutePath(), packageEntry);
     	            	}
     	            	
     	            	//add leaf

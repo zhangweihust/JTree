@@ -106,7 +106,8 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 			public void actionPerformed(ActionEvent actionEvent) {
 
               SmaliTree source = (SmaliTree)actionEvent.getSource();
-              SmaliEntry item = (SmaliEntry)source.getLeadSelectionPath().getLastPathComponent();
+              TreePath tp = source.getLeadSelectionPath();
+              SmaliEntry item = (SmaliEntry)tp.getLastPathComponent();
               String rename_item_str = item.file.getName();
               if(item.isFile()){
             	  rename_item_str = rename_item_str.replace(".smali", "");
@@ -119,8 +120,19 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                       JOptionPane.PLAIN_MESSAGE,
                       null,
                       null,
-                      rename_item_str);
+                      item.classHeader.classNameSelf);
+              
               System.out.println("Activated: after: " + s);
+              
+              if(s!=null && s.equals(item.classHeader.classNameSelf)){
+                  if(item.isFile()){
+                	  SmaliLoader.getInstance().renameClass(item, item.classHeader.classNameSelf, s);
+                  }else{
+                	  
+                  }
+              }
+
+              
             }
           };
         

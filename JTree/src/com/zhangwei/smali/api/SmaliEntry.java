@@ -73,7 +73,7 @@ public class SmaliEntry {
 	public boolean renameClassFile(String src_className, String dst_className){
 		if(isFile){
 			//step1 process content:
-			renameClassVar(src_className, dst_className);
+			//renameClassVar(src_className, dst_className);
 			
 			//step2 process file
 			File rootDir = findRoot();

@@ -1,44 +1,48 @@
 Selected: Open
 [root, Enums]
-[root, Enums, Enum.smali]
-id:VALUE2_LEnum;, offset:276
-id:VALUE2_LEnum;, offset:276
-Activated: after: null
-id:constructor <clinit>_()V, offset:323
-id:constructor <clinit>_()V, offset:323
-Activated: after: null
-id:constructor <init>_(Ljava/lang/String;I)V, offset:1343
-id:constructor <init>_(Ljava/lang/String;I)V, offset:1343
-Activated: after: null
-id:valueof_(Ljava/lang/String;)LEnum;, offset:1525
-id:valueof_(Ljava/lang/String;)LEnum;, offset:1525
-Activated: after: null
-id:values_()[LEnum;, offset:1818
-id:values_()[LEnum;, offset:1818
-Activated: after: null
-id:.class public final enum LEnum;
-, offset:0
-id:.class public final enum LEnum;
-, offset:0
-Activated: after: null
 [root, Enums, Main.smali]
-id:.class public LMain;
-, offset:0
-id:.class public LMain;
-, offset:0
 Activated: after: null
-Activated: after: LMain;
-[root, HelloWorld, HelloWorld.smali]
-[root, Interface, Interface.smali]
-[root, AnnotationTypes, ClassAnnotation.smali]
-[root, AnnotationTypes, FieldAnnotation.smali]
-[root, AnnotationTypes, Main.smali]
-id:null_null, offset:514
-id:null_null, offset:514
-Activated: after: null
-id:testClassAnnotation_()V, offset:569
-id:testClassAnnotation_()V, offset:569
-Activated: after: null
-id:testMethodAnnotation_()V, offset:1019
-id:testMethodAnnotation_()V, offset:1019
-Activated: after: null
+Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
+	at java.util.regex.Matcher.appendReplacement(Unknown Source)
+	at java.util.regex.Matcher.replaceAll(Unknown Source)
+	at java.lang.String.replaceAll(Unknown Source)
+	at com.zhangwei.smali.api.SmaliEntry.renameClassVar(SmaliEntry.java:54)
+	at com.zhangwei.ui.jtree.SmaliLoader.renameClass(SmaliLoader.java:48)
+	at com.zhangwei.ui.jtree.TreePane$2.actionPerformed(TreePane.java:128)
+	at javax.swing.SwingUtilities.notifyAction(Unknown Source)
+	at javax.swing.JComponent.processKeyBinding(Unknown Source)
+	at javax.swing.JComponent.processKeyBindings(Unknown Source)
+	at javax.swing.JComponent.processKeyEvent(Unknown Source)
+	at java.awt.Component.processEvent(Unknown Source)
+	at java.awt.Container.processEvent(Unknown Source)
+	at java.awt.Component.dispatchEventImpl(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.KeyboardFocusManager.redispatchEvent(Unknown Source)
+	at java.awt.DefaultKeyboardFocusManager.dispatchKeyEvent(Unknown Source)
+	at java.awt.DefaultKeyboardFocusManager.preDispatchKeyEvent(Unknown Source)
+	at java.awt.DefaultKeyboardFocusManager.typeAheadAssertions(Unknown Source)
+	at java.awt.DefaultKeyboardFocusManager.dispatchEvent(Unknown Source)
+	at java.awt.Component.dispatchEventImpl(Unknown Source)
+	at java.awt.Container.dispatchEventImpl(Unknown Source)
+	at java.awt.Window.dispatchEventImpl(Unknown Source)
+	at java.awt.Component.dispatchEvent(Unknown Source)
+	at java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+	at java.awt.EventQueue.access$200(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.awt.EventQueue$3.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$1.doIntersectionPrivilege(Unknown Source)
+	at java.security.ProtectionDomain$1.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.awt.EventQueue$4.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$1.doIntersectionPrivilege(Unknown Source)
+	at java.awt.EventQueue.dispatchEvent(Unknown Source)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.awt.EventDispatchThread.run(Unknown Source)
+[root, HelloWorld]
