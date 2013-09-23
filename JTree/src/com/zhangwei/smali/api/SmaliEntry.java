@@ -13,6 +13,7 @@ import com.zhangwei.parser.ParserContext;
 import com.zhangwei.parser.Rule;
 import com.zhangwei.parser.Rule_smali;
 import com.zhangwei.parser.Visitor;
+import com.zhangwei.ui.jtree.SmaliLoader;
 
 /**
  *  代表一个smali文件
@@ -97,15 +98,17 @@ public class SmaliEntry {
 			
 			//step2 process file
 			File rootDir = findRoot();
-			File newFile = getNewFile(rootDir, dst_className);
+			File newFile = getNewFile(rootDir, dst_className); //新的类
 			if(newFile!=null){
-				File parent = file.getParentFile();
+				File parentOfNew = newFile.getParentFile(); //新的包
+				File parentOfOld = file.getParentFile(); //旧的包
 				
+				SmaliLoader.getInstance().changePackage(this , parentOfOld, parentOfNew);
 				file.renameTo(newFile);
-				file = newFile;
+				file = newFile; 
 				name = file.getName();
 
-				cleanEmptyDir(parent);
+				cleanEmptyDir(parentOfOld);
 				
 				return true;
 			}else{
@@ -122,6 +125,7 @@ public class SmaliEntry {
 		if(parent.listFiles().length==0){
 			File parent_parent = parent.getParentFile();
 			parent.delete();
+			//SmaliLoader.getInstance().removePackage(parent);
 			cleanEmptyDir(parent_parent);
 		}
 	}
@@ -156,6 +160,8 @@ public class SmaliEntry {
 			if (!ret.getParentFile().mkdirs()) {
 				System.out.println("创建目标文件所在目录失败！");
 				return null;
+			}else{
+				//SmaliLoader.getInstance().insertPackage(ret.getParentFile());
 			}
 		}
 		

@@ -26,6 +26,7 @@ public class SmaliLoader {
 	
 	private ProgressMonitor monitor;
 	private int progress;
+	private SmaliEntry root;
 	
 	private SmaliLoader(){
 		list = new ArrayList<File>();
@@ -43,6 +44,7 @@ public class SmaliLoader {
 	
 	public void renameClass(SmaliEntry se, String src_className, String dst_className){
 		boolean ret = se.renameClassFile(src_className, dst_className);
+		
 		if(ret){
 			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
 				SmaliEntry se_item = item.getValue();
@@ -57,6 +59,7 @@ public class SmaliLoader {
 	}
 	
 	public void loadRoot(Component parent, SmaliEntry root){
+		this.root = root;
 		String root_path = root.file.getAbsolutePath();
 		
 		if(root_path!=null ){
@@ -100,17 +103,10 @@ public class SmaliLoader {
                 	SmaliEntry smaliEntry = new SmaliEntry(file, true, file.getName());
                 	boolean Parse_success = myParser.paser(smaliEntry);
                 	if(Parse_success){
-    	            	boolean found = false;
-    	            	for(SmaliEntry v : root.children){
-    	            		if(v.file.getAbsolutePath()!=null && v.file.getAbsolutePath().equals(file.getParentFile().getAbsolutePath())){
-    	            			found = true; //找到该file的父目录(package)
-    	            			packageEntry = v;
-    	            			break;
-    	            		}
-    	            	}
+                		packageEntry = findEntry(root, file.getParentFile()); //查找该节点的父节点，即包
     	            	
-    	            	if(!found){
-    						String pathOfParent = file.getParent();
+    	            	if(packageEntry==null){
+/*    						String pathOfParent = file.getParent();
     						if(!pathOfParent.endsWith("\\")){
     							pathOfParent = pathOfParent + '\\';
     						}
@@ -119,7 +115,8 @@ public class SmaliLoader {
     							packageName = ".";
     						}else if(packageName.endsWith(".")){
     							packageName = packageName.substring(0, packageName.length()-1);
-    						}
+    						}*/
+    	            		String packageName = getPackageName(file.getParentFile());
     	            		packageEntry = new SmaliEntry(file.getParentFile(), false, packageName);
     	            		root.children.add(packageEntry);
     	            		//smailMap.put(packageEntry.file.getAbsolutePath(), packageEntry);
@@ -163,6 +160,70 @@ public class SmaliLoader {
 			}
 		}
 	}
+
+	public void insertPackage(File packageFile) {
+		// TODO Auto-generated method stub
+		SmaliEntry packageEntry = findEntry(root, packageFile);
+		
+		if(packageEntry==null){//not found, insert
+			String packageName = getPackageName(packageFile);
+    		packageEntry = new SmaliEntry(packageFile, false, packageName);
+    		root.children.add(packageEntry);
+    		//smailMap.put(packageEntry.file.getAbsolutePath(), packageEntry);
+    	}
+	}
+
+	public void removePackage(File packageFile) {
+		// TODO Auto-generated method stub
+		SmaliEntry packageEntry = findEntry(root, packageFile);
+		
+		if(packageEntry!=null && packageEntry.children.size()==0){ //empty package can remove
+			root.children.remove(packageEntry);
+		}
+
+	}
+
+	public void changePackage(SmaliEntry son, File parentOfOld, File parentOfNew) {
+		// TODO Auto-generated method stub
+		insertPackage(parentOfNew);
+		
+		SmaliEntry newParent = findEntry(root, parentOfNew);
+		SmaliEntry oldParent = findEntry(root, parentOfOld);
+		
+		newParent.children.add(son);
+		oldParent.children.remove(son);
+		
+		
+		removePackage(parentOfOld);
+	}
 	
+	public SmaliEntry findEntry(SmaliEntry root, File file){
+    	SmaliEntry ret = null;
+		for(SmaliEntry v : root.children){
+    		if(v.file.getAbsolutePath()!=null && v.file.getAbsolutePath().equals(file.getAbsolutePath())){
+    			ret  = v;
+    			break;
+    		}
+    	}
+		
+		return ret; 
+	}
+	
+	public String getPackageName(File packageFile){
+		String pathOfParent = packageFile.getAbsolutePath();
+		if(!pathOfParent.endsWith("\\")){
+			pathOfParent = pathOfParent + '\\';
+		}
+		
+		String packageName = pathOfParent.replace(SmaliEntry.rootPath, "").replace("\\", ".");
+		
+		if(packageName.equals("")){
+			packageName = ".";
+		}else if(packageName.endsWith(".")){
+			packageName = packageName.substring(0, packageName.length()-1);
+		}
+		
+		return packageName;
+	}
 
 }
