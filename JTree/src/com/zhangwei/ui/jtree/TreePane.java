@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -140,10 +141,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                   if(s!=null && !s.equals(item.classHeader.classNameSelf)){
                       if(item.isFile()){
                     	  SmaliLoader.getInstance().renameClass(item, item.classHeader.classNameSelf, s);
-                    	  
                     	  model.Refresh();
-                      }else{
-                    	  
                       }
                   }
               }else{ //rename package
@@ -167,8 +165,41 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 
                   }
 
-                  
-                  System.out.println("Rename package after input: " + s);
+                  if(s!=null){
+                      String packageName = SmaliLoader.getPackageName(item.file); //com.b.d.a
+                      String smaliPackagePrefix = "L" + s.replace(".", "/") + "/"; //Lcom/b/d/a/
+                      
+                      System.out.println("Rename package after input: " + s + ", packageName:" + packageName);
+
+                      if(item.children!=null && item.children.size()>0 && !s.equals(packageName)){
+                    	  ArrayList<SmaliEntry> tmp = new ArrayList<SmaliEntry>();
+                    	  Iterator<SmaliEntry> iterator = item.children.iterator();
+                    	  while(iterator.hasNext()){
+                    		  SmaliEntry it = iterator.next();
+                    		  tmp.add(it);
+    /*                		  String subStr = it.name.replace(".smali", ""); //c.smali -> c
+                    		  String newClassName = smaliPackagePrefix + subStr + ";"; //Lcom/b/d/a/c;
+                              if(newClassName!=null && !newClassName.equals(it.classHeader.classNameSelf)){
+                                  if(it.isFile()){
+                                	  SmaliLoader.getInstance().renameClass(it, it.classHeader.classNameSelf, newClassName);
+                                  }
+                              }*/
+                    	  }
+                    	  
+                    	  for(SmaliEntry a : tmp){
+                    		  String subStr = a.name.replace(".smali", ""); //c.smali -> c
+                    		  String newClassName = smaliPackagePrefix + subStr + ";"; //Lcom/b/d/a/c;
+                              if(newClassName!=null && !newClassName.equals(a.classHeader.classNameSelf)){
+                                  if(a.isFile()){
+                                	  SmaliLoader.getInstance().renameClass(a, a.classHeader.classNameSelf, newClassName);
+                                  }
+                              }
+                    	  }
+                    	  
+                    	  model.Refresh();
+                      }
+                  }
+
               }
 
               

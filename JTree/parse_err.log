@@ -1,31 +1,10 @@
 Selected: Open
-[root, com.a, a.smali]
-Rename class after input: Lcomdgak/a/a;
+[root, com.b.d23.b]
+[root, coaaam.a]
+Rename package after input: com.a, packageName:coaaam.a
 目标文件所在目录不存在，准备创建它！
 null
-[root, comdgak.a, a.smali]
-Rename class after input: Lcomdgakddd/a/a;
+[root, com.b.d23.b]
+Rename package after input: com.b.d.b, packageName:com.b.d23.b
 目标文件所在目录不存在，准备创建它！
 null
-[root, comdgakddd.a, a.smali]
-[root, comdgakddd.a]
-[root, comdgakddd.a, a.smali]
-[root, comdgakddd.a]
-[root, comdgakddd.a, a.smali]
-[root, com.b.g]
-[root, comdgakddd.a]
-[root, com.b.g, c.smali]
-Rename class after input: Lcomabc/b/g/c;
-目标文件所在目录不存在，准备创建它！
-null
-[root, comabc.b.g]
-[root, com.b.g]
-[root, com.b.g, a.smali]
-Rename class after input: Lcomabc/b/g/nnn;
-null
-[root, comabc.b.g, nnn.smali]
-[root, com.b.d.a]
-[root, com.b.d.a, a.smali]
-[root, com.b.d.a, c.smali]
-[root, com.b.d.a, e.smali]
-[root, com.b.d.a, c.smali]

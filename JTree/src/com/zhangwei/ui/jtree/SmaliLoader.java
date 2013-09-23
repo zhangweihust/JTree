@@ -209,7 +209,7 @@ public class SmaliLoader {
 		return ret; 
 	}
 	
-	public String getPackageName(File packageFile){
+	public static String getPackageName(File packageFile){
 		String pathOfParent = packageFile.getAbsolutePath();
 		if(!pathOfParent.endsWith("\\")){
 			pathOfParent = pathOfParent + '\\';
