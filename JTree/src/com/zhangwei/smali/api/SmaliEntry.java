@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.regex.Matcher;
 
 import com.zhangwei.parser.ParserContext;
 import com.zhangwei.parser.Rule;
@@ -72,7 +73,7 @@ public class SmaliEntry {
 			String content = getFileContent();
 			
 			if(content.contains(src_className)){
-				String newContent = content.replaceAll(src_className, dst_className);
+				String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));
 				setFileContent(newContent);
 				return true;
 			}else{

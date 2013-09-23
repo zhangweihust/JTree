@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -14,6 +15,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.zhangwei.smali.api.MyParser;
 import com.zhangwei.smali.api.SmaliEntry;
+import com.zhangwei.utils.StringHelper;
 
 public class SmaliLoader {
 	private static SmaliLoader ins=null;
@@ -58,6 +60,32 @@ public class SmaliLoader {
 
 	}
 	
+	public void autoRename(Component parent){
+		if(root!=null && root.children!=null && root.children.size()>0){
+			if(smailMap!=null && smailMap.size()>0){
+				monitor = new ProgressMonitor(parent, "Renaming Progress", "Getting Started...", 0, smailMap.size());
+				progress = 0;
+				
+				Collection<SmaliEntry> collections = smailMap.values();
+				for(SmaliEntry  it : collections){
+	            	progress++;
+	            	monitor.setProgress(progress);
+	            	monitor.setNote("Renamed num:" + progress + "\n file:" + it.file.getAbsolutePath());
+	            	if(monitor.isCanceled()){
+	            		break;
+	            	}
+					
+	            	if(it.name.replaceAll(".smali", "").length()==1){//only rename the a,b,c,d ...
+						String dst_className = it.classHeader.classNameSelf.substring(0, it.classHeader.classNameSelf.length()-1);
+						dst_className = dst_className + "_" + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper) + ";";
+						renameClass(it, it.classHeader.classNameSelf, dst_className);
+	            	}
+
+				}
+			}
+		}
+	}
+	
 	public void loadRoot(Component parent, SmaliEntry root){
 		this.root = root;
 		String root_path = root.file.getAbsolutePath();
@@ -88,45 +116,34 @@ public class SmaliLoader {
 				monitor = new ProgressMonitor(parent, "Loading Progress", "Getting Started...", 0, list.size());
 
 				progress = 0;
-				int i = 0;
 				
 	            for (File file : list) {
-	            	i++;
-	            	progress = i;
+	            	progress++;
 	            	monitor.setProgress(progress);
-	            	monitor.setNote("Loaded num:" + progress + " file:" + file.getAbsolutePath());
+	            	monitor.setNote("Loaded num:" + progress + "\n file:" + file.getAbsolutePath());
 	            	if(monitor.isCanceled()){
 	            		break;
 	            	}
-                	//add non-leaf package if not exist
+	            	
+                	
                 	SmaliEntry packageEntry = null;
                 	SmaliEntry smaliEntry = new SmaliEntry(file, true, file.getName());
                 	boolean Parse_success = myParser.paser(smaliEntry);
                 	if(Parse_success){
                 		packageEntry = findEntry(root, file.getParentFile()); //查找该节点的父节点，即包
-    	            	
+                		
+                		//add non-leaf package if not exist
     	            	if(packageEntry==null){
-/*    						String pathOfParent = file.getParent();
-    						if(!pathOfParent.endsWith("\\")){
-    							pathOfParent = pathOfParent + '\\';
-    						}
-    						String packageName = pathOfParent.replace(SmaliEntry.rootPath, "").replace("\\", ".");
-    						if(packageName.equals("")){
-    							packageName = ".";
-    						}else if(packageName.endsWith(".")){
-    							packageName = packageName.substring(0, packageName.length()-1);
-    						}*/
     	            		String packageName = getPackageName(file.getParentFile());
     	            		packageEntry = new SmaliEntry(file.getParentFile(), false, packageName);
     	            		root.children.add(packageEntry);
-    	            		//smailMap.put(packageEntry.file.getAbsolutePath(), packageEntry);
     	            	}
     	            	
     	            	//add leaf
     	            	packageEntry.children.add(smaliEntry);
     	            	smailMap.put(file.getAbsolutePath(), smaliEntry);
                 	}else{
-                		break;
+                		break; //abort if has error in parsing
                 	}
 
                

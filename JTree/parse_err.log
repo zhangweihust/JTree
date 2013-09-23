@@ -1,10 +1,27 @@
 Selected: Open
-[root, com.b.d23.b]
-[root, coaaam.a]
-Rename package after input: com.a, packageName:coaaam.a
-目标文件所在目录不存在，准备创建它！
-null
-[root, com.b.d23.b]
-Rename package after input: com.b.d.b, packageName:com.b.d23.b
-目标文件所在目录不存在，准备创建它！
-null
+Selected: Auto-rename
+[root, com.guosen.android.g, b_Object.smali]
+[root, com.guosen.android.services]
+[root, com.guosen.android.services, PushService.smali]
+[root, com.guosen.android.h, a_Object.smali]
+[root, com.guosen.android.h, b_Thread.smali]
+[root, com.guosen.android.view]
+[root, com.viewpagerindicator]
+[root, com.viewpagerindicator, n_Object.smali]
+[root, com.viewpagerindicator, j_Object.smali]
+[root, com.viewpagerindicator, TabPageIndicator$TabView.smali]
+[root, com.viewpagerindicator, CirclePageIndicator$SavedState.smali]
+[root, com.b.a, f_Object.smali]
+[root, com.b.a, b_Object.smali]
+[root, com.b.a, c_Object.smali]
+[root, com.b.d.a, a_Object.smali]
+[root, com.b.d.a, d_Object.smali]
+[root, com.b.d.a, g_Object.smali]
+[root, com.guosen.android.j]
+[root, com.guosen.android.IME]
+[root, com.guosen.android.IME, c_Keyboard$Key.smali]
+[root, com.guosen.android.IME, GuosenStockKeyBoardView.smali]
+[root, com.guosen.android.IME, b_Keyboard.smali]
+[root, com.guosen.android.IME, a_GestureDetector$SimpleOnGestureListener.smali]
+id:onScroll_(Landroid/view/MotionEvent;Landroid/view/MotionEvent;FF)Z, offset:521
+id:onScroll_(Landroid/view/MotionEvent;Landroid/view/MotionEvent;FF)Z, offset:521

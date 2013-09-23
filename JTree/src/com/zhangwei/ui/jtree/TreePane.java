@@ -262,32 +262,29 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		// TODO Auto-generated method stub
-		
-		System.out.println("Selected: " + actionEvent.getActionCommand());
+		String action = actionEvent.getActionCommand();
+		System.out.println("Selected: " + action);
         Component parent = (Component)actionEvent.getSource();
-        JFileChooser fileChooser = new JFileChooser(last_dir_for_chose);
-        //fileChooser.setAccessory(new LabelAccessory(fileChooser));
-        FileView view = new JavaFileView();
-        fileChooser.setFileView (view);
-        fileChooser.setDialogTitle("选择smali根目录");
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int status = fileChooser.showOpenDialog(parent);
-        if (status == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            LoadThread t = new LoadThread();
-            t.startThread(selectedFile);
-/*            File selectedFile = fileChooser.getSelectedFile();
-          
-            last_dir_for_chose = selectedFile.getAbsolutePath();
-			//DirLoader.getInstance().Load(entryVector, selectedFile.getAbsolutePath());
-            SmaliEntry root = new SmaliEntry(selectedFile, false, "root");
-            SmaliLoader.getInstance().loadRoot(parent, root);
+        
+        if(action.equals(SmaliMain.OPEN)){
+            JFileChooser fileChooser = new JFileChooser(last_dir_for_chose);
+            //fileChooser.setAccessory(new LabelAccessory(fileChooser));
+            FileView view = new JavaFileView();
+            fileChooser.setFileView (view);
+            fileChooser.setDialogTitle("选择smali根目录");
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int status = fileChooser.showOpenDialog(parent);
+            if (status == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                LoadThread t = new LoadThread();
+                t.startThread(selectedFile);
+            } 
+        }else if(action.equals(SmaliMain.AUTO_RENAME)){
+        	RenameThread t = new RenameThread();
+        	t.startThread();
+        }
+        
 
-            tree.changeRoot(root);
-            
-            tree.expandPath(new TreePath(root));*/
-
-         } 
     
 	}
 	
@@ -313,6 +310,22 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
             tree.changeRoot(root);
             
             tree.expandPath(new TreePath(root));
+		}
+	}
+	
+	class RenameThread extends Thread {
+		
+
+		void startThread(){
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            SmaliLoader.getInstance().autoRename(TreePane.this);
+
 		}
 	}
 }

@@ -15,6 +15,10 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 public class SmaliMain {
+	public static final String AUTO_RENAME = "Auto-rename";
+	public static final String CLOSE = "Close";
+	public static final String OPEN = "Open";
+	
 	static JFrame frame;
 
 	public static void main(final String args[]) {
@@ -39,15 +43,23 @@ public class SmaliMain {
 				menuBar.add(fileMenu);
 
 				// File->Open, O - Mnemonic
-				JMenuItem openMenuItem = new JMenuItem("Open", KeyEvent.VK_O);
+				JMenuItem openMenuItem = new JMenuItem(OPEN, KeyEvent.VK_O);
 				openMenuItem.addActionListener(treePane);
 				fileMenu.add(openMenuItem);
 				
 		        // Separator
 		        fileMenu.addSeparator();
+		        
+				// File->Open, O - Mnemonic
+				JMenuItem autoMenuItem = new JMenuItem( AUTO_RENAME, KeyEvent.VK_A);
+				autoMenuItem.addActionListener(treePane);
+				fileMenu.add(autoMenuItem);
+				
+		        // Separator
+		        fileMenu.addSeparator();
 				
 		        // File->Close, C - Mnemonic
-		        JMenuItem closeMenuItem = new JMenuItem("Close", KeyEvent.VK_C);
+		        JMenuItem closeMenuItem = new JMenuItem(CLOSE, KeyEvent.VK_C);
 		        closeMenuItem.addActionListener(treePane);
 		        fileMenu.add(closeMenuItem);
 
