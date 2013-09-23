@@ -24,14 +24,22 @@ public class TestMain {
 	
 	public static void test1(){
 		//Log.d(TAG, "setStatusByUUID->userid="+userid +" uuid="+uuid+" success="+success);
-		boolean hit = false;
-		boolean send_ok = false;
-		String userid = "1234467723345";
+
+		String path = "D:\\android\\crack\\test1\\smali-before\\com10\\b\\a\\b.smali";
 		
-		String[] users = userid.split(",");
-		
-		int i =0;
-		i++;
+		File ret = new File(path);
+
+/*		if (!ret.getParentFile().exists()) {
+			ret.getParentFile().mkdirs();
+		}*/
+
+		// 判断目标文件所在的目录是否存在
+		if (!ret.getParentFile().exists()) { // 如果目标文件所在的目录不存在，则创建父目录
+			System.out.println("目标文件所在目录不存在，准备创建它！");
+			if (!ret.getParentFile().mkdirs()) {
+				System.out.println("创建目标文件所在目录失败！");
+			}
+		}
 	}
 	
 	public static String findRoot(String filePath, String className){

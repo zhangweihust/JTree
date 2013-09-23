@@ -42,13 +42,18 @@ public class SmaliLoader {
 	}
 	
 	public void renameClass(SmaliEntry se, String src_className, String dst_className){
-		
-		for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
-			SmaliEntry se_item = item.getValue();
-			se_item.renameClassVar(src_className, dst_className);
+		boolean ret = se.renameClassFile(src_className, dst_className);
+		if(ret){
+			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
+				SmaliEntry se_item = item.getValue();
+				se_item.renameClassContent(src_className, dst_className);
+			}
+			
+
+			
+			se.renameClass(src_className, dst_className);
 		}
-		
-		se.renameClassFile(src_className, dst_className);
+
 	}
 	
 	public void loadRoot(Component parent, SmaliEntry root){

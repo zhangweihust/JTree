@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -108,31 +110,69 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
               SmaliTree source = (SmaliTree)actionEvent.getSource();
               TreePath tp = source.getLeadSelectionPath();
               SmaliEntry item = (SmaliEntry)tp.getLastPathComponent();
-              String rename_item_str = item.file.getName();
-              if(item.isFile()){
+              String rename_item_str = item.name;
+              if(item.isFile()){ //rename class
             	  rename_item_str = rename_item_str.replace(".smali", "");
-              }
-              
-              String s = (String)JOptionPane.showInputDialog(
-                      TreePane.this,
-                      item.isFile()?"Rename class":"Rename package" + rename_item_str,
-                      "Rename",
-                      JOptionPane.PLAIN_MESSAGE,
-                      null,
-                      null,
-                      item.classHeader.classNameSelf);
-              
-              System.out.println("Activated: after: " + s);
-              
-              if(s!=null && !s.equals(item.classHeader.classNameSelf)){
-                  if(item.isFile()){
-                	  SmaliLoader.getInstance().renameClass(item, item.classHeader.classNameSelf, s);
-                	  item.renameClass(item.classHeader.classNameSelf, s);
-                	  model.Refresh();
-                  }else{
-                	  
+                  
+                  String s = "NULL";
+                  Pattern pattern = Pattern.compile("^L.*;$");
+                  Matcher matcher = pattern.matcher(s);
+                  while(!matcher.matches()){
+                      s = (String)JOptionPane.showInputDialog(
+                              TreePane.this,
+                              "Rename class: "+ rename_item_str,
+                              "Rename",
+                              JOptionPane.PLAIN_MESSAGE,
+                              null,
+                              null,
+                              item.classHeader.classNameSelf);
+                      
+                      if(s==null){
+                    	  break;
+                      }else if(!s.equals("")){
+                          matcher = pattern.matcher(s);
+                      }
                   }
+
+                  
+                  System.out.println("Rename class after input: " + s);
+                  
+                  if(s!=null && !s.equals(item.classHeader.classNameSelf)){
+                      if(item.isFile()){
+                    	  SmaliLoader.getInstance().renameClass(item, item.classHeader.classNameSelf, s);
+                    	  
+                    	  model.Refresh();
+                      }else{
+                    	  
+                      }
+                  }
+              }else{ //rename package
+                  String s = "$";
+                  Pattern pattern = Pattern.compile("[a-z|A-Z|0-9|.]*");
+                  Matcher matcher = pattern.matcher(s);
+                  while(!matcher.matches()){
+                      s = (String)JOptionPane.showInputDialog(
+                              TreePane.this,
+                              "Rename package: " + rename_item_str,
+                              "Rename",
+                              JOptionPane.PLAIN_MESSAGE,
+                              null,
+                              null,
+                              rename_item_str);
+                      if(s==null){
+                    	  break;
+                      }else if(!s.equals("")){
+                          matcher = pattern.matcher(s);
+                      }
+
+                  }
+
+                  
+                  System.out.println("Rename package after input: " + s);
               }
+
+              
+
 
               
             }

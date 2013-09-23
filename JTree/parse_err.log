@@ -1,8 +1,16 @@
 Selected: Open
-[root, com.a, a.smali]
-Activated: after: Lcom/a/a1;
+[root, com.b.a, a.smali]
+Rename class after input: Lcomaaa/b/a/a;
+目标文件所在目录不存在，准备创建它！
 null
-[root, com.a, b.smali]
-[root, com.a]
-[root, com.a, a1.smali]
-Activated: after: null
+[root, com.b.a, a.smali]
+[root, com.b.a, g.smali]
+Rename class after input: Lco1m/b/a/g;
+目标文件所在目录不存在，准备创建它！
+null
+[root, com.b.e]
+[root, com.b.e, a.smali]
+Rename class after input: Lcom2/b/e/a;
+目标文件所在目录不存在，准备创建它！
+创建目标文件所在目录失败！
+null

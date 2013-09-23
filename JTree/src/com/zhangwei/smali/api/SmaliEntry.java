@@ -38,6 +38,9 @@ public class SmaliEntry {
 		this.children = new Vector<SmaliEntry>(); 
 	}
 	
+	/**
+	 * 重命名classHeader， entry_field_array， entry_method_array中的结构内容
+	 * */
 	public void renameClass(String classNameSelf, String s) {
 		// TODO Auto-generated method stub
 		classHeader.Rename(classNameSelf, s);
@@ -61,7 +64,7 @@ public class SmaliEntry {
 	 * 
 	 * @return 是否需要有被替换的，让ui更新
 	 * */
-	public boolean renameClassVar(String src_className, String dst_className){
+	public boolean renameClassContent(String src_className, String dst_className){
 		if(isFile){
 			//step1 process content:
 
@@ -95,15 +98,20 @@ public class SmaliEntry {
 			//step2 process file
 			File rootDir = findRoot();
 			File newFile = getNewFile(rootDir, dst_className);
-			File parent = file.getParentFile();
-			
-			file.renameTo(newFile);
-			file = newFile;
-			name = file.getName();
+			if(newFile!=null){
+				File parent = file.getParentFile();
+				
+				file.renameTo(newFile);
+				file = newFile;
+				name = file.getName();
 
-			cleanEmptyDir(parent);
-			
-			return true;
+				cleanEmptyDir(parent);
+				
+				return true;
+			}else{
+				return false;
+			}
+
 		}else{
 			return false;
 		}
@@ -135,11 +143,20 @@ public class SmaliEntry {
 			}
 			leaf.append(".smali");
 		}
-		
+
 		File ret = new File(leaf.toString());
 
-		if(!ret.getParentFile().exists()) {
+/*		if (!ret.getParentFile().exists()) {
 			ret.getParentFile().mkdirs();
+		}*/
+
+		// 判断目标文件所在的目录是否存在
+		if (!ret.getParentFile().exists()) { // 如果目标文件所在的目录不存在，则创建父目录
+			System.out.println("目标文件所在目录不存在，准备创建它！");
+			if (!ret.getParentFile().mkdirs()) {
+				System.out.println("创建目标文件所在目录失败！");
+				return null;
+			}
 		}
 		
 		return ret;
@@ -154,11 +171,12 @@ public class SmaliEntry {
 			String[] classNameArray = classNameTmp.split("/");
 			if(classNameArray!=null && classNameArray.length>0){
 				for(int i = classNameArray.length-1; i>=0; i--){
-					String item = classNameArray[i];
+					fileOfRoot = fileOfRoot.getParentFile(); //up a level
+/*					String item = classNameArray[i];
 					String lastItem = fileOfRoot.isFile()?fileOfRoot.getName().replaceAll(".smali", ""):fileOfRoot.getName();
 					if(item!=null && item.equals(lastItem)){
 						fileOfRoot = fileOfRoot.getParentFile(); //up a level
-					}
+					}*/
 				}
 			}
 			
