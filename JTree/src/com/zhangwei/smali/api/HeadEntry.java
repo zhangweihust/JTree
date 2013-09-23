@@ -21,4 +21,14 @@ public class HeadEntry extends CommonEntry{
 		// TODO Auto-generated method stub
 		super.id = classClass;
 	}
+	
+	@Override
+	public void Rename(String classname_before, String classname_after){
+		classClass = classClass.replace(classname_before, classname_after);
+		content = content.replace(classname_before, classname_after);
+		classNameSelf = classNameSelf.replace(classname_before, classname_after);
+
+		super.id = classClass;
+		super.content = content;
+	}
 }

@@ -16,4 +16,13 @@ public class FieldEntry extends CommonEntry {
 		// TODO Auto-generated method stub
 		super.id = classFieldName + "_" + classFieldType;
 	}
+	
+	@Override
+	public void Rename(String classname_before, String classname_after){
+		content = content.replace(classname_before, classname_after);
+		classFieldType = classFieldType.replace(classname_before, classname_after);
+
+		super.id = classFieldName + "_" + classFieldType;
+		super.content = content;
+	}
 }

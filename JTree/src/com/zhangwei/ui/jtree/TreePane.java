@@ -51,7 +51,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     
     private ArrayList<SmaliEntryChanged> JListDataNotify;
     
-    private String last_dir_for_chose = "D:\\android\\crack\\guosen_dir\\examples";
+    private String last_dir_for_chose = "D:\\android\\crack\\test1\\smali";//"D:\\android\\crack\\guosen_dir\\examples";
     
     private static final String ACTION_KEY = "theJTreeAction";
     
@@ -124,9 +124,11 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
               
               System.out.println("Activated: after: " + s);
               
-              if(s!=null && s.equals(item.classHeader.classNameSelf)){
+              if(s!=null && !s.equals(item.classHeader.classNameSelf)){
                   if(item.isFile()){
                 	  SmaliLoader.getInstance().renameClass(item, item.classHeader.classNameSelf, s);
+                	  item.renameClass(item.classHeader.classNameSelf, s);
+                	  model.Refresh();
                   }else{
                 	  
                   }

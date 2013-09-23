@@ -34,6 +34,12 @@ public class SmaliTreeModel  implements TreeModel {
         }
         fireTreeStructureChanged(oldRoot);
     }
+    
+    public void Refresh() {
+
+        //fireTreeNodesChanged(smaliRootEntry);
+        fireTreeStructureChanged(smaliRootEntry);
+    }
 
 	// //////////////Fire events //////////////////////////////////////////////
 
@@ -49,6 +55,14 @@ public class SmaliTreeModel  implements TreeModel {
 		}
 	}
 
+	protected void fireTreeNodesChanged(SmaliEntry oldRoot) {
+		int len = treeModelListeners.size();
+		TreeModelEvent e = new TreeModelEvent(this, new Object[] { oldRoot });
+		for (TreeModelListener tml : treeModelListeners) {
+			tml.treeNodesChanged(e);
+		}
+	}
+	
 	@Override
 	public Object getChild(Object parent, int index) {
 		// TODO Auto-generated method stub

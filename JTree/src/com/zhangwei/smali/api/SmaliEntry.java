@@ -38,6 +38,23 @@ public class SmaliEntry {
 		this.children = new Vector<SmaliEntry>(); 
 	}
 	
+	public void renameClass(String classNameSelf, String s) {
+		// TODO Auto-generated method stub
+		classHeader.Rename(classNameSelf, s);
+		
+		if(entry_field_array!=null && entry_field_array.size()>0){
+			for(FieldEntry item : entry_field_array){
+				item.Rename(classNameSelf, s);
+			}
+		}
+		
+		if(entry_method_array!=null && entry_method_array.size()>0){
+			for(MethodEntry item : entry_method_array){
+				item.Rename(classNameSelf, s);
+			}
+		}
+	}
+	
 	/**
 	 * @param src_className eg: "Lcom/a/b/c;"
 	 * @param dst_className eg: "Lcom/d/e/f/g;"
@@ -78,10 +95,13 @@ public class SmaliEntry {
 			//step2 process file
 			File rootDir = findRoot();
 			File newFile = getNewFile(rootDir, dst_className);
+			File parent = file.getParentFile();
+			
 			file.renameTo(newFile);
-			
-			
-			cleanEmptyDir(file);
+			file = newFile;
+			name = file.getName();
+
+			cleanEmptyDir(parent);
 			
 			return true;
 		}else{
@@ -90,11 +110,11 @@ public class SmaliEntry {
 
 	}
 	
-	public void cleanEmptyDir(File file){
-		File parent = file.getParentFile();
+	public void cleanEmptyDir(File parent){
 		if(parent.listFiles().length==0){
-			file.delete();
-			cleanEmptyDir(parent);
+			File parent_parent = parent.getParentFile();
+			parent.delete();
+			cleanEmptyDir(parent_parent);
 		}
 	}
 	
@@ -354,6 +374,8 @@ public class SmaliEntry {
 		
 		return null;
 	}
+
+
 
 
 

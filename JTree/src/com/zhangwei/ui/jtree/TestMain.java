@@ -18,8 +18,20 @@ public class TestMain {
 			e.printStackTrace();
 		}*/
 		
-		findRoot("D:\\android\\crack\\guosen3.6\\smali\\android\\support\\v4\\android\\accessibilityservice\\AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl.smali", "Landroid/support/v4/android/accessibilityservice/AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl;");
-
+		//findRoot("D:\\android\\crack\\guosen3.6\\smali\\android\\support\\v4\\android\\accessibilityservice\\AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl.smali", "Landroid/support/v4/android/accessibilityservice/AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl;");
+		test1();
+	}
+	
+	public static void test1(){
+		//Log.d(TAG, "setStatusByUUID->userid="+userid +" uuid="+uuid+" success="+success);
+		boolean hit = false;
+		boolean send_ok = false;
+		String userid = "1234467723345";
+		
+		String[] users = userid.split(",");
+		
+		int i =0;
+		i++;
 	}
 	
 	public static String findRoot(String filePath, String className){

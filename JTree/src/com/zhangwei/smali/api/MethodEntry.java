@@ -26,4 +26,17 @@ public class MethodEntry extends CommonEntry {
 		}
 
 	}
+	
+	@Override
+	public void Rename(String classname_before, String classname_after){
+		content = content.replace(classname_before, classname_after);
+		classMethodProto = classMethodProto.replace(classname_before, classname_after);
+
+		if(classConstructorName!=null){
+			super.id = classConstructorName + "_" + classMethodProto;
+		}else{
+			super.id = classMethodName + "_" + classMethodProto;
+		}
+		super.content = content;
+	}
 }
