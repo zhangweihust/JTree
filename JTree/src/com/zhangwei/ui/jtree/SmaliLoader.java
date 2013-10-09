@@ -60,6 +60,12 @@ public class SmaliLoader {
 
 	}
 	
+	private void upPublic(SmaliEntry se) {
+		// TODO Auto-generated method stub
+		se.upPublic();
+		
+	}
+	
 	public void autoRename(Component parent){
 		if(root!=null && root.children!=null && root.children.size()>0){
 			if(smailMap!=null && smailMap.size()>0){
@@ -80,12 +86,16 @@ public class SmaliLoader {
 						dst_className = dst_className + "_" + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper) + ";";
 						renameClass(it, it.classHeader.classNameSelf, dst_className);
 	            	}
+	            	
+	            	upPublic(it);
 
 				}
 			}
 		}
 	}
 	
+
+
 	public void loadRoot(Component parent, SmaliEntry root){
 		this.root = root;
 		String root_path = root.file.getAbsolutePath();

@@ -87,6 +87,87 @@ public class SmaliEntry {
 	}
 	
 	/**
+	 *  将文本中每行以.method 或  .field开始的行进行public提权
+	 * */
+	public void upPublic() {
+		// TODO Auto-generated method stub
+		String content = getFileContent();
+		if(content!=null){
+			String[] lines = content.split("\n");
+			boolean change = false;
+			
+			if(lines!=null && lines.length>0){
+				for(int index=0; index<lines.length; index++){
+					String line = lines[index];
+					if(line.startsWith(".method ")){
+						if(line.contains("protected ")){
+							lines[index] = line.replace("protected ", "public ");
+							change = true;
+						}else if(line.contains("private ")){
+							lines[index] = line.replace("private ", "public ");
+							change = true;
+						}else if(line.contains("public ")){
+							//nothing to do
+						}else{ //add public
+							lines[index] = ".method public " + line.substring(".method ".length());
+							change = true;
+						}
+					}else if(line.startsWith(".field ")){
+						if(line.contains("protected ")){
+							lines[index] = line.replace("protected ", "public ");
+							change = true;
+						}else if(line.contains("private ")){
+							lines[index] = line.replace("private ", "public ");
+							change = true;
+						}else if(line.contains("public ")){
+							//nothing to do
+						}else{ //add public
+							lines[index] = ".field public " + line.substring(".field ".length());
+							change = true;
+						}
+					}else if(line.startsWith(".class ")){
+						if(line.contains("protected ")){
+							lines[index] = line.replace("protected ", "public ");
+							change = true;
+						}else if(line.contains("private ")){
+							lines[index] = line.replace("private ", "public ");
+							change = true;
+						}else if(line.contains("public ")){
+							//nothing to do
+						}else{ //add public
+							lines[index] = ".class public " + line.substring(".class ".length());
+							change = true;
+						}
+					}else if(line.contains("invoke-direct ")){ 
+						if(!line.contains("<init>")){
+							lines[index] = line.replace("invoke-direct ", "invoke-virtual ");
+							change = true;
+						}
+					}else if(line.contains("invoke-direct/range ")){ 
+						if(!line.contains("<init>")){
+							lines[index] = line.replace("invoke-direct/range ", "invoke-virtual/range ");
+							change = true;
+						}
+					}
+				}
+				
+				if(change){
+					StringBuilder sb = new StringBuilder();
+					for(String line : lines){
+						sb.append(line + "\n");
+					}
+					setFileContent(sb.toString());
+				}
+			}
+			
+
+		}
+
+
+		
+	}
+	
+	/**
 	 * 将该类中出现的src类名或方法，替换为dst的类名或方法
 	 * 
 	 * @param src_className eg: "Lcom/a/b/c;"
@@ -399,6 +480,8 @@ public class SmaliEntry {
 		
 		return null;
 	}
+
+
 
 
 

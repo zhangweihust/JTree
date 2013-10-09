@@ -1,27 +1,8 @@
 Selected: Open
 Selected: Auto-rename
-[root, com.guosen.android.g, b_Object.smali]
-[root, com.guosen.android.services]
-[root, com.guosen.android.services, PushService.smali]
-[root, com.guosen.android.h, a_Object.smali]
-[root, com.guosen.android.h, b_Thread.smali]
-[root, com.guosen.android.view]
-[root, com.viewpagerindicator]
-[root, com.viewpagerindicator, n_Object.smali]
-[root, com.viewpagerindicator, j_Object.smali]
-[root, com.viewpagerindicator, TabPageIndicator$TabView.smali]
-[root, com.viewpagerindicator, CirclePageIndicator$SavedState.smali]
-[root, com.b.a, f_Object.smali]
-[root, com.b.a, b_Object.smali]
-[root, com.b.a, c_Object.smali]
-[root, com.b.d.a, a_Object.smali]
-[root, com.b.d.a, d_Object.smali]
-[root, com.b.d.a, g_Object.smali]
-[root, com.guosen.android.j]
-[root, com.guosen.android.IME]
-[root, com.guosen.android.IME, c_Keyboard$Key.smali]
-[root, com.guosen.android.IME, GuosenStockKeyBoardView.smali]
-[root, com.guosen.android.IME, b_Keyboard.smali]
-[root, com.guosen.android.IME, a_GestureDetector$SimpleOnGestureListener.smali]
-id:onScroll_(Landroid/view/MotionEvent;Landroid/view/MotionEvent;FF)Z, offset:521
-id:onScroll_(Landroid/view/MotionEvent;Landroid/view/MotionEvent;FF)Z, offset:521
+[root, com.eno.kjava.net]
+[root, com.eno.kjava.net, ENOCommServ.smali]
+id:run_()V, offset:54345
+id:run_()V, offset:54345
+id:work_()V, offset:35744
+id:work_()V, offset:35744

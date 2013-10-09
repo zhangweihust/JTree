@@ -54,7 +54,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     
     private ArrayList<SmaliEntryChanged> JListDataNotify;
     
-    private String last_dir_for_chose = "D:\\android\\crack\\test1\\smali";//"D:\\android\\crack\\guosen_dir\\examples";
+    private String last_dir_for_chose = "D:\\android\\crack\\test1\\guosen3.6";//"D:\\android\\crack\\guosen_dir\\examples";
     
     private static final String ACTION_KEY = "theJTreeAction";
     
