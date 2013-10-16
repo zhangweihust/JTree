@@ -8,8 +8,8 @@ public class HeadEntry extends CommonEntry{
 	public String classNameSelf; // Lcom/b/a/a;
 	public String classNameSuper; // Lcom/b/a/b;
 	
-	public HeadEntry(int offset){
-		super(1, offset);
+	public HeadEntry(SmaliEntry se, int offset){
+		super(se, 1, offset);
 	}
 	
 	public void add_content(String content) {
@@ -23,7 +23,7 @@ public class HeadEntry extends CommonEntry{
 	}
 	
 	@Override
-	public void Rename(String classname_before, String classname_after){
+	public void RenameType(String classname_before, String classname_after){
 		classClass = classClass.replace(classname_before, classname_after);
 		content = content.replace(classname_before, classname_after);
 		classNameSelf = classNameSelf.replace(classname_before, classname_after);

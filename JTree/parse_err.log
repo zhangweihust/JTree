@@ -1,8 +1,6 @@
 Selected: Open
-Selected: Auto-rename
-[root, com.eno.kjava.net]
-[root, com.eno.kjava.net, ENOCommServ.smali]
-id:run_()V, offset:54345
-id:run_()V, offset:54345
-id:work_()V, offset:35744
-id:work_()V, offset:35744
+[root, com.eno.ENOCoder]
+[root, com.eno.ENOCoder, BlowfishEasy.smali]
+id:b_J, offset:139
+id:b_J, offset:139
+Activated: after: bub2

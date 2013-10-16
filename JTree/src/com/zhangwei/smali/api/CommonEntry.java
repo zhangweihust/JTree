@@ -3,12 +3,14 @@ package com.zhangwei.smali.api;
 public abstract class CommonEntry {
 	public String id;
 	
+	public SmaliEntry se;
 	public int type; //1 head  2 field  3 head
 	public String content;
 	
 	public int offset;
 	
-	public CommonEntry(int type, int offset){
+	public CommonEntry(SmaliEntry se, int type, int offset){
+		this.se = se;
 		this.type = type;
 		this.offset = offset;
 	}
@@ -18,7 +20,7 @@ public abstract class CommonEntry {
 	//.method static constructor <clinit>()V
 	//.method public static final b(Lcom/b/f/a;)Lcom/b/f/a;	
 	//.field public static final c:[I
-	public void Rename(String content_before, String content_after){
+	public void RenameType(String content_before, String content_after){
 		content = content.replace(content_before, content_after);
 	}
 	

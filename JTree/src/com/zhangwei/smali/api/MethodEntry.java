@@ -7,8 +7,8 @@ package com.zhangwei.smali.api;
  * */
 public class MethodEntry extends CommonEntry {
 	
-	public MethodEntry(int offset){
-		super(3, offset);
+	public MethodEntry(SmaliEntry se, int offset){
+		super(se, 3, offset);
 	}
 	
 	//.method public constructor <init>()V
@@ -28,9 +28,23 @@ public class MethodEntry extends CommonEntry {
 	}
 	
 	@Override
-	public void Rename(String classname_before, String classname_after){
+	public void RenameType(String classname_before, String classname_after){
 		content = content.replace(classname_before, classname_after);
 		classMethodProto = classMethodProto.replace(classname_before, classname_after);
+
+		if(classConstructorName!=null){
+			super.id = classConstructorName + "_" + classMethodProto;
+		}else{
+			super.id = classMethodName + "_" + classMethodProto;
+		}
+		super.content = content;
+	}
+
+	public void renameName(String className, String oldMethodName,
+			String newMethodName, String classMethodProto) {
+		// TODO Auto-generated method stub
+		content = content.replace(" " + oldMethodName + classMethodProto, " " + newMethodName + classMethodProto);
+		classMethodName = newMethodName;
 
 		if(classConstructorName!=null){
 			super.id = classConstructorName + "_" + classMethodProto;

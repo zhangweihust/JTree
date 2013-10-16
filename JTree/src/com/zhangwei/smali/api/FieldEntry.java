@@ -3,8 +3,8 @@ package com.zhangwei.smali.api;
 public class FieldEntry extends CommonEntry {
 	//classField = optPadding dirField padding *(accessMode padding) classFieldName COLON classFieldType optPadding [EQ optPadding value] optPadding CRLF [dirEndField optPadding CRLF];
 	//classField = *accessMode classFieldName classFieldType
-	public FieldEntry(int offset){
-		super(2, offset);
+	public FieldEntry(SmaliEntry se, int offset){
+		super(se, 2, offset);
 	}
 	
 	
@@ -18,11 +18,21 @@ public class FieldEntry extends CommonEntry {
 	}
 	
 	@Override
-	public void Rename(String classname_before, String classname_after){
+	public void RenameType(String classname_before, String classname_after){
 		content = content.replace(classname_before, classname_after);
 		classFieldType = classFieldType.replace(classname_before, classname_after);
 
 		super.id = classFieldName + "_" + classFieldType;
 		super.content = content;
+	}
+
+	public void renameName(String className, String oldFieldName, String newFieldName, String classFieldType) {
+		// TODO Auto-generated method stub
+		content = content.replace(" " + oldFieldName + ":" + classFieldType, " " + newFieldName + ":" + classFieldType);
+		classFieldName = newFieldName;
+
+		super.id = classFieldName + "_" + classFieldType;
+		super.content = content;
+		
 	}
 }

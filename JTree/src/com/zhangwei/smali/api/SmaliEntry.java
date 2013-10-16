@@ -45,17 +45,17 @@ public class SmaliEntry {
 	 * */
 	public void renameClass(String classNameSelf, String s) {
 		// TODO Auto-generated method stub
-		classHeader.Rename(classNameSelf, s);
+		classHeader.RenameType(classNameSelf, s);
 		
 		if(entry_field_array!=null && entry_field_array.size()>0){
 			for(FieldEntry item : entry_field_array){
-				item.Rename(classNameSelf, s);
+				item.RenameType(classNameSelf, s);
 			}
 		}
 		
 		if(entry_method_array!=null && entry_method_array.size()>0){
 			for(MethodEntry item : entry_method_array){
-				item.Rename(classNameSelf, s);
+				item.RenameType(classNameSelf, s);
 			}
 		}
 	}
@@ -84,6 +84,72 @@ public class SmaliEntry {
 			return false;
 		}
 
+	}
+	
+	public boolean renameFieldContent(String className, String oldFieldName, String newFieldName, String classFieldType) {
+		// TODO Auto-generated method stub
+		if(isFile){
+			//step1 process content:
+
+			String content = getFileContent();
+			String oldName = /*className + "->" +*/ oldFieldName + ":" + classFieldType;
+			String newName = /*className + "->" +*/ newFieldName + ":" + classFieldType;
+			
+			
+			if(className!=null && className.equals(this.classHeader.classNameSelf)){
+				if(content.contains(oldFieldName)){
+					content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
+					setFileContent(content);
+				}
+			}
+			
+			if(content.contains(oldFieldName)){
+				content = content.replaceAll(
+						Matcher.quoteReplacement(" " + className + "->" +oldName), 
+						Matcher.quoteReplacement(" " + className + "->" +newName));
+				setFileContent(content);
+				return true;
+			}else{
+				return false;
+			}
+			
+		}else{
+			return false;
+		}
+	}
+	
+	
+	public boolean renameMethodContent(String className, String oldMethodName,
+			String newMethodName, String classMethodProto) {
+		// TODO Auto-generated method stub
+		if(isFile){
+			//step1 process content:
+
+			String content = getFileContent();
+			String oldName = /*className + "->" +*/ oldMethodName + classMethodProto;
+			String newName = /*className + "->" +*/ newMethodName + classMethodProto;
+			
+			
+			if(className!=null && className.equals(this.classHeader.classNameSelf)){
+				if(content.contains(oldMethodName)){
+					content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
+					setFileContent(content);
+				}
+			}
+			
+			if(content.contains(oldMethodName)){
+				content = content.replaceAll(
+						Matcher.quoteReplacement(" " + className + "->" +oldName), 
+						Matcher.quoteReplacement(" " + className + "->" +newName));
+				setFileContent(content);
+				return true;
+			}else{
+				return false;
+			}
+			
+		}else{
+			return false;
+		}
 	}
 	
 	/**
@@ -303,7 +369,7 @@ public class SmaliEntry {
 	public void new_classHeader(int offset) {
 		// TODO Auto-generated method stub
 		if(classHeader==null){
-			classHeader = new HeadEntry(offset);
+			classHeader = new HeadEntry(this, offset);
 		}
 	}
 		
@@ -346,7 +412,7 @@ public class SmaliEntry {
 			entry_field_array = new ArrayList<FieldEntry>();
 		}
 		
-		entry_field_array.add(new FieldEntry(offset));
+		entry_field_array.add(new FieldEntry(this, offset));
 	}
 
 	public void add_classField_content(String content) {
@@ -380,7 +446,7 @@ public class SmaliEntry {
 			entry_method_array = new ArrayList<MethodEntry>();
 		}
 		
-		entry_method_array.add(new MethodEntry(offset));
+		entry_method_array.add(new MethodEntry(this, offset));
 	}
 
 	public void add_classMethod_content(String content) {
@@ -480,6 +546,10 @@ public class SmaliEntry {
 		
 		return null;
 	}
+
+
+
+
 
 
 

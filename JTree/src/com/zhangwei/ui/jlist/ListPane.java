@@ -29,6 +29,7 @@ import com.zhangwei.smali.api.HeadEntry;
 import com.zhangwei.smali.api.MethodEntry;
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.ui.jtext.SmaliMemberChanged;
+import com.zhangwei.ui.jtree.SmaliLoader;
 import com.zhangwei.ui.jtree.SmaliTree;
 import com.zhangwei.ui.jtree.SmaliTreeModel;
 import com.zhangwei.ui.jtree.TreePane;
@@ -77,45 +78,73 @@ public class ListPane extends JPanel implements ActionListener, SmaliEntryChange
 			public void actionPerformed(ActionEvent actionEvent) {
 
 
+			  @SuppressWarnings("unchecked")
 			  JList<CommonEntry> source = (JList<CommonEntry>)actionEvent.getSource();
-			  
+			  selectedCommonEntry = source.getSelectedValue();
+			  int selectIndex = source.getSelectedIndex();
 			  
 			  if(selectedCommonEntry!=null){
-				  String s = null;
-				  if(selectedCommonEntry.type==1){ //head
-					  HeadEntry he = (HeadEntry) selectedCommonEntry;
-		              s = (String)JOptionPane.showInputDialog(
-		                      ListPane.this,
-		                      "Rename class head: " + he.classNameSelf,
-		                      "Rename",
-		                      JOptionPane.PLAIN_MESSAGE,
-		                      null,
-		                      null,
-		                      he.classNameSelf);
-				  }else if(selectedCommonEntry.type==2){ //field
-					  FieldEntry fe = (FieldEntry) selectedCommonEntry;
-		              s = (String)JOptionPane.showInputDialog(
-		                      ListPane.this,
-		                      "Rename class field" + fe.classFieldName,
-		                      "Rename",
-		                      JOptionPane.PLAIN_MESSAGE,
-		                      null,
-		                      null,
-		                      fe.classFieldName);
-				  }else if(selectedCommonEntry.type==3){ //method
-					  MethodEntry me = (MethodEntry)selectedCommonEntry;
-		              s = (String)JOptionPane.showInputDialog(
-		                      ListPane.this,
-		                      "Rename class method" + me.classConstructorName!=null?me.classConstructorName:me.classMethodName,
-		                      "Rename",
-		                      JOptionPane.PLAIN_MESSAGE,
-		                      null,
-		                      null,
-		                      me.classConstructorName!=null?me.classConstructorName:me.classMethodName);
+				  String s = "NULL";
+				  while(s.equals("NULL")){
+					  if(selectedCommonEntry.type==1){ //head
+						  HeadEntry he = (HeadEntry) selectedCommonEntry;
+			              s = (String)JOptionPane.showInputDialog(
+			                      ListPane.this,
+			                      "Rename class head: " + he.classNameSelf,
+			                      "Rename",
+			                      JOptionPane.PLAIN_MESSAGE,
+			                      null,
+			                      null,
+			                      he.classNameSelf);
+					  }else if(selectedCommonEntry.type==2){ //field
+						  FieldEntry fe = (FieldEntry) selectedCommonEntry;
+			              s = (String)JOptionPane.showInputDialog(
+			                      ListPane.this,
+			                      "Rename class field" + fe.classFieldName,
+			                      "Rename",
+			                      JOptionPane.PLAIN_MESSAGE,
+			                      null,
+			                      null,
+			                      fe.classFieldName);
+					  }else if(selectedCommonEntry.type==3){ //method
+						  MethodEntry me = (MethodEntry)selectedCommonEntry;
+			              s = (String)JOptionPane.showInputDialog(
+			                      ListPane.this,
+			                      "Rename class method" + me.classConstructorName!=null?me.classConstructorName:me.classMethodName,
+			                      "Rename",
+			                      JOptionPane.PLAIN_MESSAGE,
+			                      null,
+			                      null,
+			                      me.classConstructorName!=null?me.classConstructorName:me.classMethodName);
+					  }
+					  
+                      if(s==null){
+                    	  break;//cancel by user
+                      }else if(s.equals("")){
+                    	  s="NUll";
+                          continue;
+                      }
 				  }
+
 				  
 
 	              System.out.println("Activated: after: " + s);
+	              
+                  if(s!=null){
+                	  if(selectedCommonEntry.type==1){//head, nothing to do
+
+                	  }else if(selectedCommonEntry.type==2){ //field
+                		  FieldEntry fe = (FieldEntry) selectedCommonEntry;
+                		  SmaliLoader.getInstance().renameField(selectedCommonEntry.se, fe, s);
+                    	  listmodel.Refresh(selectIndex);
+                	  }else if(selectedCommonEntry.type==3){ //method
+                		  MethodEntry me = (MethodEntry)selectedCommonEntry;
+                		  SmaliLoader.getInstance().renameMethod(selectedCommonEntry.se, me, s);
+                    	  listmodel.Refresh(selectIndex);
+                	  }
+                	  
+
+                  }
 			  }
 
             }

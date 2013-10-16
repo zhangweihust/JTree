@@ -48,4 +48,9 @@ public class SmaliListDataModel extends DefaultListModel<CommonEntry> {
     	}
 
     }
+
+	public void Refresh(int selectIndex) {
+		// TODO Auto-generated method stub
+		super.fireContentsChanged(this, selectIndex, selectIndex);
+	}
 }

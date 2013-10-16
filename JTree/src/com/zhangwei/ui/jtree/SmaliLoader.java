@@ -13,6 +13,8 @@ import javax.swing.ProgressMonitor;
 import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.zhangwei.smali.api.FieldEntry;
+import com.zhangwei.smali.api.MethodEntry;
 import com.zhangwei.smali.api.MyParser;
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.utils.StringHelper;
@@ -53,9 +55,36 @@ public class SmaliLoader {
 				se_item.renameClassContent(src_className, dst_className);
 			}
 			
-
-			
 			se.renameClass(src_className, dst_className);
+		}
+
+	}
+	
+	public void renameField(SmaliEntry se, FieldEntry fe, String s) {
+		// TODO Auto-generated method stub
+		String className = se.classHeader.classNameSelf; // Lcom/b/a/a;
+		String oldFieldName = fe.classFieldName;
+		String newFieldName = s;
+		for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
+			SmaliEntry se_item = item.getValue();
+			se_item.renameFieldContent(className, oldFieldName, newFieldName, fe.classFieldType);
+		}
+		
+		fe.renameName(className, oldFieldName, newFieldName, fe.classFieldType);
+	}
+	
+	public void renameMethod(SmaliEntry se, MethodEntry me, String s) {
+		// TODO Auto-generated method stub
+		String className = se.classHeader.classNameSelf; // Lcom/b/a/a;
+		String oldMethodName = me.classMethodName;
+		String newMethodName = me.classConstructorName!=null?null:me.classMethodName;
+		if(newMethodName!=null){
+			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
+				SmaliEntry se_item = item.getValue();
+				se_item.renameMethodContent(className, oldMethodName, newMethodName, me.classMethodProto);
+			}
+			
+			me.renameName(className, oldMethodName, newMethodName, me.classMethodProto);
 		}
 
 	}
@@ -252,5 +281,9 @@ public class SmaliLoader {
 		
 		return packageName;
 	}
+
+
+
+
 
 }
