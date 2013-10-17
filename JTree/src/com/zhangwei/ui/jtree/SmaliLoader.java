@@ -70,7 +70,7 @@ public class SmaliLoader {
 			se_item.renameFieldContent(className, oldFieldName, newFieldName, fe.classFieldType);
 		}
 		
-		fe.renameName(className, oldFieldName, newFieldName, fe.classFieldType);
+		fe.RenameName(className, oldFieldName, newFieldName, fe.classFieldType);
 	}
 	
 	public void renameMethod(SmaliEntry se, MethodEntry me, String s) {
@@ -84,7 +84,7 @@ public class SmaliLoader {
 				se_item.renameMethodContent(className, oldMethodName, newMethodName, me.classMethodProto);
 			}
 			
-			me.renameName(className, oldMethodName, newMethodName, me.classMethodProto);
+			me.RenameName(className, oldMethodName, newMethodName, me.classMethodProto);
 		}
 
 	}

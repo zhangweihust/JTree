@@ -73,7 +73,8 @@ public class SmaliEntry {
 			String content = getFileContent();
 			
 			if(content.contains(src_className)){
-				String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));
+				/*String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));*/
+				String newContent = content.replace(src_className, dst_className);
 				setFileContent(newContent);
 				return true;
 			}else{
@@ -98,15 +99,17 @@ public class SmaliEntry {
 			
 			if(className!=null && className.equals(this.classHeader.classNameSelf)){
 				if(content.contains(oldFieldName)){
-					content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
+					//content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
+					content = content.replace(" " + oldName, " " + newName);
 					setFileContent(content);
 				}
 			}
 			
 			if(content.contains(oldFieldName)){
-				content = content.replaceAll(
+/*				content = content.replaceAll(
 						Matcher.quoteReplacement(" " + className + "->" +oldName), 
-						Matcher.quoteReplacement(" " + className + "->" +newName));
+						Matcher.quoteReplacement(" " + className + "->" +newName));*/
+				content = content.replace(" " + className + "->" +oldName, " " + className + "->" +newName);
 				setFileContent(content);
 				return true;
 			}else{
@@ -132,15 +135,17 @@ public class SmaliEntry {
 			
 			if(className!=null && className.equals(this.classHeader.classNameSelf)){
 				if(content.contains(oldMethodName)){
-					content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
+					//content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
+					content = content.replace(" " + oldName, " " + newName);
 					setFileContent(content);
 				}
 			}
 			
 			if(content.contains(oldMethodName)){
-				content = content.replaceAll(
+/*				content = content.replaceAll(
 						Matcher.quoteReplacement(" " + className + "->" +oldName), 
-						Matcher.quoteReplacement(" " + className + "->" +newName));
+						Matcher.quoteReplacement(" " + className + "->" +newName));*/
+				content = content.replace(" " + className + "->" +oldName, " " + className + "->" +newName);
 				setFileContent(content);
 				return true;
 			}else{

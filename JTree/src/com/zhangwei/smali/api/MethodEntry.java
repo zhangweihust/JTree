@@ -40,7 +40,7 @@ public class MethodEntry extends CommonEntry {
 		super.content = content;
 	}
 
-	public void renameName(String className, String oldMethodName,
+	public void RenameName(String className, String oldMethodName,
 			String newMethodName, String classMethodProto) {
 		// TODO Auto-generated method stub
 		content = content.replace(" " + oldMethodName + classMethodProto, " " + newMethodName + classMethodProto);

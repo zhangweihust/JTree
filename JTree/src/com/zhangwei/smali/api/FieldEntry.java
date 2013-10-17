@@ -26,7 +26,7 @@ public class FieldEntry extends CommonEntry {
 		super.content = content;
 	}
 
-	public void renameName(String className, String oldFieldName, String newFieldName, String classFieldType) {
+	public void RenameName(String className, String oldFieldName, String newFieldName, String classFieldType) {
 		// TODO Auto-generated method stub
 		content = content.replace(" " + oldFieldName + ":" + classFieldType, " " + newFieldName + ":" + classFieldType);
 		classFieldName = newFieldName;
