@@ -77,7 +77,7 @@ public class SmaliLoader {
 		// TODO Auto-generated method stub
 		String className = se.classHeader.classNameSelf; // Lcom/b/a/a;
 		String oldMethodName = me.classMethodName;
-		String newMethodName = me.classConstructorName!=null?null:me.classMethodName;
+		String newMethodName = me.classConstructorName!=null?null:s;
 		if(newMethodName!=null){
 			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
 				SmaliEntry se_item = item.getValue();
