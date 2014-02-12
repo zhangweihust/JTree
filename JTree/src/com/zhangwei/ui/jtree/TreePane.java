@@ -282,6 +282,9 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
         }else if(action.equals(SmaliMain.AUTO_RENAME)){
         	RenameThread t = new RenameThread();
         	t.startThread();
+        }else if(action.equals(SmaliMain.AUTO_PUBLIC)){
+        	UpPublicThread t = new UpPublicThread();
+        	t.startThread();
         }
         
 
@@ -325,6 +328,22 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 			// TODO Auto-generated method stub
 			super.run();
             SmaliLoader.getInstance().autoRename(TreePane.this);
+
+		}
+	}
+	
+	class UpPublicThread extends Thread {
+		
+
+		void startThread(){
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            SmaliLoader.getInstance().autoPublic(TreePane.this);
 
 		}
 	}

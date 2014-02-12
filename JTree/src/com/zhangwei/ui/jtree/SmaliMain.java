@@ -16,6 +16,7 @@ import java.io.File;
 
 public class SmaliMain {
 	public static final String AUTO_RENAME = "Auto-rename";
+	public static final String AUTO_PUBLIC = "Auto-public";
 	public static final String CLOSE = "Close";
 	public static final String OPEN = "Open";
 	
@@ -54,6 +55,14 @@ public class SmaliMain {
 				JMenuItem autoMenuItem = new JMenuItem( AUTO_RENAME, KeyEvent.VK_A);
 				autoMenuItem.addActionListener(treePane);
 				fileMenu.add(autoMenuItem);
+				
+		        // Separator
+		        fileMenu.addSeparator();
+		        
+				// File->Open, O - Mnemonic
+				JMenuItem publicMenuItem = new JMenuItem( AUTO_PUBLIC, KeyEvent.VK_U);
+				publicMenuItem.addActionListener(treePane);
+				fileMenu.add(publicMenuItem);
 				
 		        // Separator
 		        fileMenu.addSeparator();

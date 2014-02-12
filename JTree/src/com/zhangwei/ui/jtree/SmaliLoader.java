@@ -116,6 +116,27 @@ public class SmaliLoader {
 						renameClass(it, it.classHeader.classNameSelf, dst_className);
 	            	}
 	            	
+	            	//upPublic(it);
+
+				}
+			}
+		}
+	}
+	
+	public void autoPublic(Component parent){
+		if(root!=null && root.children!=null && root.children.size()>0){
+			if(smailMap!=null && smailMap.size()>0){
+				monitor = new ProgressMonitor(parent, "Renaming Progress", "Getting Started...", 0, smailMap.size());
+				progress = 0;
+				
+				Collection<SmaliEntry> collections = smailMap.values();
+				for(SmaliEntry  it : collections){
+	            	progress++;
+	            	monitor.setProgress(progress);
+	            	monitor.setNote("Up-Public num:" + progress + "\n file:" + it.file.getAbsolutePath());
+	            	if(monitor.isCanceled()){
+	            		break;
+	            	}	            	
 	            	upPublic(it);
 
 				}
@@ -123,7 +144,6 @@ public class SmaliLoader {
 		}
 	}
 	
-
 
 	public void loadRoot(Component parent, SmaliEntry root){
 		this.root = root;
