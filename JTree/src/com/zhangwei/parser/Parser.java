@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Wed Sep 18 15:17:10 CST 2013
+ * Produced : Tue Apr 29 14:07:23 CST 2014
  *
  * -----------------------------------------------------------------------------
  */
@@ -226,8 +226,6 @@ public class Parser
     else if (rulename.equalsIgnoreCase("smali")) rule = Rule_smali.parse(context);
     else if (rulename.equalsIgnoreCase("todoStubLine")) rule = Rule_todoStubLine.parse(context);
     else if (rulename.equalsIgnoreCase("classHeader")) rule = Rule_classHeader.parse(context);
-    else if (rulename.equalsIgnoreCase("classNameSelf")) rule = Rule_classNameSelf.parse(context);
-    else if (rulename.equalsIgnoreCase("classNameSuper")) rule = Rule_classNameSuper.parse(context);
     else if (rulename.equalsIgnoreCase("classClass")) rule = Rule_classClass.parse(context);
     else if (rulename.equalsIgnoreCase("classSuper")) rule = Rule_classSuper.parse(context);
     else if (rulename.equalsIgnoreCase("classSource")) rule = Rule_classSource.parse(context);
