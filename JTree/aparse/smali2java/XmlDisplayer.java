@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Apr 29 14:07:23 CST 2014
+ * Produced : Fri Nov 27 17:37:11 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -612,6 +612,18 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</dirEndSubannotation>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_dirParameter rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<dirParameter>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</dirParameter>");
     terminal = false;
     return null;
   }

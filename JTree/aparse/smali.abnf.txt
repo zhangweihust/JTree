@@ -28,7 +28,7 @@ commentSequence = %x23 *(padding / VCHAR);
 comment = optPadding commentSequence CRLF;
 emptyLine = optPadding CRLF;
 skipLine = comment / emptyLine;
-fileName = QUOT qualifier DOT *(ALPHA / DIGIT) QUOT;
+fileName = QUOT qualifier [ DOT ] *(ALPHA / DIGIT) QUOT;
 accessMode = "public" / "private" / "protected" / "static" / "final" / "abstract" / "transient" / "synthetic" / "enum" / "annotation" / "declared-synchronized" / "bridge" / "varargs" / "volatile" / "native" / "synchronized";
 interfaceMode = "interface";
 type = "V" / "Z" / "B" / "S" / "C" / "I" / "J" / "F" / "D" / className / "[" type;
@@ -68,7 +68,8 @@ dirEndAnnotation = dirEnd padding "annotation";
 dirEndField = dirEnd padding "field";
 dirEndMethod = dirEnd padding "method";
 dirEndSubannotation = dirEnd padding "subannotation";
-dirEndParameter = dirEnd padding "parameter";
+dirParameter = ".parameter" / ".param";
+dirEndParameter = dirEnd padding ("parameter" / "param");
 dirImplements = ".implements";
 dirField = ".field";
 dirLocal = ".local";
@@ -99,7 +100,15 @@ classImplements = optPadding dirImplements padding className optPadding [CRLF];
 
 #method directive statements
 methodLocals = optPadding ".locals" padding intValue optPadding CRLF;
-methodParam = optPadding ".parameter" [(padding strValue) / (optPadding CRLF [annotation] optPadding dirEndParameter)] optPadding CRLF;
+methodParam = optPadding dirParameter [(padding value) / (optPadding CRLF [annotation] optPadding dirEndParameter)] optPadding CRLF;
+
+###    .param p3    # Ljava/lang/String;
+###        .annotation build Lorg/eclipse/jdt/annotation/NonNull;
+###        .end annotation
+###    .end param
+#methodParam =/ optPadding ".param" optPadding qualifier optPadding (comment / CRLF);
+
+
 #methodParam =/ ((optPadding ".parameter" optPadding CRLF) [annotation] (optPadding dirEndParameter optPadding CRLF));
 methodPrologue = optPadding ".prologue" optPadding CRLF;
 methodLine = optPadding ".line" padding intValue optPadding CRLF;
@@ -182,7 +191,7 @@ classField = optPadding dirField padding *(accessMode padding) classFieldName CO
 
 array = arrayHead *arrayBody arrayTail;
 arrayHead = optPadding dirArrayData optPadding [value] optPadding CRLF;
-arrayValue = intValue ["t" / "x" / "d" / "b"];
+arrayValue = value ["t" / "x" / "d" / "b" / "s"];
 arrayBody = *(padding / arrayValue)  CRLF;
 arrayTail = optPadding  dirEndArrayData optPadding CRLF;
 

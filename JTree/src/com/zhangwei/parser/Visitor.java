@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Apr 29 14:07:23 CST 2014
+ * Produced : Fri Nov 27 17:37:11 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -62,6 +62,7 @@ public interface Visitor
   public Object visit(Rule_dirEndField rule);
   public Object visit(Rule_dirEndMethod rule);
   public Object visit(Rule_dirEndSubannotation rule);
+  public Object visit(Rule_dirParameter rule);
   public Object visit(Rule_dirEndParameter rule);
   public Object visit(Rule_dirImplements rule);
   public Object visit(Rule_dirField rule);

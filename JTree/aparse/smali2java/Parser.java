@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Tue Apr 29 14:07:23 CST 2014
+ * Produced : Fri Nov 27 17:37:11 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -210,6 +210,7 @@ public class Parser
     else if (rulename.equalsIgnoreCase("dirEndField")) rule = Rule_dirEndField.parse(context);
     else if (rulename.equalsIgnoreCase("dirEndMethod")) rule = Rule_dirEndMethod.parse(context);
     else if (rulename.equalsIgnoreCase("dirEndSubannotation")) rule = Rule_dirEndSubannotation.parse(context);
+    else if (rulename.equalsIgnoreCase("dirParameter")) rule = Rule_dirParameter.parse(context);
     else if (rulename.equalsIgnoreCase("dirEndParameter")) rule = Rule_dirEndParameter.parse(context);
     else if (rulename.equalsIgnoreCase("dirImplements")) rule = Rule_dirImplements.parse(context);
     else if (rulename.equalsIgnoreCase("dirField")) rule = Rule_dirField.parse(context);
