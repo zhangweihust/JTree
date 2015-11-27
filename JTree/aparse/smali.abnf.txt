@@ -24,7 +24,7 @@ qualifier = 1*(ALPHA / DIGIT / UNDERSCORE / SUB / "$");
 #zhw
 #className = %x4c qualifier *(%x2f qualifier) ["$" qualifier] SEMICOLON;
 className = %x4c (qualifier / "$") *(%x2f (qualifier / "$")) *("$" /  qualifier) SEMICOLON;
-commentSequence = %x23 *(padding / VCHAR);
+commentSequence = (%x23 / "#") *(padding / VCHAR);
 comment = optPadding commentSequence CRLF;
 emptyLine = optPadding CRLF;
 skipLine = comment / emptyLine;
@@ -100,7 +100,7 @@ classImplements = optPadding dirImplements padding className optPadding [CRLF];
 
 #method directive statements
 methodLocals = optPadding ".locals" padding intValue optPadding CRLF;
-methodParam = optPadding dirParameter [(padding value) / (optPadding CRLF [annotation] optPadding dirEndParameter)] optPadding CRLF;
+methodParam = optPadding dirParameter [(padding (value / qualifier))] [comment] [annotation] [optPadding dirEndParameter] optPadding CRLF;
 
 ###    .param p3    # Ljava/lang/String;
 ###        .annotation build Lorg/eclipse/jdt/annotation/NonNull;
