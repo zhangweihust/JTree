@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Mon Nov 30 11:28:10 CST 2015
+ * Produced : Mon Nov 30 15:53:26 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -232,6 +232,8 @@ public class Parser
     else if (rulename.equalsIgnoreCase("classSuper")) rule = Rule_classSuper.parse(context);
     else if (rulename.equalsIgnoreCase("classSource")) rule = Rule_classSource.parse(context);
     else if (rulename.equalsIgnoreCase("classImplements")) rule = Rule_classImplements.parse(context);
+    else if (rulename.equalsIgnoreCase("classNameSelf")) rule = Rule_classNameSelf.parse(context);
+    else if (rulename.equalsIgnoreCase("classNameSuper")) rule = Rule_classNameSuper.parse(context);
     else if (rulename.equalsIgnoreCase("methodLocals")) rule = Rule_methodLocals.parse(context);
     else if (rulename.equalsIgnoreCase("methodParam")) rule = Rule_methodParam.parse(context);
     else if (rulename.equalsIgnoreCase("methodPrologue")) rule = Rule_methodPrologue.parse(context);

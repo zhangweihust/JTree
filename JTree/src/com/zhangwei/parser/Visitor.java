@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Mon Nov 30 11:28:10 CST 2015
+ * Produced : Mon Nov 30 15:53:26 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -84,6 +84,8 @@ public interface Visitor
   public Object visit(Rule_classSuper rule);
   public Object visit(Rule_classSource rule);
   public Object visit(Rule_classImplements rule);
+  public Object visit(Rule_classNameSelf rule);
+  public Object visit(Rule_classNameSuper rule);
   public Object visit(Rule_methodLocals rule);
   public Object visit(Rule_methodParam rule);
   public Object visit(Rule_methodPrologue rule);
@@ -370,8 +372,6 @@ public interface Visitor
 
   public Object visit(Terminal_StringValue value);
   public Object visit(Terminal_NumericValue value);
-public Object visit(Rule_classNameSelf rule_classNameSelf);
-public Object visit(Rule_classNameSuper rule_classNameSuper);
 }
 
 /* -----------------------------------------------------------------------------

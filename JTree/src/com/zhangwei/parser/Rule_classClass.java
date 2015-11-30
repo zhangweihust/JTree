@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Mon Nov 30 12:22:34 CST 2015
+ * Produced : Mon Nov 30 15:53:26 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -214,7 +214,7 @@ final public class Rule_classClass extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_className.parse(context);
+            rule = Rule_classNameSelf.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);

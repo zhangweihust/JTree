@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Mon Nov 30 12:22:34 CST 2015
+ * Produced : Mon Nov 30 15:53:26 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -876,6 +876,30 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</classImplements>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_classNameSelf rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<classNameSelf>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</classNameSelf>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_classNameSuper rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<classNameSuper>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</classNameSuper>");
     terminal = false;
     return null;
   }

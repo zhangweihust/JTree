@@ -94,10 +94,13 @@ todoStubLine = *(VCHAR / padding);
 classHeader = *skipLine classClass *skipLine classSuper *skipLine [classSource] *skipLine *classImplements *skipLine;
 
 #class directive statements
-classClass = optPadding dirClass padding *((accessMode / interfaceMode) padding) optPadding className optPadding [comment];
-classSuper = optPadding dirSuper padding className optPadding comment;
+classClass = optPadding dirClass padding *((accessMode / interfaceMode) padding) optPadding classNameSelf optPadding [comment];
+classSuper = optPadding dirSuper padding classNameSuper optPadding comment;
 classSource = optPadding dirSource padding fileName optPadding comment;
 classImplements = optPadding dirImplements padding className optPadding [comment];
+
+classNameSelf = className;
+classNameSuper = className;
 
 #method directive statements
 methodLocals = optPadding ".locals" padding intValue optPadding comment;
