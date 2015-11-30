@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- * Rule_dirEndMethod.java
+ * Rule_classNameSuper.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
@@ -12,9 +12,9 @@ package com.zhangwei.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_dirEndMethod extends Rule
+final public class Rule_classNameSuper extends Rule
 {
-  private Rule_dirEndMethod(String spelling, ArrayList<Rule> rules)
+  private Rule_classNameSuper(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_dirEndMethod extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_dirEndMethod parse(ParserContext context)
+  public static Rule_classNameSuper parse(ParserContext context)
   {
-    context.push("dirEndMethod");
+    context.push("classNameSuper");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -46,37 +46,7 @@ final public class Rule_dirEndMethod extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_dirEnd.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Rule_padding.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Terminal_StringValue.parse(context, "method");
+            rule = Rule_className.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);
@@ -94,13 +64,13 @@ final public class Rule_dirEndMethod extends Rule
 
     rule = null;
     if (parsed)
-      rule = new Rule_dirEndMethod(context.text.substring(s0, context.index), e0);
+      rule = new Rule_classNameSuper(context.text.substring(s0, context.index), e0);
     else
       context.index = s0;
 
-    context.pop("dirEndMethod", parsed);
+    context.pop("classNameSuper", parsed);
 
-    return (Rule_dirEndMethod)rule;
+    return (Rule_classNameSuper)rule;
   }
 }
 

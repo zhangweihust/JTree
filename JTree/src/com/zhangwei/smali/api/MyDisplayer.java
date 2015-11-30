@@ -243,7 +243,7 @@ public class MyDisplayer extends Displayer {
 	}
 	
 	private void Log(String str){
-		System.out.println(str);
+//		System.out.println(str);
 	}
 
 }
