@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Fri Nov 27 17:37:11 CST 2015
+ * Produced : Mon Nov 30 11:28:10 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -190,6 +190,7 @@ public class Parser
     else if (rulename.equalsIgnoreCase("longValue")) rule = Rule_longValue.parse(context);
     else if (rulename.equalsIgnoreCase("strValue")) rule = Rule_strValue.parse(context);
     else if (rulename.equalsIgnoreCase("nullValue")) rule = Rule_nullValue.parse(context);
+    else if (rulename.equalsIgnoreCase("enumValue")) rule = Rule_enumValue.parse(context);
     else if (rulename.equalsIgnoreCase("value")) rule = Rule_value.parse(context);
     else if (rulename.equalsIgnoreCase("codeLabel")) rule = Rule_codeLabel.parse(context);
     else if (rulename.equalsIgnoreCase("codeRegisterP")) rule = Rule_codeRegisterP.parse(context);

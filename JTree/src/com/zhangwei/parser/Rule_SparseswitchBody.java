@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Fri Nov 27 18:08:02 CST 2015
+ * Produced : Mon Nov 30 12:22:34 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -166,7 +166,7 @@ final public class Rule_SparseswitchBody extends Rule
                   int c2 = 0;
                   for (int i2 = 0; i2 < 1 && f2; i2++)
                   {
-                    rule = Rule_CRLF.parse(context);
+                    rule = Rule_comment.parse(context);
                     if ((f2 = rule != null))
                     {
                       e2.add(rule);

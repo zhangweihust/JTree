@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Fri Nov 27 17:37:11 CST 2015
+ * Produced : Mon Nov 30 12:22:34 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -161,6 +161,11 @@ public class Displayer implements Visitor
   }
 
   public Object visit(Rule_nullValue rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_enumValue rule)
   {
     return visitRules(rule.rules);
   }

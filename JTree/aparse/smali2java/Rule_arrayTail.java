@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Fri Nov 27 17:37:11 CST 2015
+ * Produced : Mon Nov 30 12:22:34 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -91,7 +91,7 @@ final public class Rule_arrayTail extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_CRLF.parse(context);
+            rule = Rule_comment.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);

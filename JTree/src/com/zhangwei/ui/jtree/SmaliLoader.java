@@ -109,8 +109,14 @@ public class SmaliLoader {
 	            	if(monitor.isCanceled()){
 	            		break;
 	            	}
+	            	
+
 					
-	            	if(it.name.replaceAll(".smali", "").length()==1){//only rename the a,b,c,d ...
+	            	if(it.name.replaceAll(".smali", "").length()<=2){//only rename the a,b,c,d ...or ab
+		            	if(it.classHeader==null || it.classHeader.classNameSelf==null){
+		            		System.err.println("class parse null:" + it.name + ", classHeader:" + it.classHeader);
+		            		continue;
+		            	}
 						String dst_className = it.classHeader.classNameSelf.substring(0, it.classHeader.classNameSelf.length()-1);
 						dst_className = dst_className + "_" + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper) + ";";
 						renameClass(it, it.classHeader.classNameSelf, dst_className);

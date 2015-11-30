@@ -31,4 +31,9 @@ public class HeadEntry extends CommonEntry{
 		super.id = classClass;
 		super.content = content;
 	}
+	
+	public String toString(){
+
+		return "classClass:" + classClass + ", classSuper:" + classSuper + ", classNameSelf:" + classNameSelf + ", classNameSuper:" + classNameSuper;
+	}
 }

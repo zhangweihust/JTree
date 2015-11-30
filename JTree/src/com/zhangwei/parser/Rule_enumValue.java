@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- * Rule_cmdConst16.java
+ * Rule_enumValue.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
@@ -12,9 +12,9 @@ package com.zhangwei.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_cmdConst16 extends Rule
+final public class Rule_enumValue extends Rule
 {
-  private Rule_cmdConst16(String spelling, ArrayList<Rule> rules)
+  private Rule_enumValue(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_cmdConst16 extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_cmdConst16 parse(ParserContext context)
+  public static Rule_enumValue parse(ParserContext context)
   {
-    context.push("cmdConst16");
+    context.push("enumValue");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -46,82 +46,7 @@ final public class Rule_cmdConst16 extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_optPadding.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Terminal_StringValue.parse(context, "const/16");
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Rule_padding.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Rule_codeRegisterVDst.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Rule_listSeparator.parse(context);
-            if ((f1 = rule != null))
-            {
-              e1.add(rule);
-              c1++;
-            }
-          }
-          parsed = c1 == 1;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          int c1 = 0;
-          for (int i1 = 0; i1 < 1 && f1; i1++)
-          {
-            rule = Rule_intValue.parse(context);
+            rule = Terminal_StringValue.parse(context, ".enum");
             if ((f1 = rule != null))
             {
               e1.add(rule);
@@ -148,58 +73,17 @@ final public class Rule_cmdConst16 extends Rule
         if (parsed)
         {
           boolean f1 = true;
-          @SuppressWarnings("unused")
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            int g1 = context.index;
-            parsed = false;
-            if (!parsed)
+            rule = Rule_type.parse(context);
+            if ((f1 = rule != null))
             {
-              {
-                ArrayList<Rule> e2 = new ArrayList<Rule>();
-                int s2 = context.index;
-                parsed = true;
-                if (parsed)
-                {
-                  boolean f2 = true;
-                  int c2 = 0;
-                  for (int i2 = 0; i2 < 1 && f2; i2++)
-                  {
-                    rule = Rule_padding.parse(context);
-                    if ((f2 = rule != null))
-                    {
-                      e2.add(rule);
-                      c2++;
-                    }
-                  }
-                  parsed = c2 == 1;
-                }
-                if (parsed)
-                {
-                  boolean f2 = true;
-                  int c2 = 0;
-                  for (int i2 = 0; i2 < 1 && f2; i2++)
-                  {
-                    rule = Rule_commentSequence.parse(context);
-                    if ((f2 = rule != null))
-                    {
-                      e2.add(rule);
-                      c2++;
-                    }
-                  }
-                  parsed = c2 == 1;
-                }
-                if (parsed)
-                  e1.addAll(e2);
-                else
-                  context.index = s2;
-              }
+              e1.add(rule);
+              c1++;
             }
-            f1 = context.index > g1;
-            if (parsed) c1++;
           }
-          parsed = true;
+          parsed = c1 == 1;
         }
         if (parsed)
         {
@@ -207,7 +91,52 @@ final public class Rule_cmdConst16 extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Rule_CRLF.parse(context);
+            rule = Terminal_StringValue.parse(context, "->");
+            if ((f1 = rule != null))
+            {
+              e1.add(rule);
+              c1++;
+            }
+          }
+          parsed = c1 == 1;
+        }
+        if (parsed)
+        {
+          boolean f1 = true;
+          int c1 = 0;
+          for (int i1 = 0; i1 < 1 && f1; i1++)
+          {
+            rule = Rule_qualifier.parse(context);
+            if ((f1 = rule != null))
+            {
+              e1.add(rule);
+              c1++;
+            }
+          }
+          parsed = c1 == 1;
+        }
+        if (parsed)
+        {
+          boolean f1 = true;
+          int c1 = 0;
+          for (int i1 = 0; i1 < 1 && f1; i1++)
+          {
+            rule = Rule_COLON.parse(context);
+            if ((f1 = rule != null))
+            {
+              e1.add(rule);
+              c1++;
+            }
+          }
+          parsed = c1 == 1;
+        }
+        if (parsed)
+        {
+          boolean f1 = true;
+          int c1 = 0;
+          for (int i1 = 0; i1 < 1 && f1; i1++)
+          {
+            rule = Rule_type.parse(context);
             if ((f1 = rule != null))
             {
               e1.add(rule);
@@ -225,13 +154,13 @@ final public class Rule_cmdConst16 extends Rule
 
     rule = null;
     if (parsed)
-      rule = new Rule_cmdConst16(context.text.substring(s0, context.index), e0);
+      rule = new Rule_enumValue(context.text.substring(s0, context.index), e0);
     else
       context.index = s0;
 
-    context.pop("cmdConst16", parsed);
+    context.pop("enumValue", parsed);
 
-    return (Rule_cmdConst16)rule;
+    return (Rule_enumValue)rule;
   }
 }
 

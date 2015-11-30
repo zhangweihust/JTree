@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Fri Nov 27 17:37:11 CST 2015
+ * Produced : Mon Nov 30 11:28:10 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -42,6 +42,7 @@ public interface Visitor
   public Object visit(Rule_longValue rule);
   public Object visit(Rule_strValue rule);
   public Object visit(Rule_nullValue rule);
+  public Object visit(Rule_enumValue rule);
   public Object visit(Rule_value rule);
   public Object visit(Rule_codeLabel rule);
   public Object visit(Rule_codeRegisterP rule);

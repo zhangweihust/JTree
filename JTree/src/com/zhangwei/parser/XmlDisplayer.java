@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Fri Nov 27 17:37:11 CST 2015
+ * Produced : Mon Nov 30 11:28:10 CST 2015
  *
  * -----------------------------------------------------------------------------
  */
@@ -372,6 +372,18 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</nullValue>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_enumValue rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<enumValue>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</enumValue>");
     terminal = false;
     return null;
   }

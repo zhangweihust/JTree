@@ -46,7 +46,8 @@ floatValue = doubleValue %x66;
 longValue = longHexValue / longDecValue;
 strValue = QUOT *(("\" QUOT) / SINGLE_QUOT / VCHAR_WITHOUT_QUOT ) QUOT;
 nullValue = "null";
-value = byteValue / longValue / boolValue / shortValue / floatValue / doubleValue / nullValue / intValue / charValue / strValue;
+enumValue = ".enum" optPadding type "->" qualifier COLON type;
+value = byteValue / longValue / boolValue / shortValue / floatValue / doubleValue / nullValue / intValue / charValue / strValue / enumValue;
 codeLabel = COLON qualifier;
 codeRegisterP = "p" intDecValue;
 codeRegisterP64 = "p" intDecValue;
@@ -93,134 +94,85 @@ todoStubLine = *(VCHAR / padding);
 classHeader = *skipLine classClass *skipLine classSuper *skipLine [classSource] *skipLine *classImplements *skipLine;
 
 #class directive statements
-classClass = optPadding dirClass padding *((accessMode / interfaceMode) padding) optPadding className optPadding [CRLF];
-classSuper = optPadding dirSuper padding className optPadding CRLF;
-classSource = optPadding dirSource padding fileName optPadding CRLF;
-classImplements = optPadding dirImplements padding className optPadding [CRLF];
+classClass = optPadding dirClass padding *((accessMode / interfaceMode) padding) optPadding className optPadding [comment];
+classSuper = optPadding dirSuper padding className optPadding comment;
+classSource = optPadding dirSource padding fileName optPadding comment;
+classImplements = optPadding dirImplements padding className optPadding [comment];
 
 #method directive statements
-methodLocals = optPadding ".locals" padding intValue optPadding CRLF;
-methodParam = optPadding dirParameter [(padding (value / qualifier))] [comment] [annotation] [dirEndParameter] optPadding CRLF;
+methodLocals = optPadding ".locals" padding intValue optPadding comment;
+methodParam = optPadding dirParameter [(padding (value / qualifier))] [comment] [annotation] [optPadding dirEndParameter] optPadding comment;
 
 ###    .param p3    # Ljava/lang/String;
 ###        .annotation build Lorg/eclipse/jdt/annotation/NonNull;
 ###        .end annotation
 ###    .end param
-#methodParam =/ optPadding ".param" optPadding qualifier optPadding (comment / CRLF);
+#methodParam =/ optPadding ".param" optPadding qualifier optPadding comment;
 
 
-#methodParam =/ ((optPadding ".parameter" optPadding CRLF) [annotation] (optPadding dirEndParameter optPadding CRLF));
-methodPrologue = optPadding ".prologue" optPadding CRLF;
-methodLine = optPadding ".line" padding intValue optPadding CRLF;
-methodRegisters = optPadding ".registers" padding intValue optPadding CRLF;
-methodLocal = optPadding ".local" padding todoStubLine CRLF;
-methodLocal =/ optPadding ".local" padding qualifier ["," qualifier ":" className] optPadding (comment / CRLF) ;
-methodLocal =/ optPadding ".restart" padding "local" padding qualifier ["," qualifier ":" className] optPadding (comment / CRLF) ;
-methodLocal =/ optPadding ".end" padding "local" padding qualifier optPadding (comment / CRLF) ;
+#methodParam =/ ((optPadding ".parameter" optPadding comment) [annotation] (optPadding dirEndParameter optPadding comment));
+methodPrologue = optPadding ".prologue" optPadding comment;
+methodLine = optPadding ".line" padding intValue optPadding comment;
+methodRegisters = optPadding ".registers" padding intValue optPadding comment;
+methodLocal = optPadding ".local" padding todoStubLine comment;
+methodLocal =/ optPadding ".local" padding qualifier ["," qualifier ":" className] optPadding comment;
+methodLocal =/ optPadding ".restart" padding "local" padding qualifier ["," qualifier ":" className] optPadding comment ;
+methodLocal =/ optPadding ".end" padding "local" padding qualifier optPadding comment ;
 
-annotation = optPadding dirAnnotation padding annotationVisibility padding className optPadding CRLF *(annotationBody) optPadding dirEndAnnotation optPadding [CRLF];
+annotation = optPadding dirAnnotation [optPadding annotationVisibility] padding type optPadding comment *(annotationBody) optPadding dirEndAnnotation optPadding [comment];
 annotationVisibility = "build" / "system" / "runtime";
-annotationBody = optPadding "value" optPadding  EQ optPadding "{" optPadding CRLF  1*subannotationBodyValue optPadding "}" optPadding CRLF;
-annotationBody =/ optPadding "value" optPadding  EQ optPadding (smaliMethodRef / smaliFieldRef / smaliClassRef) optPadding CRLF;
-annotationBody =/ optPadding "value" optPadding  EQ optPadding subannotationBodyValue;
-annotationBody =/ optPadding "value" optPadding EQ subannotation;
-annotationBody =/ optPadding ("accessFlags" / "name") optPadding  EQ optPadding value optPadding CRLF;
+annotationBody = optPadding qualifier optPadding  EQ optPadding "{" optPadding comment  1*subannotationBodyValue optPadding "}" optPadding comment;
+annotationBody =/ optPadding qualifier optPadding  EQ optPadding (smaliMethodRef / smaliFieldRef / smaliClassRef) optPadding comment;
+annotationBody =/ optPadding qualifier optPadding  EQ optPadding subannotationBodyValue;
+annotationBody =/ optPadding qualifier optPadding EQ subannotation;
+annotationBody =/ optPadding qualifier optPadding  EQ optPadding value optPadding comment;
 annotationBody =/ subannotationBody;
 
+subannotation = optPadding dirSubannotation optPadding [className optPadding] comment *(subannotationBody) optPadding dirEndSubannotation optPadding comment;
+subannotationBody = optPadding [qualifier  optPadding EQ] subannotationBodyValue;
+subannotationBody =/ optPadding [qualifier optPadding  EQ] optPadding subannotation;
+subannotationBody =/ optPadding [qualifier optPadding  EQ] optPadding "{" optPadding comment  1*subannotationBodyValue optPadding "}" optPadding comment;
 
-###
-###                booleanValue = false
-###                shortValue = 3s
-###                longValue = 5l
-###                doubleValue = 7.0
-###                stringValue = "8"
-###                stringValue = "9"
-###         .enum Ljava/lang/annotation/ElementType;->TYPE:Ljava/lang/annotation/ElementType;,
-###         .enum Ljava/lang/annotation/ElementType;->FIELD:Ljava/lang/annotation/ElementType;,
-###         .enum Ljava/lang/annotation/ElementType;->METHOD:Ljava/lang/annotation/ElementType;,
-###         .enum Ljava/lang/annotation/ElementType;->PARAMETER:Ljava/lang/annotation/ElementType;,
-###         .enum Ljava/lang/annotation/ElementType;->LOCAL_VARIABLE:Ljava/lang/annotation/ElementType;
-###                subAnnotationValue = .subannotation LSubAnnotation;
-###                                            stringValue = "9"
-###                                     .end subannotation
-###                typeValue = L10;
-###                methodValue = L10;->11()V
-###                enumValue = .enum LEnum;->12:LEnum;  
-###
-###
-
-###    value = .subannotation LRecursiveAnnotation;
-###                value = .subannotation LRecursiveAnnotation;
-###                        .end subannotation
-###            .end subannotation
-
-subannotation = optPadding dirSubannotation optPadding [className optPadding] CRLF *(subannotationBody) optPadding dirEndSubannotation optPadding CRLF;
-subannotationBody = optPadding "booleanValue"  optPadding EQ optPadding boolValue optPadding CRLF;
-subannotationBody =/ optPadding "byteValue"  optPadding EQ optPadding byteValue optPadding CRLF;
-subannotationBody =/ optPadding "charValue"  optPadding EQ optPadding charValue optPadding CRLF;
-subannotationBody =/ optPadding "shortValue"  optPadding EQ optPadding shortValue optPadding CRLF;
-subannotationBody =/ optPadding "intValue"  optPadding EQ optPadding intValue optPadding CRLF;
-subannotationBody =/ optPadding "longValue"  optPadding EQ optPadding longValue optPadding CRLF; 
-subannotationBody =/ optPadding "floatValue"  optPadding EQ optPadding floatValue optPadding CRLF;
-subannotationBody =/ optPadding "doubleValue"  optPadding EQ optPadding doubleValue optPadding CRLF;
-subannotationBody =/ optPadding "stringValue"  optPadding EQ optPadding strValue optPadding CRLF;
-
-subannotationBody =/ optPadding "typeValue"  optPadding  EQ optPadding className optPadding CRLF;
-subannotationBody =/ optPadding "methodValue"  optPadding  EQ optPadding smaliMethodRef optPadding CRLF;
-subannotationBody =/ optPadding "enumValue"  optPadding  EQ optPadding ".enum LEnum;->" qualifier ":LEnum;" optPadding CRLF;
-subannotationBody =/ optPadding "value" optPadding  EQ optPadding ( smaliMethodRef / smaliFieldRef / smaliClassRef) [","] optPadding CRLF;
-subannotationBody =/ optPadding "value" optPadding  EQ optPadding subannotation;
-subannotationBody =/ optPadding "value" optPadding  EQ optPadding "{" optPadding CRLF  1*subannotationBodyValue optPadding "}" optPadding CRLF;
-subannotationBody =/ optPadding "subAnnotationValue"  optPadding EQ optPadding subannotation;
-subannotationBody =/ optPadding qualifier optPadding  EQ optPadding value [","] optPadding CRLF;
-
-
-#subannotationBody =/ optPadding ("methodValue" / "enumValue" / "typeValue" / qualifier)  optPadding  EQ optPadding  (smaliMethodRef / smaliFieldRef / smaliClassRef) [","] optPadding CRLF;
-
-
-
-subannotationBodyValue =  optPadding ".enum" optPadding className "->" ("CLASS" / "TYPE" / "FIELD" / "METHOD" / "PARAMETER" / "CONSTRUCTOR" / "LOCAL_VARIABLE" / "RUNTIME") ":" className [","] optPadding CRLF;
-subannotationBodyValue =/ optPadding [qualifier optPadding  EQ optPadding]   (smaliMethodRef / smaliFieldRef / smaliClassRef / value) [","]  optPadding CRLF;
-
+subannotationBodyValue = optPadding (value/className)  [","] optPadding comment;
 
 
 #####SMALI FIELD RULES#####
 classFieldName = qualifier;
 classFieldType = type;
-classField = optPadding dirField padding *(accessMode padding) classFieldName COLON classFieldType optPadding [EQ optPadding value] optPadding CRLF  [annotation] [dirEndField optPadding CRLF];
+classField = optPadding dirField padding *(accessMode padding) classFieldName COLON classFieldType optPadding [EQ optPadding value] optPadding comment  [annotation] [dirEndField optPadding comment];
 
 array = arrayHead *arrayBody arrayTail;
-arrayHead = optPadding dirArrayData optPadding [value] optPadding CRLF;
+arrayHead = optPadding dirArrayData optPadding [value] optPadding comment;
 arrayValue = value ["t" / "x" / "d" / "b" / "s"];
-arrayBody = *(padding / arrayValue)  CRLF;
-arrayTail = optPadding  dirEndArrayData optPadding CRLF;
+arrayBody = *(padding / arrayValue)  comment;
+arrayTail = optPadding  dirEndArrayData optPadding comment;
 
-switch = optPadding "packed-switch" optPadding value listSeparator codeLabel optPadding CRLF;
-#packedswitch =  [optPadding ".end"] optPadding [ "packed-switch" / (".packed-switch" optPadding value) ] optPadding CRLF;
-packedswitch = (optPadding ".end" optPadding "packed-switch" optPadding CRLF);
-packedswitch =/ (optPadding "packed-switch" optPadding  CRLF);
-packedswitch =/ (optPadding ".packed-switch" optPadding value optPadding CRLF);
+switch = optPadding "packed-switch" optPadding value listSeparator codeLabel optPadding comment;
+#packedswitch =  [optPadding ".end"] optPadding [ "packed-switch" / (".packed-switch" optPadding value) ] optPadding comment;
+packedswitch = (optPadding ".end" optPadding "packed-switch" optPadding comment);
+packedswitch =/ (optPadding "packed-switch" optPadding  comment);
+packedswitch =/ (optPadding ".packed-switch" optPadding value optPadding comment);
 
 #0x1 -> :sswitch_7
-SparseswitchBody = *(optPadding intValue optPadding "->" optPadding codeLabel optPadding CRLF);
-Sparseswitch = optPadding dirSparseswitch optPadding CRLF  SparseswitchBody optPadding dirEndSparseswitch optPadding CRLF;
+SparseswitchBody = *(optPadding intValue optPadding "->" optPadding codeLabel optPadding comment);
+Sparseswitch = optPadding dirSparseswitch optPadding comment  SparseswitchBody optPadding dirEndSparseswitch optPadding comment;
 
 #.catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 #.catchall {:try_start_1 .. :try_end_1} :catchall_1
-catchClause = BRACE_PRE optPadding codeLabel  optPadding DOT DOT optPadding codeLabel optPadding BRACE_POS optPadding codeLabel optPadding CRLF;
+catchClause = BRACE_PRE optPadding codeLabel  optPadding DOT DOT optPadding codeLabel optPadding BRACE_POS optPadding codeLabel optPadding comment;
 catch = optPadding ".catch" optPadding className optPadding catchClause;
 catchall = optPadding ".catchall" optPadding catchClause;
 
 #####SMALI METHOD RULES#####
 classMethodName = qualifier;
 classMethodProtoOfMethod = classMethodProto;
-classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / classMethodName) optPadding classMethodProtoOfMethod optPadding CRLF methodBody optPadding dirEndMethod optPadding [CRLF];
+classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / classMethodName) optPadding classMethodProtoOfMethod optPadding comment methodBody optPadding dirEndMethod optPadding [comment];
 classMethod =/ annotation;
 classConstructorName = "constructor" padding smaliConstructorName;
 classMethodProto = %x28 *type %x29 type;
 methodBody = *(methodLocals / methodRegisters / methodParam / annotation / methodPrologue / methodLine / methodLocal / cmdAny / label / catch / catchall / switch / packedswitch / Sparseswitch / array / skipLine);
 
-label = optPadding codeLabel optPadding [commentSequence] CRLF;
+label = optPadding codeLabel optPadding comment;
 
 
 
