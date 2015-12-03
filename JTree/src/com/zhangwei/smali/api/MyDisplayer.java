@@ -11,6 +11,7 @@ import com.zhangwei.parser.Rule_classMethod;
 import com.zhangwei.parser.Rule_classMethodName;
 import com.zhangwei.parser.Rule_classMethodProto;
 import com.zhangwei.parser.Rule_classMethodProtoOfMethod;
+import com.zhangwei.parser.Rule_className;
 import com.zhangwei.parser.Rule_classNameSelf;
 import com.zhangwei.parser.Rule_classNameSuper;
 import com.zhangwei.parser.Rule_classSuper;
@@ -162,6 +163,20 @@ public class MyDisplayer extends Displayer {
 		
 		return ret;
 	}
+	
+	@Override
+	public Object visit(Rule_className rule){
+		Log("<className>");
+		Object ret = visitRules(rule.rules);
+		Log("</className>");
+		
+		smali_entry.putItRefClassName(rule.toString());
+		
+		
+		return ret;
+	}
+	
+	
 
 	//------------------------------classMethod----------------------------
 	@Override

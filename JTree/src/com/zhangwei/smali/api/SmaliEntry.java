@@ -7,6 +7,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
 
@@ -15,6 +20,7 @@ import com.zhangwei.parser.Rule;
 import com.zhangwei.parser.Rule_smali;
 import com.zhangwei.parser.Visitor;
 import com.zhangwei.ui.jtree.SmaliLoader;
+import com.zhangwei.utils.StringHelper;
 
 /**
  *  代表一个smali文件
@@ -33,11 +39,16 @@ public class SmaliEntry {
 	public ArrayList<FieldEntry> entry_field_array;
 	public ArrayList<MethodEntry> entry_method_array;
 	
+	public Map<String, String> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
+	public Map<String, String> refItClassNames; //谁使用了它map
+	
 	public SmaliEntry(File file, boolean isFile, String name){
 		this.file = file;	
 		this.isFile = isFile;
 		this.name = name;
 		this.children = new Vector<SmaliEntry>(); 
+		this.itRefClassNames = new HashMap<String, String>();
+		this.refItClassNames = new HashMap<String, String>();
 	}
 	
 	/**
@@ -73,8 +84,10 @@ public class SmaliEntry {
 			String content = getFileContent();
 			
 			if(content.contains(src_className)){
+				String src_className2 = StringHelper.escapeExprSpecialWord(src_className);
+				String dst_className2 = StringHelper.escapeExprSpecialWord(dst_className);
 				/*String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));*/
-				String newContent = content.replace(src_className, dst_className);
+				String newContent = content.replace(src_className2, dst_className2);
 				setFileContent(newContent);
 				return true;
 			}else{
@@ -438,6 +451,8 @@ public class SmaliEntry {
 		last.classFieldType= classFieldType;
 	}
 	
+
+	
 	public void close_classField() {
 		// TODO Auto-generated method stub
 		FieldEntry last = entry_field_array.get(entry_field_array.size()-1);
@@ -482,6 +497,48 @@ public class SmaliEntry {
 		// TODO Auto-generated method stub
 		MethodEntry last = entry_method_array.get(entry_method_array.size()-1);
 		last.close();
+	}
+	
+	public void renameRefItClassName(String oldClzName, String newClzName){
+		refItClassNames.remove(oldClzName);
+		refItClassNames.put(newClzName, newClzName);
+	}
+	
+	public void renameItRefClassName(String oldClzName, String newClzName){
+		itRefClassNames.remove(oldClzName);
+		itRefClassNames.put(newClzName, newClzName);
+	}
+	
+	public void putItRefClassName(String clzName){
+		itRefClassNames.put(clzName, clzName);
+	}
+	
+	public void putRefItClassName(String clzName){
+		refItClassNames.put(clzName, clzName);
+	}
+	
+	/**
+	 * @return 返回该smali里面涉及到的类名（它使用了谁，但是谁使用了它不知道）
+	 * */
+	public List<String> getItRefClassList(){
+		List<String> array = new ArrayList<String>();
+		for (String v : itRefClassNames.values()){
+			array.add(v);
+		}
+		
+		return array;
+	}
+	
+	/**
+	 * @return 返回该谁使用了它
+	 * */
+	public List<String> getRefItClassList(){
+		List<String> array = new ArrayList<String>();
+		for (String v : refItClassNames.values()){
+			array.add(v);
+		}
+		
+		return array;
 	}
 	
 	public String toString() {

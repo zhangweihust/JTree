@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,8 +25,8 @@ public class SmaliLoader {
 	
 	private ArrayList<File> list;
 	private Set<SmaliEntry> smailMap; //path --> smaliEntry , 只用到了value，key没有使用到
-	private Map<String, SmaliEntry> old_classMap; //className --> smaliEntry
-	private Map<String, SmaliEntry> new_classMap; //className --> smaliEntry
+	private Map<String, SmaliEntry> classMap; //className --> smaliEntry
+//	private Map<String, SmaliEntry> new_classMap; //className --> smaliEntry
 	
 	private MyParser myParser;
 	
@@ -36,8 +37,8 @@ public class SmaliLoader {
 	private SmaliLoader(){
 		list = new ArrayList<File>();
 		smailMap = new HashSet<SmaliEntry>();
-		old_classMap = new HashMap<String, SmaliEntry>();
-		new_classMap = new HashMap<String, SmaliEntry>();
+		classMap = new HashMap<String, SmaliEntry>();
+//		new_classMap = new HashMap<String, SmaliEntry>();
 		myParser = new MyParser();
 	}
 	
@@ -49,24 +50,51 @@ public class SmaliLoader {
 		return ins;
 	}
 	
+	/**
+	 * 注意：重命名该类时，需要同步将子类的it.classHeader.classNameSuper也改过来
+	 * 子类的smali一定有父类名，但是父类不一定有子类名
+	 * */
 	public void renameClass(SmaliEntry se, String src_className, String dst_className){
 		boolean ret = se.renameClassFile(src_className, dst_className);
 		
 		if(ret){
-//			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
-//				SmaliEntry se_item = item.getValue();
+			//谁使用(引用)了它
+			List<String> reItfList = se.getRefItClassList();
+			for(String refClz : reItfList) {
+				SmaliEntry se_item = classMap.get(refClz);
+				if(se_item!=null){
+					if(se_item.classHeader.classNameSuper.equals(src_className)){
+						//如果 ‘谁/se_item’ 是子类
+						String src_className2 = StringHelper.escapeExprSpecialWord(src_className);
+						String dst_className2 = StringHelper.escapeExprSpecialWord(dst_className);
+						se_item.classHeader.classSuper.replaceAll(src_className2, dst_className2);
+						se_item.classHeader.classNameSuper = dst_className;
+					}
+					se_item.renameClassContent(src_className, dst_className);
+					se_item.renameItRefClassName(src_className, dst_className);
+				}
+			}
+			
+			//它使用（引用）了谁，将谁的itRef改正过来
+			List<String> itRefList = se.getRefItClassList(); //谁使用(引用)了它
+			for(String refClz : itRefList) {
+				SmaliEntry se_item = classMap.get(refClz);
+				if(se_item!=null){
+					se_item.renameRefItClassName(src_className, dst_className);
+				}
+			}
+			
+//			Iterator<SmaliEntry> iterator = smailMap.iterator();
+//			while(iterator.hasNext()){
+//				SmaliEntry se_item = iterator.next();
 //				se_item.renameClassContent(src_className, dst_className);
 //			}
 			
-			Iterator<SmaliEntry> iterator = smailMap.iterator();
-			while(iterator.hasNext()){
-				SmaliEntry se_item = iterator.next();
-				se_item.renameClassContent(src_className, dst_className);
-			}
-			
 			se.renameClass(src_className, dst_className);
-//			classMap.remove(src_className); // 旧key不删
-			new_classMap.put(dst_className, se);
+
+//			new_classMap.put(dst_className, se);
+			classMap.remove(src_className);
+			classMap.put(dst_className, se);
 			
 		}
 
@@ -144,7 +172,8 @@ public class SmaliLoader {
         	
         	//0. 父类需要rename，先处理父类，然后同步到本类的结构
         	if(StringHelper.needRename(superShortName)){
-        		SmaliEntry parent = old_classMap.get(it.classHeader.classNameSuper);
+        		//需防止父类先rename，子类的it.classHeader.classNameSuper还是旧的，这样导致找不到父类
+        		SmaliEntry parent = classMap.get(it.classHeader.classNameSuper); 
         		
         		//如果父类找不到，则不处理
         		if(parent!=null){
@@ -167,7 +196,7 @@ public class SmaliLoader {
 			renameClass(it, it.classHeader.classNameSelf, new_dst_className);
 			
 			//2. rename本类内部实现的匿名类
-			Iterator<Entry<String, SmaliEntry>> iterator = old_classMap.entrySet().iterator();
+			Iterator<Entry<String, SmaliEntry>> iterator = classMap.entrySet().iterator();
 			while(iterator.hasNext()){
 				Entry<String, SmaliEntry> entry = iterator.next();
 				String key = entry.getKey();
@@ -193,6 +222,7 @@ public class SmaliLoader {
 	    	monitor.setProgress(progress);
 	    	monitor.setNote("Renamed num:" + progress + "\n file:" + it.file.getAbsolutePath());
     	}else{
+//    		new_classMap.put(it.classHeader.classNameSelf, it);
 	    	progress++;
 	    	monitor.setProgress(progress);
 	    	monitor.setNote("No Need to rename \n file:" + it.file.getAbsolutePath());
@@ -218,8 +248,8 @@ public class SmaliLoader {
 			}
 		}
 		
-		old_classMap = new_classMap;
-		new_classMap = new HashMap<String, SmaliEntry>();
+//		old_classMap = new_classMap;
+//		new_classMap = new HashMap<String, SmaliEntry>();
 		
 		System.out.println("autoRename done");
 	}
@@ -304,7 +334,7 @@ public class SmaliLoader {
     	            	//add leaf
     	            	packageEntry.children.add(smaliEntry);
     	            	smailMap.add(smaliEntry);
-    	            	old_classMap.put(smaliEntry.classHeader.classNameSelf, smaliEntry);
+    	            	classMap.put(smaliEntry.classHeader.classNameSelf, smaliEntry);
                 	}else{
                 		break; //abort if has error in parsing
                 	}
@@ -316,6 +346,24 @@ public class SmaliLoader {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		
+		System.out.println("Load root Done and build refItClassName Map...");
+		
+		//构建谁使用了它map
+		Iterator<SmaliEntry> iterator = smailMap.iterator();
+		while(iterator.hasNext()){
+			SmaliEntry se = iterator.next();
+			List<String> itReflist = se.getItRefClassList();
+			for(String clzName : itReflist){
+				SmaliEntry who = classMap.get(clzName);
+				if(who!=null){
+					who.putRefItClassName(se.classHeader.classNameSelf);
+				}
+				
+			}
+		}
+		
+		System.out.println("All Done!");
 	}
 	
 	private void loadChildren(File parent){
