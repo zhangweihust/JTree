@@ -70,5 +70,14 @@ public class StringHelper {
         }  
         return hexValue.toString();
 	}
+	
+	public static void main(String[] args){
+		String key = "Lcom/tencent/mm/d/a/cx$a";
+		String regStr = "Lcom/tencent/mm/d/a/cx\\$";
+		String replcaseStr = "Lcom/tencent/mm/d/a/cx_b\\$";
+		String out = key.replaceAll(regStr, replcaseStr);
+		System.out.println("out - " + out);
+	}
+	
 
 }

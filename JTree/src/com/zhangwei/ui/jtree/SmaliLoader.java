@@ -172,14 +172,17 @@ public class SmaliLoader {
 				Entry<String, SmaliEntry> entry = iterator.next();
 				String key = entry.getKey();
 				SmaliEntry value = entry.getValue();
-				
+				String regStr = null;
+				String new_base_className_prefix2 = null;
 				if(key.startsWith(old_base_className_prefix)){
 					try{
-						String newKey = key.replaceAll(StringHelper.escapeExprSpecialWord(old_base_className_prefix), new_base_className_prefix);
+						regStr = StringHelper.escapeExprSpecialWord(old_base_className_prefix);
+						new_base_className_prefix2 = StringHelper.escapeExprSpecialWord(new_base_className_prefix);
+						String newKey = key.replaceAll(regStr, new_base_className_prefix2);
 						renameClass(value, key, newKey);
 					}catch (Exception e){
 					  e.printStackTrace();
-					  System.out.println("value:" + value.name + "key:"+key + ", old_base_className_prefix:" + old_base_className_prefix + ", new_base_className_prefix:" + new_base_className_prefix);
+					  System.out.println("value:" + value.name + ", key:"+key + ", old_base_className_prefix:" + old_base_className_prefix + ", new_base_className_prefix2:" + new_base_className_prefix2 + ", regStr:" +regStr);
 					}
 
 					
