@@ -1,17 +1,16 @@
 package com.zhangwei.ui.jtree;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.ProgressMonitor;
-import javax.swing.Timer;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.zhangwei.smali.api.FieldEntry;
 import com.zhangwei.smali.api.MethodEntry;
@@ -24,7 +23,9 @@ public class SmaliLoader {
 	public static String rootpath = null;
 	
 	private ArrayList<File> list;
-	private HashMap<String, SmaliEntry> smailMap;
+	private Set<SmaliEntry> smailMap; //path --> smaliEntry , 只用到了value，key没有使用到
+	private Map<String, SmaliEntry> old_classMap; //className --> smaliEntry
+	private Map<String, SmaliEntry> new_classMap; //className --> smaliEntry
 	
 	private MyParser myParser;
 	
@@ -34,7 +35,9 @@ public class SmaliLoader {
 	
 	private SmaliLoader(){
 		list = new ArrayList<File>();
-		smailMap = new HashMap<String, SmaliEntry>();
+		smailMap = new HashSet<SmaliEntry>();
+		old_classMap = new HashMap<String, SmaliEntry>();
+		new_classMap = new HashMap<String, SmaliEntry>();
 		myParser = new MyParser();
 	}
 	
@@ -50,12 +53,21 @@ public class SmaliLoader {
 		boolean ret = se.renameClassFile(src_className, dst_className);
 		
 		if(ret){
-			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
-				SmaliEntry se_item = item.getValue();
+//			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
+//				SmaliEntry se_item = item.getValue();
+//				se_item.renameClassContent(src_className, dst_className);
+//			}
+			
+			Iterator<SmaliEntry> iterator = smailMap.iterator();
+			while(iterator.hasNext()){
+				SmaliEntry se_item = iterator.next();
 				se_item.renameClassContent(src_className, dst_className);
 			}
 			
 			se.renameClass(src_className, dst_className);
+//			classMap.remove(src_className); // 旧key不删
+			new_classMap.put(dst_className, se);
+			
 		}
 
 	}
@@ -65,10 +77,17 @@ public class SmaliLoader {
 		String className = se.classHeader.classNameSelf; // Lcom/b/a/a;
 		String oldFieldName = fe.classFieldName;
 		String newFieldName = s;
-		for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
-			SmaliEntry se_item = item.getValue();
+		
+		Iterator<SmaliEntry> iterator = smailMap.iterator();
+		while(iterator.hasNext()){
+			SmaliEntry se_item = iterator.next();
 			se_item.renameFieldContent(className, oldFieldName, newFieldName, fe.classFieldType);
 		}
+		
+//		for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
+//			SmaliEntry se_item = item.getValue();
+//			se_item.renameFieldContent(className, oldFieldName, newFieldName, fe.classFieldType);
+//		}
 		
 		fe.RenameName(className, oldFieldName, newFieldName, fe.classFieldType);
 	}
@@ -78,11 +97,19 @@ public class SmaliLoader {
 		String className = se.classHeader.classNameSelf; // Lcom/b/a/a;
 		String oldMethodName = me.classMethodName;
 		String newMethodName = me.classConstructorName!=null?null:s;
+		
+
+		
 		if(newMethodName!=null){
-			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
-				SmaliEntry se_item = item.getValue();
+			Iterator<SmaliEntry> iterator = smailMap.iterator();
+			while(iterator.hasNext()){
+				SmaliEntry se_item = iterator.next();
 				se_item.renameMethodContent(className, oldMethodName, newMethodName, me.classMethodProto);
 			}
+//			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
+//				SmaliEntry se_item = item.getValue();
+//				se_item.renameMethodContent(className, oldMethodName, newMethodName, me.classMethodProto);
+//			}
 			
 			me.RenameName(className, oldMethodName, newMethodName, me.classMethodProto);
 		}
@@ -95,38 +122,103 @@ public class SmaliLoader {
 		
 	}
 	
+	/**
+	 * @return 返回SmaliEntry ,  已应用新的命名 Lx/y/z;
+	 * */
+	private void autoRename(SmaliEntry it){
+
+    	if(monitor.isCanceled()){
+    		return ;
+    	}
+    	
+
+//    	String dst_className = null;
+//    	String parent_className = null;
+    	if(StringHelper.needRename(it.name)){//only rename the a,b,c,d ...or ab
+        	if(it.classHeader==null || it.classHeader.classNameSelf==null){
+        		System.err.println("class parse null:" + it.name + ", classHeader:" + it.classHeader);
+        		return ;
+        	}
+        	
+        	String superShortName = StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper);
+        	
+        	//0. 父类需要rename，先处理父类，然后同步到本类的结构
+        	if(StringHelper.needRename(superShortName)){
+        		SmaliEntry parent = old_classMap.get(it.classHeader.classNameSuper);
+        		
+        		//如果父类找不到，则不处理
+        		if(parent!=null){
+        			autoRename(parent);
+        			it.classHeader.classSuper = it.classHeader.classSuper.replace(it.classHeader.classNameSuper, parent.classHeader.classNameSelf);
+        			it.classHeader.classNameSuper = parent.classHeader.classNameSelf;
+        		}
+
+        	}
+        	
+        	String old_base_className = it.classHeader.classNameSelf; //  La/b/c;
+        	String old_tmp_name = old_base_className.substring(0, old_base_className.length()-1); //去掉; La/b/c
+        	String new_tmp_name = old_tmp_name + "_" + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper); //La/b/c_Object
+			String new_dst_className = new_tmp_name + ";"; //La/b/c_Object;
+			
+        	String old_base_className_prefix = old_tmp_name + "$";  //La/b/c$
+        	String new_base_className_prefix = new_tmp_name + "$";  //La/b/c_Object$
+        	
+			//1. rename本身
+			renameClass(it, it.classHeader.classNameSelf, new_dst_className);
+			
+			//2. rename本类内部实现的匿名类
+			Iterator<Entry<String, SmaliEntry>> iterator = old_classMap.entrySet().iterator();
+			while(iterator.hasNext()){
+				Entry<String, SmaliEntry> entry = iterator.next();
+				String key = entry.getKey();
+				SmaliEntry value = entry.getValue();
+				
+				if(key.startsWith(old_base_className_prefix)){
+					try{
+						String newKey = key.replaceAll(StringHelper.escapeExprSpecialWord(old_base_className_prefix), new_base_className_prefix);
+						renameClass(value, key, newKey);
+					}catch (Exception e){
+					  e.printStackTrace();
+					  System.out.println("value:" + value.name + "key:"+key + ", old_base_className_prefix:" + old_base_className_prefix + ", new_base_className_prefix:" + new_base_className_prefix);
+					}
+
+					
+				}
+			}
+			
+	    	progress++;
+	    	monitor.setProgress(progress);
+	    	monitor.setNote("Renamed num:" + progress + "\n file:" + it.file.getAbsolutePath());
+    	}else{
+	    	progress++;
+	    	monitor.setProgress(progress);
+	    	monitor.setNote("No Need to rename \n file:" + it.file.getAbsolutePath());
+    	}
+    	
+    	//upPublic(it);
+
+//    	return it;
+	}
+	
 	public void autoRename(Component parent){
 		if(root!=null && root.children!=null && root.children.size()>0){
 			if(smailMap!=null && smailMap.size()>0){
 				monitor = new ProgressMonitor(parent, "Renaming Progress", "Getting Started...", 0, smailMap.size());
 				progress = 0;
 				
-				Collection<SmaliEntry> collections = smailMap.values();
-				for(SmaliEntry  it : collections){
-	            	progress++;
-	            	monitor.setProgress(progress);
-	            	monitor.setNote("Renamed num:" + progress + "\n file:" + it.file.getAbsolutePath());
-	            	if(monitor.isCanceled()){
-	            		break;
-	            	}
-	            	
-
-					
-	            	if(it.name.replaceAll(".smali", "").length()<=2){//only rename the a,b,c,d ...or ab
-		            	if(it.classHeader==null || it.classHeader.classNameSelf==null){
-		            		System.err.println("class parse null:" + it.name + ", classHeader:" + it.classHeader);
-		            		continue;
-		            	}
-						String dst_className = it.classHeader.classNameSelf.substring(0, it.classHeader.classNameSelf.length()-1);
-						dst_className = dst_className + "_" + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper) + ";";
-						renameClass(it, it.classHeader.classNameSelf, dst_className);
-	            	}
-	            	
-	            	//upPublic(it);
-
+				Iterator<SmaliEntry> iterator = smailMap.iterator();
+				while(iterator.hasNext()){
+					SmaliEntry se_item = iterator.next();
+					autoRename(se_item);
 				}
+				
 			}
 		}
+		
+		old_classMap = new_classMap;
+		new_classMap = new HashMap<String, SmaliEntry>();
+		
+		System.out.println("autoRename done");
 	}
 	
 	public void autoPublic(Component parent){
@@ -135,17 +227,19 @@ public class SmaliLoader {
 				monitor = new ProgressMonitor(parent, "Renaming Progress", "Getting Started...", 0, smailMap.size());
 				progress = 0;
 				
-				Collection<SmaliEntry> collections = smailMap.values();
-				for(SmaliEntry  it : collections){
-	            	progress++;
+				Iterator<SmaliEntry> iterator = smailMap.iterator();
+				while(iterator.hasNext()){
+					SmaliEntry se_item = iterator.next();
+					progress++;
 	            	monitor.setProgress(progress);
-	            	monitor.setNote("Up-Public num:" + progress + "\n file:" + it.file.getAbsolutePath());
+	            	monitor.setNote("Up-Public num:" + progress + "\n file:" + se_item.file.getAbsolutePath());
 	            	if(monitor.isCanceled()){
 	            		break;
 	            	}	            	
-	            	upPublic(it);
-
+	            	upPublic(se_item);
 				}
+				
+
 			}
 		}
 	}
@@ -206,7 +300,8 @@ public class SmaliLoader {
     	            	
     	            	//add leaf
     	            	packageEntry.children.add(smaliEntry);
-    	            	smailMap.put(file.getAbsolutePath(), smaliEntry);
+    	            	smailMap.add(smaliEntry);
+    	            	old_classMap.put(smaliEntry.classHeader.classNameSelf, smaliEntry);
                 	}else{
                 		break; //abort if has error in parsing
                 	}

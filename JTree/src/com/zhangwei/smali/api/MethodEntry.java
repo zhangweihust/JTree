@@ -1,5 +1,7 @@
 package com.zhangwei.smali.api;
 
+import com.zhangwei.utils.StringHelper;
+
 /**
  * classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / clssMethodName) optPadding classMethodProto optPadding CRLF methodBody optPadding dirEndMethod optPadding CRLF;
  * classMethod = *accessMode [classConstructorName] classMethodProto methodBody
@@ -29,14 +31,23 @@ public class MethodEntry extends CommonEntry {
 	
 	@Override
 	public void RenameType(String classname_before, String classname_after){
-		content = content.replace(classname_before, classname_after);
-		classMethodProto = classMethodProto.replace(classname_before, classname_after);
-
-		if(classConstructorName!=null){
-			super.id = classConstructorName + "_" + classMethodProto;
-		}else{
-			super.id = classMethodName + "_" + classMethodProto;
+		if(content!=null){
+			content = content.replace(classname_before, classname_after);
 		}
+
+		if(classMethodProto!=null){
+			classMethodProto = classMethodProto.replace(classname_before, classname_after);
+			if(classConstructorName!=null){
+				super.id = classConstructorName + "_" + classMethodProto;
+			}else{
+				super.id = classMethodName + "_" + classMethodProto;
+			}
+		}else{
+			super.id = "other" + "_" + StringHelper.getMD5OfStr(content);
+		}
+
+
+
 		super.content = content;
 	}
 
