@@ -65,7 +65,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 		UIManager.put("Tree.collapsedIcon", new ImageIcon("collapsedIcon.png"));
 		UIManager.put("Tree.expandedIcon", new ImageIcon("expandedIcon.png"));
 		
-		SmaliEntry root = new SmaliEntry(new File("."), false, "root");
+		SmaliEntry root = new SmaliEntry(new File("."), false);
         tree = new SmaliTree();
         model = new SmaliTreeModel(root);
         JListDataNotify = new ArrayList<SmaliEntryChanged>();
@@ -111,7 +111,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
               SmaliTree source = (SmaliTree)actionEvent.getSource();
               TreePath tp = source.getLeadSelectionPath();
               SmaliEntry item = (SmaliEntry)tp.getLastPathComponent();
-              String rename_item_str = item.name;
+              String rename_item_str = item.toString();
               if(item.isFile()){ //rename class
             	  rename_item_str = rename_item_str.replace(".smali", "");
                   
@@ -140,7 +140,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                   
                   if(s!=null && !s.equals(item.classHeader.classNameSelf)){
                       if(item.isFile()){
-                    	  SmaliLoader.getInstance().renameClass(item, item.classHeader.classNameSelf, s);
+                    	  SmaliLoader.getInstance().renameClass(item, item.classHeader.classNameSelf, s, true);
                     	  model.Refresh();
                       }
                   }
@@ -171,27 +171,20 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                       
                       System.out.println("Rename package after input: " + s + ", packageName:" + packageName);
 
-                      if(item.children!=null && item.children.size()>0 && !s.equals(packageName)){
+                      if(item.leafChildren!=null && item.leafChildren.size()>0 && !s.equals(packageName)){
                     	  ArrayList<SmaliEntry> tmp = new ArrayList<SmaliEntry>();
-                    	  Iterator<SmaliEntry> iterator = item.children.iterator();
+                    	  Iterator<SmaliEntry> iterator = item.leafChildren.iterator();
                     	  while(iterator.hasNext()){
                     		  SmaliEntry it = iterator.next();
                     		  tmp.add(it);
-    /*                		  String subStr = it.name.replace(".smali", ""); //c.smali -> c
-                    		  String newClassName = smaliPackagePrefix + subStr + ";"; //Lcom/b/d/a/c;
-                              if(newClassName!=null && !newClassName.equals(it.classHeader.classNameSelf)){
-                                  if(it.isFile()){
-                                	  SmaliLoader.getInstance().renameClass(it, it.classHeader.classNameSelf, newClassName);
-                                  }
-                              }*/
                     	  }
                     	  
                     	  for(SmaliEntry a : tmp){
-                    		  String subStr = a.name.replace(".smali", ""); //c.smali -> c
+                    		  String subStr = a.toString().replace(".smali", ""); //c.smali -> c
                     		  String newClassName = smaliPackagePrefix + subStr + ";"; //Lcom/b/d/a/c;
                               if(newClassName!=null && !newClassName.equals(a.classHeader.classNameSelf)){
                                   if(a.isFile()){
-                                	  SmaliLoader.getInstance().renameClass(a, a.classHeader.classNameSelf, newClassName);
+                                	  SmaliLoader.getInstance().renameClass(a, a.classHeader.classNameSelf, newClassName, true);
                                   }
                               }
                     	  }
@@ -307,7 +300,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
             
             last_dir_for_chose = selectedFile.getAbsolutePath();
 			//DirLoader.getInstance().Load(entryVector, selectedFile.getAbsolutePath());
-            SmaliEntry root = new SmaliEntry(selectedFile, false, "root");
+            SmaliEntry root = new SmaliEntry(selectedFile, false);
             SmaliLoader.getInstance().loadRoot(TreePane.this, root);
 
             tree.changeRoot(root);

@@ -43,7 +43,7 @@ public class JText extends JPanel implements SmaliEntryChanged, SmaliMemberChang
 	public void EntryChanged(SmaliEntry newEntry) {
 		// TODO Auto-generated method stub
 		if(newEntry.isFile()){
-			jtextArea.setText(newEntry.getFileContent());
+			jtextArea.setText(newEntry.content);
 			verticalScrollBar.setValue(0);
 		}else{
 			jtextArea.setText(null);

@@ -55,7 +55,7 @@ public class MyParser  {
 	public boolean paser(File file){
 		boolean ret = false;
 		try{
-			SmaliEntry smaliEntry = new SmaliEntry(file, true, file.getName());
+			SmaliEntry smaliEntry = new SmaliEntry(file, true);
 		    BufferedReader in = new BufferedReader(new FileReader(file));
 		    int ch = 0;
 		    StringBuffer out = new StringBuffer();

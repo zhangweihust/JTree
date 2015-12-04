@@ -18,6 +18,7 @@ import com.zhangwei.parser.Rule_classSuper;
 import com.zhangwei.parser.Rule_smali;
 import com.zhangwei.parser.Terminal_NumericValue;
 import com.zhangwei.parser.Terminal_StringValue;
+import com.zhangwei.ui.jtree.SmaliLoader;
 
 public class MyDisplayer extends Displayer {
 	private SmaliEntry smali_entry;
@@ -170,7 +171,12 @@ public class MyDisplayer extends Displayer {
 		Object ret = visitRules(rule.rules);
 		Log("</className>");
 		
-		smali_entry.putItRefClassName(rule.toString());
+		SmaliEntry refClz = SmaliLoader.globeClassMap.get(rule.toString());
+		if(refClz!=null){
+			smali_entry.putItRefClassName(refClz);
+		}
+		
+		
 		
 		
 		return ret;

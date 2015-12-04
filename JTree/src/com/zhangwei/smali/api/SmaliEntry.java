@@ -28,27 +28,35 @@ import com.zhangwei.utils.StringHelper;
 public class SmaliEntry {
 	public static String rootPath = "";
 	
-	public Vector<SmaliEntry> children; //!isFile 才有效
-    public String name;
+	public Vector<SmaliEntry> leafChildren; //!isFile 才有效, 对应目录下的smali文件
+	public SmaliEntry fatherClass; //父类的SmaliEntry，可能为null，即在root下找不到smali文件
+//    public String fileName; //xyz.smali
 
 	public File file;
 	public boolean isFile;
 	
 	//smali = classHeader *(classField / skipLine) *(classMethod / skipLine);
 	public HeadEntry classHeader;
-	public ArrayList<FieldEntry> entry_field_array;
-	public ArrayList<MethodEntry> entry_method_array;
+	public List<FieldEntry> entry_field_array;
+	public List<MethodEntry> entry_method_array;
 	
-	public Map<String, String> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
-	public Map<String, String> refItClassNames; //谁使用了它map
+	public Set<SmaliEntry> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
+	public Set<SmaliEntry> refItClassNames; //谁使用了它map
 	
-	public SmaliEntry(File file, boolean isFile, String name){
+	public String content;
+	public boolean needWrite;
+	
+	public SmaliEntry(File file, boolean isFile){
 		this.file = file;	
 		this.isFile = isFile;
-		this.name = name;
-		this.children = new Vector<SmaliEntry>(); 
-		this.itRefClassNames = new HashMap<String, String>();
-		this.refItClassNames = new HashMap<String, String>();
+//		this.fileName = name;
+		this.leafChildren = new Vector<SmaliEntry>(); 
+		this.itRefClassNames = new HashSet<SmaliEntry>(); //new HashMap<String, String>();
+		this.refItClassNames = new HashSet<SmaliEntry>(); //new HashMap<String, String>();
+		
+		this.content = getFileContent();
+		this.needWrite = false;
+		this.fatherClass = null;
 	}
 	
 	/**
@@ -81,14 +89,15 @@ public class SmaliEntry {
 		if(isFile){
 			//step1 process content:
 
-			String content = getFileContent();
+//			String content = getFileContent();
 			
 			if(content.contains(src_className)){
 				String src_className2 = StringHelper.escapeExprSpecialWord(src_className);
 				String dst_className2 = StringHelper.escapeExprSpecialWord(dst_className);
 				/*String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));*/
-				String newContent = content.replace(src_className2, dst_className2);
-				setFileContent(newContent);
+				content = content.replace(src_className2, dst_className2);
+				needWrite = true;
+//				setFileContent(content);
 				return true;
 			}else{
 				return false;
@@ -105,7 +114,7 @@ public class SmaliEntry {
 		if(isFile){
 			//step1 process content:
 
-			String content = getFileContent();
+//			String content = getFileContent();
 			String oldName = /*className + "->" +*/ oldFieldName + ":" + classFieldType;
 			String newName = /*className + "->" +*/ newFieldName + ":" + classFieldType;
 			
@@ -114,7 +123,8 @@ public class SmaliEntry {
 				if(content.contains(oldFieldName)){
 					//content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
 					content = content.replace(" " + oldName, " " + newName);
-					setFileContent(content);
+					needWrite = true;
+//					setFileContent(content);
 				}
 			}
 			
@@ -123,7 +133,8 @@ public class SmaliEntry {
 						Matcher.quoteReplacement(" " + className + "->" +oldName), 
 						Matcher.quoteReplacement(" " + className + "->" +newName));*/
 				content = content.replace(" " + className + "->" +oldName, " " + className + "->" +newName);
-				setFileContent(content);
+				needWrite = true;
+//				setFileContent(content);
 				return true;
 			}else{
 				return false;
@@ -141,7 +152,7 @@ public class SmaliEntry {
 		if(isFile){
 			//step1 process content:
 
-			String content = getFileContent();
+//			String content = getFileContent();
 			String oldName = /*className + "->" +*/ oldMethodName + classMethodProto;
 			String newName = /*className + "->" +*/ newMethodName + classMethodProto;
 			
@@ -150,7 +161,8 @@ public class SmaliEntry {
 				if(content.contains(oldMethodName)){
 					//content = content.replaceAll(Matcher.quoteReplacement(" " + oldName), Matcher.quoteReplacement(" " + newName));
 					content = content.replace(" " + oldName, " " + newName);
-					setFileContent(content);
+					needWrite = true;
+//					setFileContent(content);
 				}
 			}
 			
@@ -159,7 +171,8 @@ public class SmaliEntry {
 						Matcher.quoteReplacement(" " + className + "->" +oldName), 
 						Matcher.quoteReplacement(" " + className + "->" +newName));*/
 				content = content.replace(" " + className + "->" +oldName, " " + className + "->" +newName);
-				setFileContent(content);
+				needWrite = true;
+//				setFileContent(content);
 				return true;
 			}else{
 				return false;
@@ -175,7 +188,7 @@ public class SmaliEntry {
 	 * */
 	public void upPublic() {
 		// TODO Auto-generated method stub
-		String content = getFileContent();
+//		String content = getFileContent();
 		if(content!=null){
 			String[] lines = content.split("\n");
 			boolean change = false;
@@ -240,16 +253,18 @@ public class SmaliEntry {
 					for(String line : lines){
 						sb.append(line + "\n");
 					}
-					setFileContent(sb.toString());
+					
+					content = sb.toString();
+					needWrite = true;
+//					setFileContent2();
 				}
 			}
 			
 
 		}
 
-
-		
 	}
+	
 	
 	/**
 	 * 将该类中出现的src类名或方法，替换为dst的类名或方法
@@ -272,7 +287,7 @@ public class SmaliEntry {
 				SmaliLoader.getInstance().changePackage(this , parentOfOld, parentOfNew);
 				file.renameTo(newFile);
 				file = newFile; 
-				name = file.getName();
+//				fileName = file.getName();
 
 				cleanEmptyDir(parentOfOld);
 				
@@ -381,6 +396,11 @@ public class SmaliEntry {
 		}
 		
 		return ret;
+	}
+	
+	// --------------------fatherClass -------------------
+	public void setFatherClass(SmaliEntry f){
+		fatherClass = f;
 	}
 
 	// ------------------------classHeader --------------------- 
@@ -499,50 +519,67 @@ public class SmaliEntry {
 		last.close();
 	}
 	
-	public void renameRefItClassName(String oldClzName, String newClzName){
-		refItClassNames.remove(oldClzName);
-		refItClassNames.put(newClzName, newClzName);
+//	public void renameRefItClassName(String oldClzName, String newClzName){
+//		refItClassNames.remove(oldClzName);
+//		refItClassNames.put(newClzName, newClzName);
+//	}
+	
+//	public void renameItRefClassName(String oldClzName, String newClzName){
+//		itRefClassNames.remove(oldClzName);
+//		itRefClassNames.put(newClzName, newClzName);
+//	}
+	
+	public void putItRefClassName(SmaliEntry clzName){
+//		itRefClassNames.put(clzName, clzName);
+		itRefClassNames.add(clzName);
 	}
 	
-	public void renameItRefClassName(String oldClzName, String newClzName){
-		itRefClassNames.remove(oldClzName);
-		itRefClassNames.put(newClzName, newClzName);
-	}
-	
-	public void putItRefClassName(String clzName){
-		itRefClassNames.put(clzName, clzName);
-	}
-	
-	public void putRefItClassName(String clzName){
-		refItClassNames.put(clzName, clzName);
+	public void putRefItClassName(SmaliEntry clzName){
+//		refItClassNames.put(clzName, clzName);
+		refItClassNames.add(clzName);
 	}
 	
 	/**
 	 * @return 返回该smali里面涉及到的类名（它使用了谁，但是谁使用了它不知道）
 	 * */
-	public List<String> getItRefClassList(){
-		List<String> array = new ArrayList<String>();
-		for (String v : itRefClassNames.values()){
-			array.add(v);
-		}
-		
-		return array;
+	public Set<SmaliEntry> getItRefClassList(){
+//		List<String> array = new ArrayList<String>();
+//		for (String v : itRefClassNames.values()){
+//			array.add(v);
+//		}
+//		
+//		return array;
+		return itRefClassNames;
 	}
 	
 	/**
 	 * @return 返回该谁使用了它
 	 * */
-	public List<String> getRefItClassList(){
-		List<String> array = new ArrayList<String>();
-		for (String v : refItClassNames.values()){
-			array.add(v);
-		}
-		
-		return array;
+	public Set<SmaliEntry> getRefItClassList(){
+//		List<String> array = new ArrayList<String>();
+//		for (String v : refItClassNames.values()){
+//			array.add(v);
+//		}
+//		
+//		return array;
+		return refItClassNames;
 	}
 	
+	
+	
 	public String toString() {
-		return name;
+		if(file==null || !file.exists()){
+			return "root";
+		}
+		
+		if(isFile){
+			return file.getName();
+		}else{
+			String packageName = SmaliLoader.getPackageName(file.getParentFile());
+			return packageName;
+		}
+
+		
 	}
 
 /*	public String getName() {
@@ -557,17 +594,17 @@ public class SmaliEntry {
 
 	public Object getChildAt(int index) {
 		// TODO Auto-generated method stub
-		return (SmaliEntry)children.elementAt(index);
+		return (SmaliEntry)leafChildren.elementAt(index);
 	}
 
 	public int getChildCount() {
 		// TODO Auto-generated method stub
-		return children.size();
+		return leafChildren.size();
 	}
 
 	public int getIndexOfChild(SmaliEntry child) {
 		// TODO Auto-generated method stub
-		return children.indexOf(child);
+		return leafChildren.indexOf(child);
 	}
 
 	public boolean isFile() {
@@ -577,7 +614,15 @@ public class SmaliEntry {
 
 
 
-	public String getFileContent(){
+	private String getFileContent(){
+		if(file==null){
+			return null;
+		}
+		
+		if(!file.isFile()){
+			return null;
+		}
+		
 		try{
 		    BufferedReader in = new BufferedReader(new FileReader(file));
 		    int ch = 0;
@@ -594,19 +639,23 @@ public class SmaliEntry {
 		return null;
 	}
 
-	public String setFileContent(String newContent){
-		try{
-			BufferedWriter out = new BufferedWriter(new FileWriter(file, false));
+	public void setFileContent(){
+		if(needWrite){
+			try{
+				BufferedWriter out = new BufferedWriter(new FileWriter(file, false));
 
-		    out.write(newContent);
+			    out.write(this.content);
 
-		    out.close();
-		    return out.toString();
-		}catch(Exception e){
-			e.printStackTrace();
+			    out.close();
+			    needWrite = false;
+			    return /*out.toString()*/;
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			return /*null*/;
 		}
-		
-		return null;
+
 	}
 
 
