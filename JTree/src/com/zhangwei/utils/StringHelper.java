@@ -4,6 +4,25 @@ import java.security.MessageDigest;
 
 public class StringHelper {
 	/**
+	 * @param className  La/b/c/d;
+	 * @return packageName La/b/c
+	 * 
+	 * */
+	public static String getPackageNameFromCLz(String className){
+		if(className!=null && className.length()>0){
+			int index = className.lastIndexOf("/");
+			if(index>0){
+				return className.substring(0, index);
+			}else{
+				return "";
+			}
+
+		}else{
+			return null;
+		}
+	}
+	
+	/**
 	 *  @param className eg: Lcom/a/b/c;
 	 *  @return c
 	 * */

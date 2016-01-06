@@ -41,6 +41,7 @@ import javax.swing.tree.TreeSelectionModel;
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.ui.JavaFileView;
 import com.zhangwei.ui.jlist.SmaliEntryChanged;
+import com.zhangwei.utils.StringHelper;
 
 public class TreePane extends JPanel implements ActionListener, TreeSelectionListener {
     /**
@@ -65,7 +66,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 		UIManager.put("Tree.collapsedIcon", new ImageIcon("collapsedIcon.png"));
 		UIManager.put("Tree.expandedIcon", new ImageIcon("expandedIcon.png"));
 		
-		SmaliEntry root = new SmaliEntry(new File("."), false);
+		SmaliEntry root = new SmaliEntry(null, "defalut",  false);
         tree = new SmaliTree();
         model = new SmaliTreeModel(root);
         JListDataNotify = new ArrayList<SmaliEntryChanged>();
@@ -166,8 +167,11 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                   }
 
                   if(s!=null){
-                      String packageName = SmaliLoader.getPackageName(item.file); //com.b.d.a
-                      String smaliPackagePrefix = "L" + s.replace(".", "/") + "/"; //Lcom/b/d/a/
+                      String packageName = item.packageName; //Lcom/b/d/a
+                     //String packageName = SmaliLoader.getPackageName(item.file); //com.b.d.a
+                      
+//                      String smaliPackagePrefix = "L" + s.replace(".", "/") + "/"; //Lcom/b/d/a/
+                      String smaliPackagePrefix = s + "/"; //Lcom/b/d/a/
                       
                       System.out.println("Rename package after input: " + s + ", packageName:" + packageName);
 
@@ -300,7 +304,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
             
             last_dir_for_chose = selectedFile.getAbsolutePath();
 			//DirLoader.getInstance().Load(entryVector, selectedFile.getAbsolutePath());
-            SmaliEntry root = new SmaliEntry(selectedFile, false);
+            SmaliEntry root = new SmaliEntry(selectedFile, "defalut", false);
             SmaliLoader.getInstance().loadRoot(TreePane.this, root);
 
             tree.changeRoot(root);

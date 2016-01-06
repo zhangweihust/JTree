@@ -2,11 +2,13 @@ package com.zhangwei.ui.jtree;
 
 import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ProgressMonitor;
 
@@ -22,7 +24,7 @@ public class SmaliLoader {
 	
 	private ArrayList<File> list;
 //	private Set<SmaliEntry> smailMap; //path --> smaliEntry , 只用到了value，key没有使用到
-	public static Map<String, SmaliEntry> globeClassMap = new HashMap<String, SmaliEntry>(); //className --> smaliEntry
+	public static ConcurrentHashMap<String, SmaliEntry> globeClassMap = new ConcurrentHashMap<String, SmaliEntry>(); //className --> smaliEntry
 //	private Map<String, SmaliEntry> new_classMap; //className --> smaliEntry
 	
 	private MyParser myParser;
@@ -31,12 +33,16 @@ public class SmaliLoader {
 	private int progress;
 	private SmaliEntry root;
 	
+	private ConcurrentHashMap<String, SmaliEntry> packageEntrys;
+	
 	private SmaliLoader(){
 		list = new ArrayList<File>();
 //		smailMap = new HashSet<SmaliEntry>();
 //		classMap = new HashMap<String, SmaliEntry>();
 //		new_classMap = new HashMap<String, SmaliEntry>();
 		myParser = new MyParser();
+		
+		packageEntrys = new ConcurrentHashMap<String, SmaliEntry>();
 	}
 	
 	public static SmaliLoader getInstance(){
@@ -50,17 +56,23 @@ public class SmaliLoader {
 	/**
 	 * 注意：重命名该类时，需要同步将子类的it.classHeader.classNameSuper也改过来
 	 * 子类的smali一定有父类名，但是父类不一定有子类名
+	 * @throws IOException 
 	 * */
-	public boolean renameClass(SmaliEntry se, String src_className, String dst_className, boolean needSyncDisk){
-		boolean succ = se.renameClassFile(src_className, dst_className);
+	public boolean renameClass(SmaliEntry se, String src_className, String dst_className, boolean needSyncDisk) {
+		boolean succ = false;
+		try {
+			succ = se.renameClassFile(src_className, dst_className);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if(succ){
 			//谁使用(引用)了它
 			Set<SmaliEntry> reItfList = se.getRefItClassList();
 			for(SmaliEntry se_item : reItfList) {
-//				SmaliEntry se_item = classMap.get(refClz);
 				if(se_item!=null){
-					if(se_item.fatherClass == se /*se_item.classHeader.classNameSuper.equals(src_className)*/){
+					if(se_item.fatherClass == se){
 						//如果 ‘谁/se_item’ 是子类
 						String src_className2 = StringHelper.escapeExprSpecialWord(src_className);
 						String dst_className2 = StringHelper.escapeExprSpecialWord(dst_className);
@@ -68,30 +80,11 @@ public class SmaliLoader {
 						se_item.classHeader.classNameSuper = dst_className;
 					}
 					se_item.renameClassContent(src_className, dst_className);
-//					se_item.renameItRefClassName(src_className, dst_className);
 				}
 			}
 			
-			//它使用（引用）了谁，将谁的itRef改正过来
-//			Set<SmaliEntry> itRefList = se.getRefItClassList(); //谁使用(引用)了它
-//			for(SmaliEntry se_item : itRefList) {
-////				SmaliEntry se_item = classMap.get(refClz);
-//				if(se_item!=null){
-//					se_item.renameRefItClassName(src_className, dst_className);
-//				}
-//			}
-			
-//			Iterator<SmaliEntry> iterator = smailMap.iterator();
-//			while(iterator.hasNext()){
-//				SmaliEntry se_item = iterator.next();
-//				se_item.renameClassContent(src_className, dst_className);
-//			}
 			
 			se.renameClass(src_className, dst_className);
-
-//			new_classMap.put(dst_className, se);
-//			classMap.remove(src_className);
-//			classMap.put(dst_className, se);
 			
 			se.setFileContent();
 			
@@ -160,8 +153,9 @@ public class SmaliLoader {
 	
 	/**
 	 * @return 返回SmaliEntry ,  已应用新的命名 Lx/y/z;
+	 * @throws IOException 
 	 * */
-	private void autoRename(SmaliEntry it){
+	private void autoRename(SmaliEntry it) throws IOException{
 
     	if(monitor.isCanceled()){
     		return ;
@@ -175,32 +169,16 @@ public class SmaliLoader {
         	}
         	
         	
-        	
-        	//0. 父类需要rename，先处理父类，然后同步到本类的结构
-//        	String superShortName = StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper);
-//        	if(StringHelper.needRename(superShortName)){
-//        		//需防止父类先rename，子类的it.classHeader.classNameSuper还是旧的，这样导致找不到父类
-//        		SmaliEntry parent = classMap.get(it.classHeader.classNameSuper); 
-//        		
-//        		//如果父类找不到，则不处理
-//        		if(parent!=null){
-//        			autoRename(parent);
-//        			it.classHeader.classSuper = it.classHeader.classSuper.replace(it.classHeader.classNameSuper, parent.classHeader.classNameSelf);
-//        			it.classHeader.classNameSuper = parent.classHeader.classNameSelf;
-//        		}
-//
-//        	}
-        	
         	String old_base_className = it.classHeader.classNameSelf; //  La/b/c;
         	String old_tmp_name = old_base_className.substring(0, old_base_className.length()-1); //去掉; La/b/c
-        	String new_tmp_name = old_tmp_name + "_" + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper); //La/b/c_Object
+        	String new_tmp_name = old_tmp_name + "_Class";//La/b/c_Class // + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper); //La/b/c_Object
 			String new_dst_className = new_tmp_name + ";"; //La/b/c_Object;
 			
         	String old_base_className_prefix = old_tmp_name + "$";  //La/b/c$
         	String new_base_className_prefix = new_tmp_name + "$";  //La/b/c_Object$
         	
 			//1. rename本身
-			renameClass(it, it.classHeader.classNameSelf, new_dst_className, false);
+			renameClass(it, it.classHeader.classNameSelf, new_dst_className, true);
 			
 			//2. rename本类内部实现的匿名类
 			Iterator<SmaliEntry> iterator = globeClassMap.values().iterator();
@@ -268,7 +246,7 @@ public class SmaliLoader {
 		}
 	}
 	
-	public void autoRename(Component parent){
+	public void autoRename(Component parent) {
 		if(root!=null && root.leafChildren!=null && root.leafChildren.size()>0){
 			if(globeClassMap!=null && globeClassMap.size()>0){
 				monitor = new ProgressMonitor(parent, "Renaming Progress", "Getting Started...", 0, globeClassMap.size());
@@ -277,7 +255,15 @@ public class SmaliLoader {
 				Iterator<SmaliEntry> iterator = globeClassMap.values().iterator();
 				while(iterator.hasNext()){
 					SmaliEntry se_item = iterator.next();
-					autoRename(se_item);
+					if(se_item.classHeader.classNameSelf.contains("$")){
+						continue;
+					}
+					try {
+						autoRename(se_item);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				
 				monitor.close();
@@ -361,15 +347,19 @@ public class SmaliLoader {
 	            	errFileName = file.getAbsolutePath();
 	            	
                 	SmaliEntry packageEntry = null;
-                	SmaliEntry smaliEntry = new SmaliEntry(file, true);
+                	SmaliEntry smaliEntry = new SmaliEntry(file, null, true);
                 	boolean Parse_success = myParser.paser(smaliEntry);
+                	
+                	
                 	if(Parse_success){
-                		packageEntry = findEntry(root, file.getParentFile()); //查找该节点的父节点，即包
+                		smaliEntry.postProcess();
+                		
+                		packageEntry = findEntry(smaliEntry.packageName/*file.getParentFile()*/); //查找该节点的父节点，即包
                 		
                 		//add non-leaf package if not exist
     	            	if(packageEntry==null){
-    	            		String packageName = getPackageName(file.getParentFile());
-    	            		packageEntry = new SmaliEntry(file.getParentFile(), false);
+//    	            		String packageName = getPackageName(file.getParentFile());
+    	            		packageEntry = new SmaliEntry(null, smaliEntry.packageName, false);
     	            		root.leafChildren.add(packageEntry);
     	            	}
     	            	
@@ -437,19 +427,26 @@ public class SmaliLoader {
 				
 				progress++;
             	monitor.setProgress(progress);
-            	monitor.setNote("buld relation num:" + progress + "\n SmaliEntry:" + se.toString());
+            	monitor.setNote("buld relation(1) num:" + progress + "\n SmaliEntry:" + se.toString());
             	if(monitor.isCanceled()){
             		break;
             	}
-				
-				//构建谁使用了它map
-				Set<SmaliEntry> itReflist = se.getItRefClassList();
-				for(SmaliEntry who : itReflist){
-					if(who!=null){
-						who.putRefItClassName(se);
-					}
-				}
-				
+            	
+    			Iterator<SmaliEntry> iterator2 = globeClassMap.values().iterator();
+    			while(iterator.hasNext()){
+    				SmaliEntry se2 = iterator2.next();
+    				if(se!=se2){
+    					
+    					if(se2.content.contains(se.classHeader.classNameSelf)){
+    						//se在 se2的文件中，说明 se被se2使用， se2使用了se
+    						se.putRefItClassName(se2);
+    						se2.putItRefClassName(se);
+    					}
+    					
+
+    				}
+    			}
+    			
 				//构建父类关系
 				if(se!=null && se.classHeader!=null && se.classHeader.classNameSuper!=null){
 					SmaliEntry fatherClz = globeClassMap.get(se.classHeader.classNameSuper);
@@ -458,6 +455,35 @@ public class SmaliLoader {
 					}
 				}
 			}
+			
+//			progress = 0;
+//			iterator = globeClassMap.values().iterator();
+//			while(iterator.hasNext()){
+//				SmaliEntry se = iterator.next();
+//				
+//				progress++;
+//            	monitor.setProgress(progress);
+//            	monitor.setNote("buld relation(2) num:" + progress + "\n SmaliEntry:" + se.toString());
+//            	if(monitor.isCanceled()){
+//            		break;
+//            	}
+//				
+//				//构建谁使用了它map
+//				Set<SmaliEntry> itReflist = se.getItRefClassList();
+//				for(SmaliEntry who : itReflist){
+//					if(who!=null){
+//						who.putRefItClassName(se);
+//					}
+//				}
+//				
+//				//构建父类关系
+//				if(se!=null && se.classHeader!=null && se.classHeader.classNameSuper!=null){
+//					SmaliEntry fatherClz = globeClassMap.get(se.classHeader.classNameSuper);
+//					if(fatherClz!=null){
+//						se.setFatherClass(fatherClz);
+//					}
+//				}
+//			}
 			
 			monitor.close();
 		}
@@ -490,33 +516,37 @@ public class SmaliLoader {
 		}
 	}
 
-	public void insertPackage(File packageFile) {
+	public void insertPackage(String packageName) {
 		// TODO Auto-generated method stub
-		SmaliEntry packageEntry = findEntry(root, packageFile);
+		SmaliEntry packageEntry = findEntry(packageName);
 		
 		if(packageEntry==null){//not found, insert
-    		packageEntry = new SmaliEntry(packageFile, false);
+    		packageEntry = new SmaliEntry(null, packageName, false);
     		root.leafChildren.add(packageEntry);
-    		//smailMap.put(packageEntry.file.getAbsolutePath(), packageEntry);
+    		
+    		packageEntrys.put(packageName, packageEntry);
+
     	}
 	}
 
-	public void removePackage(File packageFile) {
+	public void removePackage(String packageName) {
 		// TODO Auto-generated method stub
-		SmaliEntry packageEntry = findEntry(root, packageFile);
+		SmaliEntry packageEntry = findEntry(packageName);
 		
 		if(packageEntry!=null && packageEntry.leafChildren.size()==0){ //empty package can remove
 			root.leafChildren.remove(packageEntry);
+			
+			packageEntrys.remove(packageName);
 		}
 
 	}
 
-	public void changePackage(SmaliEntry son, File parentOfOld, File parentOfNew) {
+	public void changePackage(SmaliEntry son, String parentOfOld, String parentOfNew) {
 		// TODO Auto-generated method stub
 		insertPackage(parentOfNew);
 		
-		SmaliEntry newParent = findEntry(root, parentOfNew);
-		SmaliEntry oldParent = findEntry(root, parentOfOld);
+		SmaliEntry newParent = findEntry(parentOfNew);
+		SmaliEntry oldParent = findEntry(parentOfOld);
 		
 		newParent.leafChildren.add(son);
 		oldParent.leafChildren.remove(son);
@@ -525,41 +555,13 @@ public class SmaliLoader {
 		removePackage(parentOfOld);
 	}
 	
-	public SmaliEntry findEntry(SmaliEntry root, File file){
-    	SmaliEntry ret = null;
-		for(SmaliEntry v : root.leafChildren){
-    		if(v.file.getAbsolutePath()!=null && v.file.getAbsolutePath().equals(file.getAbsolutePath())){
-    			ret  = v;
-    			break;
-    		}
-    	}
-		
-		return ret; 
+	
+	
+	public SmaliEntry findEntry(String packageName){
+
+		return packageEntrys.get(packageName);
 	}
 	
-	public static String getPackageName(File packageFile){
-		if(packageFile==null){
-			return "root";
-		}
-		
-		String pathOfParent = packageFile.getAbsolutePath();
-		if(!pathOfParent.endsWith("\\")){
-			pathOfParent = pathOfParent + '\\';
-		}
-		
-		String packageName = pathOfParent.replace(SmaliEntry.rootPath, "").replace("\\", ".");
-		
-		if(packageName.equals("")){
-			packageName = ".";
-		}else if(packageName.endsWith(".")){
-			packageName = packageName.substring(0, packageName.length()-1);
-		}
-		
-		return packageName;
-	}
-
-
-
 
 
 }

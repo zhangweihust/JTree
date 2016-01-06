@@ -153,12 +153,8 @@ public class MyDisplayer extends Displayer {
 
 	public Object visit(Rule_classFieldType rule) {
 		Log("<classFieldType>");
-		int begin = DisplayDumper.getInstance().getIndex();
 		Object ret = visitRules(rule.rules);
-		int end = DisplayDumper.getInstance().getIndex();
 		Log("</classFieldType>");
-		
-		String value = DisplayDumper.getInstance().getSubStr(begin, end);
 		
 		smali_entry.put_classField_Type(rule.toString());
 		
@@ -171,10 +167,10 @@ public class MyDisplayer extends Displayer {
 		Object ret = visitRules(rule.rules);
 		Log("</className>");
 		
-		SmaliEntry refClz = SmaliLoader.globeClassMap.get(rule.toString());
-		if(refClz!=null){
-			smali_entry.putItRefClassName(refClz);
-		}
+//		SmaliEntry refClz = SmaliLoader.globeClassMap.get(rule.toString());
+//		if(refClz!=null){
+//			smali_entry.putItRefClassName(refClz);
+//		}
 		
 		
 		
