@@ -290,6 +290,7 @@ public class SmaliEntry {
 				
 				SmaliLoader.getInstance().changePackage(this , packageOfOld, packageOfNew);
 				FileUtils.copyFile(file, newFile);
+				FileUtils.deleteQuietly(file);
 //				file.renameTo(newFile);
 				file = newFile; 
 
@@ -568,15 +569,20 @@ public class SmaliEntry {
 	
 	
 	public String toString() {
-		if(file==null || !file.exists()){
-			return "root";
-		}
+//		if(file==null || !file.exists()){
+//			return "root";
+//		}
 		
 		if(isFile){
 			return file.getName();
 		}else{
-			String packageName = StringHelper.getPackageNameFromCLz(classHeader.classNameSelf);
-			return packageName;
+//			String packageName = StringHelper.getPackageNameFromCLz(classHeader.classNameSelf);
+			if(packageName==null){
+				return "root";
+			}else{
+				return packageName;
+			}
+
 		}
 
 		

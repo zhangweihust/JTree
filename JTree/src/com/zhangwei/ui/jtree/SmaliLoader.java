@@ -82,6 +82,10 @@ public class SmaliLoader {
 						se_item.classHeader.classNameSuper = dst_className;
 					}
 					se_item.renameClassContent(src_className, dst_className);
+					if(needSyncDisk){
+						se_item.setFileContent();
+					}
+					
 				}
 			}
 			
@@ -89,7 +93,10 @@ public class SmaliLoader {
 			se.renameClass(src_className, dst_className);
 			se.renameClassContent(src_className, dst_className);
 			
-			se.setFileContent();
+			if(needSyncDisk){
+				se.setFileContent();
+			}
+
 			
 //			if(needSyncDisk){
 //				globeClassMap.remove(src_className);
@@ -392,44 +399,48 @@ public class SmaliLoader {
 		System.out.println("Load root Done and build refItClassName Map...");
 
 		if(globeClassSet.size()>0 && !monitor.isCanceled()){
-			monitor = new ProgressMonitor(parent, "RePaser Smali", "Getting Started...", 0, globeClassSet.size());
-			progress = 0;
-			
-			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
-			try{
-				while(iterator.hasNext()){
-					SmaliEntry se = iterator.next();
-					
-					progress++;
-	            	monitor.setProgress(progress);
-	            	monitor.setNote("RePaser num:" + progress + "\n SmaliEntry:" + se.toString());
-	            	if(monitor.isCanceled()){
-	            		break;
-	            	}
-	            	
-	            	errFileName = se.file.getAbsolutePath();
-					myParser.paser(se);
-					
-					
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-				monitor.setProgress(0);
-	        	monitor.setNote("RePaser fail:" + progress + "\n errFileName:" + errFileName);
-	        	return;
-			}
-			
-			if(monitor.isCanceled()){
-        		return;
-        	}
-			
-			System.out.println("paser root Done");
-			monitor.close();
+//			monitor = new ProgressMonitor(parent, "RePaser Smali", "Getting Started...", 0, globeClassSet.size());
+//			progress = 0;
+//			
+//			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
+//			try{
+//				while(iterator.hasNext()){
+//					SmaliEntry se = iterator.next();
+//					
+//					progress++;
+//	            	monitor.setProgress(progress);
+//	            	monitor.setNote("RePaser num:" + progress + "\n SmaliEntry:" + se.toString());
+//	            	if(monitor.isCanceled()){
+//	            		break;
+//	            	}
+//	            	
+//	            	errFileName = se.file.getAbsolutePath();
+//					myParser.paser(se);
+//					
+//					
+//				}
+//			}catch(Exception e){
+//				e.printStackTrace();
+//				monitor.setProgress(0);
+//	        	monitor.setNote("RePaser fail:" + progress + "\n errFileName:" + errFileName);
+//	        	return;
+//			}
+//			
+//			if(monitor.isCanceled()){
+//        		return;
+//        	}
+//			
+//			System.out.println("paser root Done");
+//			monitor.close();
 			
 			monitor = new ProgressMonitor(parent, "Buld smali relationship", "Getting Started...", 0, globeClassSet.size());
 			progress = 0;
 			
+			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
 			iterator = globeClassSet.iterator();
+			
+
+			
 			while(iterator.hasNext()){
 				SmaliEntry se = iterator.next();
 				
@@ -443,9 +454,12 @@ public class SmaliLoader {
             	if(se==null || se.classHeader==null){
             		continue;
             	}
-            	
-    			Iterator<SmaliEntry> iterator2 = globeClassSet.iterator();
-    			while(iterator.hasNext()){
+    			
+            	Set<SmaliEntry> tmpClassSet = new HashSet<SmaliEntry>();
+    			tmpClassSet.addAll(globeClassSet);
+    			
+    			Iterator<SmaliEntry> iterator2 = tmpClassSet.iterator();
+    			while(iterator2.hasNext()){
     				SmaliEntry se2 = iterator2.next();
     				if(se2!=null && se!=se2){
     					if(se2.classHeader==null || se2.content==null){
@@ -470,34 +484,7 @@ public class SmaliLoader {
 
 			}
 			
-//			progress = 0;
-//			iterator = globeClassMap.values().iterator();
-//			while(iterator.hasNext()){
-//				SmaliEntry se = iterator.next();
-//				
-//				progress++;
-//            	monitor.setProgress(progress);
-//            	monitor.setNote("buld relation(2) num:" + progress + "\n SmaliEntry:" + se.toString());
-//            	if(monitor.isCanceled()){
-//            		break;
-//            	}
-//				
-//				//构建谁使用了它map
-//				Set<SmaliEntry> itReflist = se.getItRefClassList();
-//				for(SmaliEntry who : itReflist){
-//					if(who!=null){
-//						who.putRefItClassName(se);
-//					}
-//				}
-//				
-//				//构建父类关系
-//				if(se!=null && se.classHeader!=null && se.classHeader.classNameSuper!=null){
-//					SmaliEntry fatherClz = globeClassMap.get(se.classHeader.classNameSuper);
-//					if(fatherClz!=null){
-//						se.setFatherClass(fatherClz);
-//					}
-//				}
-//			}
+
 			
 			monitor.close();
 		}

@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.3
- * Produced : Mon Nov 30 15:53:26 CST 2015
+ * Produced : Mon Jan 11 14:51:33 CST 2016
  *
  * -----------------------------------------------------------------------------
  */
@@ -46,7 +46,7 @@ final public class Rule_className extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            rule = Terminal_NumericValue.parse(context, "%x4c", "[\\x4c]", 1);
+            rule = Terminal_StringValue.parse(context, "L");
             if ((f1 = rule != null))
             {
               e1.add(rule);
@@ -61,64 +61,12 @@ final public class Rule_className extends Rule
           int c1 = 0;
           for (int i1 = 0; i1 < 1 && f1; i1++)
           {
-            int g1 = context.index;
-            parsed = false;
-            if (!parsed)
+            rule = Rule_qualifier.parse(context);
+            if ((f1 = rule != null))
             {
-              {
-                ArrayList<Rule> e2 = new ArrayList<Rule>();
-                int s2 = context.index;
-                parsed = true;
-                if (parsed)
-                {
-                  boolean f2 = true;
-                  int c2 = 0;
-                  for (int i2 = 0; i2 < 1 && f2; i2++)
-                  {
-                    rule = Rule_qualifier.parse(context);
-                    if ((f2 = rule != null))
-                    {
-                      e2.add(rule);
-                      c2++;
-                    }
-                  }
-                  parsed = c2 == 1;
-                }
-                if (parsed)
-                  e1.addAll(e2);
-                else
-                  context.index = s2;
-              }
+              e1.add(rule);
+              c1++;
             }
-            if (!parsed)
-            {
-              {
-                ArrayList<Rule> e2 = new ArrayList<Rule>();
-                int s2 = context.index;
-                parsed = true;
-                if (parsed)
-                {
-                  boolean f2 = true;
-                  int c2 = 0;
-                  for (int i2 = 0; i2 < 1 && f2; i2++)
-                  {
-                    rule = Terminal_StringValue.parse(context, "$");
-                    if ((f2 = rule != null))
-                    {
-                      e2.add(rule);
-                      c2++;
-                    }
-                  }
-                  parsed = c2 == 1;
-                }
-                if (parsed)
-                  e1.addAll(e2);
-                else
-                  context.index = s2;
-              }
-            }
-            f1 = context.index > g1;
-            if (parsed) c1++;
           }
           parsed = c1 == 1;
         }
@@ -143,7 +91,7 @@ final public class Rule_className extends Rule
                   int c2 = 0;
                   for (int i2 = 0; i2 < 1 && f2; i2++)
                   {
-                    rule = Terminal_NumericValue.parse(context, "%x2f", "[\\x2f]", 1);
+                    rule = Terminal_StringValue.parse(context, "/");
                     if ((f2 = rule != null))
                     {
                       e2.add(rule);
@@ -158,35 +106,24 @@ final public class Rule_className extends Rule
                   int c2 = 0;
                   for (int i2 = 0; i2 < 1 && f2; i2++)
                   {
+                    rule = Rule_qualifier.parse(context);
+                    if ((f2 = rule != null))
+                    {
+                      e2.add(rule);
+                      c2++;
+                    }
+                  }
+                  parsed = c2 == 1;
+                }
+                if (parsed)
+                {
+                  boolean f2 = true;
+                  @SuppressWarnings("unused")
+                  int c2 = 0;
+                  for (int i2 = 0; i2 < 1 && f2; i2++)
+                  {
                     int g2 = context.index;
                     parsed = false;
-                    if (!parsed)
-                    {
-                      {
-                        ArrayList<Rule> e3 = new ArrayList<Rule>();
-                        int s3 = context.index;
-                        parsed = true;
-                        if (parsed)
-                        {
-                          boolean f3 = true;
-                          int c3 = 0;
-                          for (int i3 = 0; i3 < 1 && f3; i3++)
-                          {
-                            rule = Rule_qualifier.parse(context);
-                            if ((f3 = rule != null))
-                            {
-                              e3.add(rule);
-                              c3++;
-                            }
-                          }
-                          parsed = c3 == 1;
-                        }
-                        if (parsed)
-                          e2.addAll(e3);
-                        else
-                          context.index = s3;
-                      }
-                    }
                     if (!parsed)
                     {
                       {
@@ -209,6 +146,21 @@ final public class Rule_className extends Rule
                           parsed = c3 == 1;
                         }
                         if (parsed)
+                        {
+                          boolean f3 = true;
+                          int c3 = 0;
+                          for (int i3 = 0; i3 < 1 && f3; i3++)
+                          {
+                            rule = Rule_qualifier.parse(context);
+                            if ((f3 = rule != null))
+                            {
+                              e3.add(rule);
+                              c3++;
+                            }
+                          }
+                          parsed = c3 == 1;
+                        }
+                        if (parsed)
                           e2.addAll(e3);
                         else
                           context.index = s3;
@@ -217,75 +169,7 @@ final public class Rule_className extends Rule
                     f2 = context.index > g2;
                     if (parsed) c2++;
                   }
-                  parsed = c2 == 1;
-                }
-                if (parsed)
-                  e1.addAll(e2);
-                else
-                  context.index = s2;
-              }
-            }
-            f1 = context.index > g1;
-            if (parsed) c1++;
-          }
-          parsed = true;
-        }
-        if (parsed)
-        {
-          boolean f1 = true;
-          @SuppressWarnings("unused")
-          int c1 = 0;
-          while (f1)
-          {
-            int g1 = context.index;
-            parsed = false;
-            if (!parsed)
-            {
-              {
-                ArrayList<Rule> e2 = new ArrayList<Rule>();
-                int s2 = context.index;
-                parsed = true;
-                if (parsed)
-                {
-                  boolean f2 = true;
-                  int c2 = 0;
-                  for (int i2 = 0; i2 < 1 && f2; i2++)
-                  {
-                    rule = Terminal_StringValue.parse(context, "$");
-                    if ((f2 = rule != null))
-                    {
-                      e2.add(rule);
-                      c2++;
-                    }
-                  }
-                  parsed = c2 == 1;
-                }
-                if (parsed)
-                  e1.addAll(e2);
-                else
-                  context.index = s2;
-              }
-            }
-            if (!parsed)
-            {
-              {
-                ArrayList<Rule> e2 = new ArrayList<Rule>();
-                int s2 = context.index;
-                parsed = true;
-                if (parsed)
-                {
-                  boolean f2 = true;
-                  int c2 = 0;
-                  for (int i2 = 0; i2 < 1 && f2; i2++)
-                  {
-                    rule = Rule_qualifier.parse(context);
-                    if ((f2 = rule != null))
-                    {
-                      e2.add(rule);
-                      c2++;
-                    }
-                  }
-                  parsed = c2 == 1;
+                  parsed = true;
                 }
                 if (parsed)
                   e1.addAll(e2);
