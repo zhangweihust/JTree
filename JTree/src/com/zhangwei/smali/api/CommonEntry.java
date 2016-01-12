@@ -5,7 +5,7 @@ public abstract class CommonEntry {
 	
 	public transient SmaliEntry se;
 	public int type; //1 head  2 field  3 method
-	public String content;
+//	public String content;
 	
 	public int offset;
 	
@@ -25,14 +25,14 @@ public abstract class CommonEntry {
 	//.method public static final b(Lcom/b/f/a;)Lcom/b/f/a;	
 	//.field public static final c:[I
 	public void RenameType(String content_before, String content_after){
-		content = content.replace(content_before, content_after);
+//		content = content.replace(content_before, content_after);
 	}
 	
 	public String toString(){
 		return id;
 	}
 	
-	public String getContent(){
-		return content;
-	}
+//	public String getContent(){
+//		return content;
+//	}
 }

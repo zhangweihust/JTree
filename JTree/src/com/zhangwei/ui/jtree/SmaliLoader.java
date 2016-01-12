@@ -171,10 +171,9 @@ public class SmaliLoader {
         	String old_base_className_prefix = old_tmp_name + "$";  //La/b/c$
         	String new_base_className_prefix = new_tmp_name + "$";  //La/b/c_Object$
         	
-			//1. rename本身
-			renameClass(it, it.classHeader.classNameSelf, new_dst_className, true);
+
 			
-			//2. rename本类内部实现的匿名类
+			//1. rename本类内部实现的匿名类
 			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
 			while(iterator.hasNext()){
 				SmaliEntry value = iterator.next();
@@ -187,7 +186,7 @@ public class SmaliLoader {
 						regStr = old_base_className_prefix; //StringHelper.escapeExprSpecialWord(old_base_className_prefix);
 						new_base_className_prefix2 = new_base_className_prefix; //StringHelper.escapeExprSpecialWord(new_base_className_prefix);
 						String newKey = clzName.replace(regStr, new_base_className_prefix2);
-						renameClass(value, clzName, newKey, false);
+						renameClass(value, clzName, newKey, true);
 					}catch (Exception e){
 					  e.printStackTrace();
 					  System.out.println("value:" + value.toString() + ", clzName:" + clzName + ", old_base_className_prefix:" + old_base_className_prefix + ", new_base_className_prefix2:" + new_base_className_prefix2 + ", regStr:" + regStr);
@@ -197,6 +196,8 @@ public class SmaliLoader {
 				}
 			}
 			
+			//2. rename本身
+			renameClass(it, it.classHeader.classNameSelf, new_dst_className, true);
 			
 	    	progress++;
 	    	monitor.setProgress(progress);
@@ -355,7 +356,7 @@ public class SmaliLoader {
 			state.confPath = confPath;
 			
 			monitor = new ProgressMonitor(parent, "saveState Progress", "Getting Started...", 0, 1);
-			
+			System.out.println("saveState - confPath:" + state.confPath);
 			writer = new FileWriter(state.confPath);
 			gson.toJson(state, writer);
 			

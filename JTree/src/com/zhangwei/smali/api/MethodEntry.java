@@ -31,9 +31,9 @@ public class MethodEntry extends CommonEntry {
 	
 	@Override
 	public void RenameType(String classname_before, String classname_after){
-		if(content!=null){
-			content = content.replace(classname_before, classname_after);
-		}
+//		if(content!=null){
+//			content = content.replace(classname_before, classname_after);
+//		}
 
 		if(classMethodProto!=null){
 			classMethodProto = classMethodProto.replace(classname_before, classname_after);
@@ -43,18 +43,18 @@ public class MethodEntry extends CommonEntry {
 				super.id = classMethodName + "_" + classMethodProto;
 			}
 		}else{
-			super.id = "other" + "_" + StringHelper.getMD5OfStr(content);
+			super.id = "other" + "_null";//StringHelper.getMD5OfStr(content);
 		}
 
 
 
-		super.content = content;
+//		super.content = content;
 	}
 
 	public void RenameName(String className, String oldMethodName,
 			String newMethodName, String classMethodProto) {
 		// TODO Auto-generated method stub
-		content = content.replace(" " + oldMethodName + classMethodProto, " " + newMethodName + classMethodProto);
+//		content = content.replace(" " + oldMethodName + classMethodProto, " " + newMethodName + classMethodProto);
 		classMethodName = newMethodName;
 
 		if(classConstructorName!=null){
@@ -62,6 +62,6 @@ public class MethodEntry extends CommonEntry {
 		}else{
 			super.id = classMethodName + "_" + classMethodProto;
 		}
-		super.content = content;
+//		super.content = content;
 	}
 }

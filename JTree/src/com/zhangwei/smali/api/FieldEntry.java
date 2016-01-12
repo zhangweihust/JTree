@@ -19,20 +19,20 @@ public class FieldEntry extends CommonEntry {
 	
 	@Override
 	public void RenameType(String classname_before, String classname_after){
-		content = content.replace(classname_before, classname_after);
+//		content = content.replace(classname_before, classname_after);
 		classFieldType = classFieldType.replace(classname_before, classname_after);
 
 		super.id = classFieldName + "_" + classFieldType;
-		super.content = content;
+//		super.content = content;
 	}
 
 	public void RenameName(String className, String oldFieldName, String newFieldName, String classFieldType) {
 		// TODO Auto-generated method stub
-		content = content.replace(" " + oldFieldName + ":" + classFieldType, " " + newFieldName + ":" + classFieldType);
+//		content = content.replace(" " + oldFieldName + ":" + classFieldType, " " + newFieldName + ":" + classFieldType);
 		classFieldName = newFieldName;
 
 		super.id = classFieldName + "_" + classFieldType;
-		super.content = content;
+//		super.content = content;
 		
 	}
 }

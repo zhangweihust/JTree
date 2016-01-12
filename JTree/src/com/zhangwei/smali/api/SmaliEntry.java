@@ -450,11 +450,11 @@ public class SmaliEntry {
 	}
 		
 	
-	public void add_classHeader_content(String content) {
-		// TODO Auto-generated method stub
-
-		classHeader.add_content(content);
-	}
+//	public void add_classHeader_content(String content) {
+//		// TODO Auto-generated method stub
+//
+//		classHeader.add_content(content);
+//	}
 	
 	public void add_classHeader_classClass(String classClass) {
 		// TODO Auto-generated method stub
@@ -491,11 +491,11 @@ public class SmaliEntry {
 		entry_field_array.add(new FieldEntry(this, offset));
 	}
 
-	public void add_classField_content(String content) {
-		// TODO Auto-generated method stub
-		FieldEntry last = entry_field_array.get(entry_field_array.size()-1);
-		last.content = content;
-	}
+//	public void add_classField_content(String content) {
+//		// TODO Auto-generated method stub
+//		FieldEntry last = entry_field_array.get(entry_field_array.size()-1);
+//		last.content = content;
+//	}
 	
 	public void put_classField_Name(String classFieldName) {
 		// TODO Auto-generated method stub
@@ -527,11 +527,11 @@ public class SmaliEntry {
 		entry_method_array.add(new MethodEntry(this, offset));
 	}
 
-	public void add_classMethod_content(String content) {
-		// TODO Auto-generated method stub
-		MethodEntry last = entry_method_array.get(entry_method_array.size()-1);
-		last.content = content;
-	}
+//	public void add_classMethod_content(String content) {
+//		// TODO Auto-generated method stub
+//		MethodEntry last = entry_method_array.get(entry_method_array.size()-1);
+//		last.content = content;
+//	}
 
 	public void put_classMethod_classConstructorName(String classConstructorName) {
 		// TODO Auto-generated method stub

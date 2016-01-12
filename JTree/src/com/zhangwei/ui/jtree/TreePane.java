@@ -149,7 +149,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                   }
               }else{ //rename package
                   String s = "$";
-                  Pattern pattern = Pattern.compile("[a-z|A-Z|0-9|.]*");
+                  Pattern pattern = Pattern.compile("L[a-z|A-Z|0-9|/]*");
                   Matcher matcher = pattern.matcher(s);
                   while(!matcher.matches()){
                       s = (String)JOptionPane.showInputDialog(

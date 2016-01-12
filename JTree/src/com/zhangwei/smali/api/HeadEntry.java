@@ -26,10 +26,10 @@ public class HeadEntry extends CommonEntry{
 		super(se, 1, offset);
 	}
 	
-	public void add_content(String content) {
+//	public void add_content(String content) {
 		// TODO Auto-generated method stub
-		super.content = content;
-	}
+//		super.content = content;
+//	}
 
 	public void close() {
 		// TODO Auto-generated method stub
@@ -43,11 +43,11 @@ public class HeadEntry extends CommonEntry{
 	@Override
 	public void RenameType(String classname_before, String classname_after){
 		classClass = classClass.replace(classname_before, classname_after);
-		content = content.replace(classname_before, classname_after);
+//		content = content.replace(classname_before, classname_after);
 		classNameSelf = classNameSelf.replace(classname_before, classname_after);
 
 		super.id = classClass;
-		super.content = content;
+//		super.content = content;
 	}
 	
 	public String toString(){
