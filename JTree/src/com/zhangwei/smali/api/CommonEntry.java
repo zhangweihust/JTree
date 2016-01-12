@@ -3,8 +3,8 @@ package com.zhangwei.smali.api;
 public abstract class CommonEntry {
 	public String id;
 	
-	public SmaliEntry se;
-	public int type; //1 head  2 field  3 head
+	public transient SmaliEntry se;
+	public int type; //1 head  2 field  3 method
 	public String content;
 	
 	public int offset;
@@ -13,6 +13,10 @@ public abstract class CommonEntry {
 		this.se = se;
 		this.type = type;
 		this.offset = offset;
+	}
+	
+	public void addThis(SmaliEntry se){
+		this.se = se;
 	}
 	
 	//.class public final Lcom/b/f/a;

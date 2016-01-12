@@ -6,8 +6,11 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -23,7 +26,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ProgressMonitor;
 import javax.swing.UIManager;
@@ -31,17 +33,16 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileView;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
-import javax.swing.tree.RowMapper;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.google.gson.Gson;
 import com.zhangwei.smali.api.SmaliEntry;
+import com.zhangwei.smali.json.SaveState;
 import com.zhangwei.ui.JavaFileView;
 import com.zhangwei.ui.jlist.SmaliEntryChanged;
-import com.zhangwei.utils.StringHelper;
 
 public class TreePane extends JPanel implements ActionListener, TreeSelectionListener {
     /**
@@ -55,7 +56,8 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
     
     private ArrayList<SmaliEntryChanged> JListDataNotify;
     
-    private String last_dir_for_chose = "D:\\android\\crack\\test1\\guosen3.6";//"D:\\android\\crack\\guosen_dir\\examples";
+    private String last_dir_for_chose = "D:\\android\\crack\\AndroidKiller_v1.3.1\\projects" ; //"D:\\android\\crack\\test1\\guosen3.6";//"D:\\android\\crack\\guosen_dir\\examples";
+    private String last_file_for_chose = "D:\\android\\crack\\AndroidKiller_v1.3.1\\projects\\test\\saveState.conf";//"D:\\android\\crack\\guosen_dir\\examples";
     
     private static final String ACTION_KEY = "theJTreeAction";
     
@@ -270,12 +272,30 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
             fileChooser.setFileView (view);
             fileChooser.setDialogTitle("选择smali根目录");
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setMultiSelectionEnabled(true);
+            int status = fileChooser.showOpenDialog(parent);
+            if (status == JFileChooser.APPROVE_OPTION) {
+//                File selectedFile = fileChooser.getSelectedFile();
+            	File[] selectedFiles = fileChooser.getSelectedFiles();
+                LoadThread t = new LoadThread();
+                t.startThread(selectedFiles);
+            } 
+        }if(action.equals(SmaliMain.Load)){
+            JFileChooser fileChooser = new JFileChooser(last_file_for_chose);
+            //fileChooser.setAccessory(new LabelAccessory(fileChooser));
+            FileView view = new JavaFileView();
+            fileChooser.setFileView (view);
+            fileChooser.setDialogTitle("选择saveState.conf");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int status = fileChooser.showOpenDialog(parent);
             if (status == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
-                LoadThread t = new LoadThread();
+                LoadConfThread t = new LoadConfThread();
                 t.startThread(selectedFile);
             } 
+        }else if(action.equals(SmaliMain.SAVE)){
+        	SaveConfThread t = new SaveConfThread();
+        	t.startThread();
         }else if(action.equals(SmaliMain.AUTO_RENAME)){
         	RenameThread t = new RenameThread();
         	t.startThread();
@@ -290,6 +310,53 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 	
 	class LoadThread extends Thread {
 		
+		private File[] selectedFiles;
+
+		void startThread(File[] selectedFiles ){
+			this.selectedFiles = selectedFiles;
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            
+			if(selectedFiles.length>0){
+	            last_dir_for_chose = selectedFiles[0].getParentFile().getAbsolutePath();
+	            SmaliEntry root = new SmaliEntry(selectedFiles[0].getParentFile(), "defalut", false);
+	           
+				
+	            SmaliLoader.getInstance().loadRoot(TreePane.this, root, selectedFiles);
+	            
+	            tree.changeRoot(root);
+	            
+	            tree.expandPath(new TreePath(root));
+			}
+
+
+		}
+	}
+	
+	class SaveConfThread extends Thread {
+		
+
+		void startThread(){
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+
+            SmaliLoader.getInstance().saveState(TreePane.this);
+
+		}
+	}
+	
+	class LoadConfThread extends Thread {
+		
 		private File selectedFile;
 
 		void startThread(File selectedFile ){
@@ -302,14 +369,35 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 			// TODO Auto-generated method stub
 			super.run();
             
-            last_dir_for_chose = selectedFile.getAbsolutePath();
-			//DirLoader.getInstance().Load(entryVector, selectedFile.getAbsolutePath());
-            SmaliEntry root = new SmaliEntry(selectedFile, "defalut", false);
-            SmaliLoader.getInstance().loadRoot(TreePane.this, root);
+			last_file_for_chose = selectedFile.getAbsolutePath();
 
-            tree.changeRoot(root);
-            
-            tree.expandPath(new TreePath(root));
+            Gson gson = new Gson();
+            Reader reader = null;
+            SaveState state = null;
+			try {
+				reader = new FileReader(last_file_for_chose);
+				state = gson.fromJson(reader, SaveState.class);
+
+	            
+	            SmaliEntry root = state.root;
+	            SmaliLoader.getInstance().loadState(TreePane.this, state);
+
+	            tree.changeRoot(root);
+	            
+	            tree.expandPath(new TreePath(root));
+	            
+	            reader.close();
+	            
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+
 		}
 	}
 	

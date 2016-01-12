@@ -2,6 +2,7 @@ package com.zhangwei.ui.jtree;
 
 import java.awt.Component;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,42 +10,38 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ProgressMonitor;
 
+import com.google.gson.Gson;
 import com.zhangwei.smali.api.FieldEntry;
 import com.zhangwei.smali.api.MethodEntry;
 import com.zhangwei.smali.api.MyParser;
 import com.zhangwei.smali.api.SmaliEntry;
+import com.zhangwei.smali.json.SaveState;
 import com.zhangwei.utils.StringHelper;
 
 public class SmaliLoader {
 	private static SmaliLoader ins=null;
-	public static String rootpath = null;
 	
-	private ArrayList<File> list;
-	private static Set<SmaliEntry> globeClassSet = new HashSet<SmaliEntry>(); //path --> smaliEntry , 只用到了value，key没有使用到
-	private static Map<String, SmaliEntry> globePackageSet = new HashMap<String, SmaliEntry>();
-//	public static ConcurrentHashMap<String, SmaliEntry> globeClassMap = new ConcurrentHashMap<String, SmaliEntry>(); //className --> smaliEntry
-//	private Map<String, SmaliEntry> new_classMap; //className --> smaliEntry
+	private String confPath;
+
+	private Set<SmaliEntry> globeClassSet = new HashSet<SmaliEntry>(); //path --> smaliEntry , 只用到了value，key没有使用到
+
 	
 	private MyParser myParser;
 	
 	private ProgressMonitor monitor;
 	private int progress;
 	private SmaliEntry root;
+	private ArrayList<File> fileList;
+	private Map<String, SmaliEntry> packageSet = new HashMap<String, SmaliEntry>();
 	
 
 	
 	private SmaliLoader(){
-		list = new ArrayList<File>();
-//		smailMap = new HashSet<SmaliEntry>();
-//		classMap = new HashMap<String, SmaliEntry>();
-//		new_classMap = new HashMap<String, SmaliEntry>();
+		fileList = new ArrayList<File>();
 		myParser = new MyParser();
-		
-//		globePackageSet = new HashMap<String, SmaliEntry>();
 	}
 	
 	public static SmaliLoader getInstance(){
@@ -73,12 +70,12 @@ public class SmaliLoader {
 			//谁使用(引用)了它
 			Set<SmaliEntry> reItfList = se.getRefItClassList();
 			for(SmaliEntry se_item : reItfList) {
-				if(se_item!=null){
+				if(se_item!=null && se_item!=se){
 					if(se_item.fatherClass == se){
 						//如果 ‘谁/se_item’ 是子类
-						String src_className2 = StringHelper.escapeExprSpecialWord(src_className);
-						String dst_className2 = StringHelper.escapeExprSpecialWord(dst_className);
-						se_item.classHeader.classSuper.replaceAll(src_className2, dst_className2);
+						String src_className2 = src_className; //StringHelper.escapeExprSpecialWord(src_className);
+						String dst_className2 = dst_className; //StringHelper.escapeExprSpecialWord(dst_className);
+						se_item.classHeader.classSuper.replace(src_className2, dst_className2);
 						se_item.classHeader.classNameSuper = dst_className;
 					}
 					se_item.renameClassContent(src_className, dst_className);
@@ -97,12 +94,7 @@ public class SmaliLoader {
 				se.setFileContent();
 			}
 
-			
-//			if(needSyncDisk){
-//				globeClassMap.remove(src_className);
-//				globeClassMap.put(dst_className, se);
-//			}
-			
+					
 		}
 
 		return succ;
@@ -120,10 +112,6 @@ public class SmaliLoader {
 			se_item.renameFieldContent(className, oldFieldName, newFieldName, fe.classFieldType);
 		}
 		
-//		for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
-//			SmaliEntry se_item = item.getValue();
-//			se_item.renameFieldContent(className, oldFieldName, newFieldName, fe.classFieldType);
-//		}
 		
 		fe.RenameName(className, oldFieldName, newFieldName, fe.classFieldType);
 		
@@ -144,10 +132,6 @@ public class SmaliLoader {
 				SmaliEntry se_item = iterator.next();
 				se_item.renameMethodContent(className, oldMethodName, newMethodName, me.classMethodProto);
 			}
-//			for(Entry<String, SmaliEntry>  item: smailMap.entrySet()){
-//				SmaliEntry se_item = item.getValue();
-//				se_item.renameMethodContent(className, oldMethodName, newMethodName, me.classMethodProto);
-//			}
 			
 			me.RenameName(className, oldMethodName, newMethodName, me.classMethodProto);
 		}
@@ -200,9 +184,9 @@ public class SmaliLoader {
 				String new_base_className_prefix2 = null;
 				if(clzName.startsWith(old_base_className_prefix)){
 					try{
-						regStr = StringHelper.escapeExprSpecialWord(old_base_className_prefix);
-						new_base_className_prefix2 = StringHelper.escapeExprSpecialWord(new_base_className_prefix);
-						String newKey = clzName.replaceAll(regStr, new_base_className_prefix2);
+						regStr = old_base_className_prefix; //StringHelper.escapeExprSpecialWord(old_base_className_prefix);
+						new_base_className_prefix2 = new_base_className_prefix; //StringHelper.escapeExprSpecialWord(new_base_className_prefix);
+						String newKey = clzName.replace(regStr, new_base_className_prefix2);
 						renameClass(value, clzName, newKey, false);
 					}catch (Exception e){
 					  e.printStackTrace();
@@ -223,40 +207,9 @@ public class SmaliLoader {
 	    	monitor.setProgress(progress);
 	    	monitor.setNote("No Need to rename \n file:" + it.file.getAbsolutePath());
     	}
-    	
-    	
-    	
-    	//upPublic(it);
 
-//    	return it;
 	}
 	
-	/**
-	 * copy set to map
-	 * */
-//	public void refacoterGlobeClassMap(Component parent){
-//		if(globeClassSet.size()>0){
-//			globeClassMap.clear();
-//			
-//			monitor = new ProgressMonitor(parent, "refacoterGlobeClassMap Progress", "Getting Started...", 0, globeClassSet.size());
-//			progress = 0;
-//			
-//			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
-//			while(iterator.hasNext()){
-//				SmaliEntry se = iterator.next();
-//				
-//				progress++;
-//            	monitor.setProgress(progress);
-//            	monitor.setNote("refacoterGlobeClassMap num:" + progress + "\n file:" + se.file.getAbsolutePath());
-//            	if(monitor.isCanceled()){
-//            		break;
-//            	}
-//            	
-//            	globeClassMap.put(se.classHeader.classNameSelf, se);
-//			}
-//
-//		}
-//	}
 	
 	public void autoRename(Component parent) {
 		if(root!=null && root.leafChildren!=null && root.leafChildren.size()>0){
@@ -313,42 +266,152 @@ public class SmaliLoader {
 		}
 	}
 	
+	public void loadState(Component parent, SaveState state) {
+		// TODO Auto-generated method stub
+		globeClassSet = state.globeClassSet;
+		this.root = state.root;
 
-	public void loadRoot(Component parent, SmaliEntry root){
+		monitor = new ProgressMonitor(parent, "Loading Progress", "Getting Started...", 0, globeClassSet.size());
+
+		if (globeClassSet.size() > 0 && !monitor.isCanceled()) {
+
+			monitor = new ProgressMonitor(parent, "Buld smali relationship", "Getting Started...", 0, globeClassSet.size());
+			progress = 0;
+
+			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
+			iterator = globeClassSet.iterator();
+
+			while (iterator.hasNext()) {
+				SmaliEntry se = iterator.next();
+
+				progress++;
+				monitor.setProgress(progress);
+				monitor.setNote("loadState num:" + progress + "\n SmaliEntry:" + se.toString());
+				if (monitor.isCanceled()) {
+					break;
+				}
+
+				if (se == null || se.classHeader == null) {
+					continue;
+				}
+				
+				se.postConstructFromGson();
+				
+        		SmaliEntry packageEntry = findEntry(se.packageName); //查找该节点的父节点，即包
+        		
+        		//add non-leaf package if not exist
+            	if(packageEntry==null){
+            		packageEntry = new SmaliEntry(null, se.packageName, false);
+            		root.leafChildren.add(packageEntry);
+            		packageSet.put(se.packageName, packageEntry);
+            	}
+            	
+            	//add leaf
+            	packageEntry.leafChildren.add(se);
+            	
+            	
+            	
+
+				Set<SmaliEntry> tmpClassSet = new HashSet<SmaliEntry>();
+				tmpClassSet.addAll(globeClassSet);
+
+				Iterator<SmaliEntry> iterator2 = tmpClassSet.iterator();
+				while (iterator2.hasNext()) {
+					SmaliEntry se2 = iterator2.next();
+					if (se2 != null && se != se2) {
+						if (se2.classHeader == null || se2.content == null) {
+							continue;
+						}
+
+						if (se2.content.contains(se.classHeader.classNameSelf)) {
+							// se在 se2的文件中，说明 se被se2使用， se2使用了se
+							se.putRefItClass(se2);
+							se2.putItRefClass(se);
+						}
+
+						// 构建父类关系
+						if (se2.classHeader.classNameSuper != null && se2.classHeader.classNameSuper.equals(se.classHeader.classNameSelf)) {
+							// se2's father == se
+							se2.setFatherClass(se);
+						}
+					}
+				}
+
+			}
+
+			monitor.close();
+		}
+	}
+	
+	public void saveState(Component parent) {
+		// TODO Auto-generated method stub
+		Gson gson = new Gson();
+		
+		FileWriter writer = null;
+		try {
+			SaveState state = new SaveState();
+			state.globeClassSet = globeClassSet;
+			state.root = root;
+			state.confPath = confPath;
+			
+			monitor = new ProgressMonitor(parent, "saveState Progress", "Getting Started...", 0, 1);
+			
+			writer = new FileWriter(state.confPath);
+			gson.toJson(state, writer);
+			
+			writer.close();
+			
+			monitor.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
+
+	public void loadRoot(Component parent, SmaliEntry root, File[] dirs){
 		this.root = root;
 		String root_path = root.file.getAbsolutePath();
 		
-		if(root_path!=null ){
-			if(!root_path.endsWith("\\")){
-				root_path = root_path + '\\';
+		if(root_path!=null){
+			if(!root_path.endsWith(File.separator/*"\\"*/)){
+				root_path = root_path + File.separator/*'\\'*/;
 			}
 		}else{
 			return ;
 		}
 		
+		this.confPath = root_path + "saveState.conf";
+		System.out.println("loadRoot - File.separator : " + File.separator + ", root_path:" + root_path + ", confPath:" + confPath);
+		
+		if(dirs.length<=0){
+			return;
+		}
+		
+
+		
 		SmaliEntry.rootPath = root_path;
 		
-		if(list!=null){
-			list.clear();
+		if(fileList!=null){
+			fileList.clear();
 		}
 
-//		if(globeClassMap!=null){
-//			globeClassMap.clear();
-//		}
-		
-		//
-		loadChildren(root.file);
+		for(File dir : dirs){
+			loadChildren(dir/*root.file*/);
+		}
+
 		
 		String errFileName = null;
 		
 		try{
 			
-			if(list.size()>0){
-				monitor = new ProgressMonitor(parent, "Loading Progress", "Getting Started...", 0, list.size());
+			if(fileList.size()>0){
+				monitor = new ProgressMonitor(parent, "Loading Progress", "Getting Started...", 0, fileList.size());
 
 				progress = 0;
 				
-	            for (File file : list) {
+	            for (File file : fileList) {
 	            	progress++;
 	            	monitor.setProgress(progress);
 	            	monitor.setNote("Loaded num:" + progress + "\n file:" + file.getAbsolutePath());
@@ -367,20 +430,17 @@ public class SmaliLoader {
                 	if(Parse_success){
                 		smaliEntry.postProcess();
                 		
-                		packageEntry = findEntry(smaliEntry.packageName/*file.getParentFile()*/); //查找该节点的父节点，即包
+                		packageEntry = findEntry(smaliEntry.packageName); //查找该节点的父节点，即包
                 		
                 		//add non-leaf package if not exist
     	            	if(packageEntry==null){
-//    	            		String packageName = getPackageName(file.getParentFile());
     	            		packageEntry = new SmaliEntry(null, smaliEntry.packageName, false);
     	            		root.leafChildren.add(packageEntry);
-    	            		globePackageSet.put(smaliEntry.packageName, packageEntry);
+    	            		packageSet.put(smaliEntry.packageName, packageEntry);
     	            	}
     	            	
     	            	//add leaf
     	            	packageEntry.leafChildren.add(smaliEntry);
-//    	            	smailMap.add(smaliEntry);
-//    	            	globeClassMap.put(smaliEntry.classHeader.classNameSelf, smaliEntry);
     	            	globeClassSet.add(smaliEntry);
                 	}else{
                 		break; //abort if has error in parsing
@@ -399,47 +459,12 @@ public class SmaliLoader {
 		System.out.println("Load root Done and build refItClassName Map...");
 
 		if(globeClassSet.size()>0 && !monitor.isCanceled()){
-//			monitor = new ProgressMonitor(parent, "RePaser Smali", "Getting Started...", 0, globeClassSet.size());
-//			progress = 0;
-//			
-//			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
-//			try{
-//				while(iterator.hasNext()){
-//					SmaliEntry se = iterator.next();
-//					
-//					progress++;
-//	            	monitor.setProgress(progress);
-//	            	monitor.setNote("RePaser num:" + progress + "\n SmaliEntry:" + se.toString());
-//	            	if(monitor.isCanceled()){
-//	            		break;
-//	            	}
-//	            	
-//	            	errFileName = se.file.getAbsolutePath();
-//					myParser.paser(se);
-//					
-//					
-//				}
-//			}catch(Exception e){
-//				e.printStackTrace();
-//				monitor.setProgress(0);
-//	        	monitor.setNote("RePaser fail:" + progress + "\n errFileName:" + errFileName);
-//	        	return;
-//			}
-//			
-//			if(monitor.isCanceled()){
-//        		return;
-//        	}
-//			
-//			System.out.println("paser root Done");
-//			monitor.close();
 			
 			monitor = new ProgressMonitor(parent, "Buld smali relationship", "Getting Started...", 0, globeClassSet.size());
 			progress = 0;
 			
 			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
 			iterator = globeClassSet.iterator();
-			
-
 			
 			while(iterator.hasNext()){
 				SmaliEntry se = iterator.next();
@@ -468,8 +493,8 @@ public class SmaliLoader {
     					
     					if(se2.content.contains(se.classHeader.classNameSelf)){
     						//se在 se2的文件中，说明 se被se2使用， se2使用了se
-    						se.putRefItClassName(se2);
-    						se2.putItRefClassName(se);
+    						se.putRefItClass(se2);
+    						se2.putItRefClass(se);
     					}
     					
 
@@ -505,7 +530,7 @@ public class SmaliLoader {
 				for (File f : filelist) {
 					if(f.isFile() && f.getName().endsWith(".smali")){
 						//EntryVector 里装的必定是文件或函数
-						list.add(f);
+						fileList.add(f);
 
 					}else{
 						//递归遍历目录
@@ -525,7 +550,7 @@ public class SmaliLoader {
     		packageEntry = new SmaliEntry(null, packageName, false);
     		root.leafChildren.add(packageEntry);
     		
-    		globePackageSet.put(packageName, packageEntry);
+    		packageSet.put(packageName, packageEntry);
 
     	}
 	}
@@ -537,7 +562,7 @@ public class SmaliLoader {
 		if(packageEntry!=null && packageEntry.leafChildren.size()==0){ //empty package can remove
 			root.leafChildren.remove(packageEntry);
 			
-			globePackageSet.remove(packageName);
+			packageSet.remove(packageName);
 		}
 
 	}
@@ -560,8 +585,10 @@ public class SmaliLoader {
 	
 	public SmaliEntry findEntry(String packageName){
 
-		return globePackageSet.get(packageName);
+		return packageSet.get(packageName);
 	}
+
+
 	
 
 

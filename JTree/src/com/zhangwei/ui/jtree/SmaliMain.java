@@ -19,6 +19,8 @@ public class SmaliMain {
 	public static final String AUTO_PUBLIC = "Auto-public";
 	public static final String CLOSE = "Close";
 	public static final String OPEN = "Open";
+	public static final String Load = "Load";
+	public static final String SAVE = "Save";
 	
 	static JFrame frame;
 
@@ -47,6 +49,16 @@ public class SmaliMain {
 				JMenuItem openMenuItem = new JMenuItem(OPEN, KeyEvent.VK_O);
 				openMenuItem.addActionListener(treePane);
 				fileMenu.add(openMenuItem);
+				
+				// File->Save, S - Mnemonic
+				JMenuItem saveMenuItem = new JMenuItem(SAVE, KeyEvent.VK_S);
+				saveMenuItem.addActionListener(treePane);
+				fileMenu.add(saveMenuItem);
+				
+				// File->Load, L - Mnemonic
+				JMenuItem loadMenuItem = new JMenuItem(Load, KeyEvent.VK_L);
+				loadMenuItem.addActionListener(treePane);
+				fileMenu.add(loadMenuItem);
 				
 		        // Separator
 		        fileMenu.addSeparator();

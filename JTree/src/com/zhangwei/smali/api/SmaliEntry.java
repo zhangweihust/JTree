@@ -1,10 +1,8 @@
 package com.zhangwei.smali.api;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,8 +21,7 @@ import com.zhangwei.utils.StringHelper;
 public class SmaliEntry {
 	public static String rootPath = "";
 	
-	public Vector<SmaliEntry> leafChildren; //!isFile 才有效, 对应目录下的smali文件
-	public SmaliEntry fatherClass; //父类的SmaliEntry，可能为null，即在root下找不到smali文件
+
 //    public String fileName; //xyz.smali
 
 	public File file;
@@ -37,21 +34,51 @@ public class SmaliEntry {
 	public List<FieldEntry> entry_field_array;
 	public List<MethodEntry> entry_method_array;
 	
-	public Set<SmaliEntry> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
-	public Set<SmaliEntry> refItClassNames; //谁使用了它
+	public transient Set<SmaliEntry> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
+	public transient Set<SmaliEntry> refItClassNames; //谁使用了它
+	public transient Vector<SmaliEntry> leafChildren; //!isFile 才有效, 对应目录下的smali文件
+	public transient SmaliEntry fatherClass; //父类的SmaliEntry，可能为null，即在root下找不到smali文件
 	
 	public String content;
 	public boolean needWrite;
 	
+	public SmaliEntry(){
+		itRefClassNames = new HashSet<SmaliEntry>();
+		refItClassNames = new HashSet<SmaliEntry>();
+		leafChildren = new Vector<SmaliEntry>(); 
+	}
+	
+	public void postConstructFromGson(){
+		if(file!=null){
+			file = new File(file.getPath());
+		}
+
+		if(classHeader!=null){
+			classHeader.addThis(this);
+		}
+		
+		if(entry_field_array!=null && entry_field_array.size()>0){
+			for(FieldEntry a_field : entry_field_array){
+				a_field.addThis(this);
+			}
+		}
+		
+		if(entry_method_array!=null && entry_method_array.size()>0){
+			for(MethodEntry a_method : entry_method_array){
+				a_method.addThis(this);
+			}
+		}
+	}
+	
+	
 	public SmaliEntry(File file, String packageName, boolean isFile){
+		this();
+		
 		this.file = file;	
 		this.isFile = isFile;
 //		this.fileName = name;
 		this.packageName = packageName;
-		this.leafChildren = new Vector<SmaliEntry>(); 
-		this.itRefClassNames = new HashSet<SmaliEntry>(); //new HashMap<String, String>();
-		this.refItClassNames = new HashSet<SmaliEntry>(); //new HashMap<String, String>();
-		
+	
 		this.content = getFileContent();
 		this.needWrite = false;
 		this.fatherClass = null;
@@ -90,8 +117,8 @@ public class SmaliEntry {
 //			String content = getFileContent();
 			
 			if(content.contains(src_className)){
-				String src_className2 = StringHelper.escapeExprSpecialWord(src_className);
-				String dst_className2 = StringHelper.escapeExprSpecialWord(dst_className);
+				String src_className2 = src_className; //StringHelper.escapeExprSpecialWord(src_className);
+				String dst_className2 = dst_className; //StringHelper.escapeExprSpecialWord(dst_className);
 				/*String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));*/
 				content = content.replace(src_className2, dst_className2);
 				needWrite = true;
@@ -287,8 +314,10 @@ public class SmaliEntry {
 				
 				String packageOfNew = StringHelper.getPackageNameFromCLz(dst_className);
 				String packageOfOld = StringHelper.getPackageNameFromCLz(src_className);
-				
-				SmaliLoader.getInstance().changePackage(this , packageOfOld, packageOfNew);
+				if(!packageOfNew.equals(packageOfOld)){
+					SmaliLoader.getInstance().changePackage(this , packageOfOld, packageOfNew);
+				}
+
 				FileUtils.copyFile(file, newFile);
 				FileUtils.deleteQuietly(file);
 //				file.renameTo(newFile);
@@ -335,7 +364,7 @@ public class SmaliEntry {
 	 * */
 	public File getNewFile(File root, String cls_name){
 		StringBuilder leaf = new StringBuilder();
-		leaf.append(root.getAbsolutePath());
+		leaf.append(root.getPath());
 		String classNameTmp = cls_name.substring(1, cls_name.length()-1); // com/b/a/a
 		String[] classNameArray = classNameTmp.split("/");
 		if(classNameArray!=null && classNameArray.length>0){
@@ -528,27 +557,18 @@ public class SmaliEntry {
 		last.close();
 	}
 	
-//	public void renameRefItClassName(String oldClzName, String newClzName){
-//		refItClassNames.remove(oldClzName);
-//		refItClassNames.put(newClzName, newClzName);
-//	}
-	
-//	public void renameItRefClassName(String oldClzName, String newClzName){
-//		itRefClassNames.remove(oldClzName);
-//		itRefClassNames.put(newClzName, newClzName);
-//	}
 	
 	/**
 	 * 它使用了谁
 	 * */
-	public void putItRefClassName(SmaliEntry clzName){
+	public void putItRefClass(SmaliEntry clzName){
 		itRefClassNames.add(clzName);
 	}
 	
 	/**
 	 * 谁使用了它
 	 * */
-	public void putRefItClassName(SmaliEntry clzName){
+	public void putRefItClass(SmaliEntry clzName){
 		refItClassNames.add(clzName);
 	}
 	
