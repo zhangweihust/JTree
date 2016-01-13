@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
@@ -34,23 +36,37 @@ public class SmaliEntry {
 	public List<FieldEntry> entry_field_array;
 	public List<MethodEntry> entry_method_array;
 	
-	public transient Set<SmaliEntry> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
-	public transient Set<SmaliEntry> refItClassNames; //谁使用了它
+	public transient Set<SmaliEntry> itRefClass; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
+	public transient Set<SmaliEntry> refItClass; //谁使用了它
 	public transient Vector<SmaliEntry> leafChildren; //!isFile 才有效, 对应目录下的smali文件
 	public transient SmaliEntry fatherClass; //父类的SmaliEntry，可能为null，即在root下找不到smali文件
 	
-	public String content;
-	public boolean needWrite;
+	public Set<String> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
+	public Set<String> refItClassNames; //谁使用了它
+//	public Vector<String> leafChildrenName; //!isFile 才有效, 对应目录下的smali文件
+	public String fatherClassName; //父类的SmaliEntry，可能为null，即在root下找不到smali文件
+	
+	public transient String content;
+	public transient boolean needWrite = false;
 	
 	public SmaliEntry(){
-		itRefClassNames = new HashSet<SmaliEntry>();
-		refItClassNames = new HashSet<SmaliEntry>();
+		itRefClass = new HashSet<SmaliEntry>();
+		refItClass = new HashSet<SmaliEntry>();
 		leafChildren = new Vector<SmaliEntry>(); 
+		itRefClassNames = new HashSet<String>();
+		refItClassNames = new HashSet<String>();
 	}
 	
 	public void postConstructFromGson(){
 		if(file!=null){
 			file = new File(file.getPath());
+			try {
+				content = FileUtils.readFileToString(file);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		if(classHeader!=null){
@@ -439,6 +455,11 @@ public class SmaliEntry {
 	// --------------------fatherClass -------------------
 	public void setFatherClass(SmaliEntry f){
 		fatherClass = f;
+		
+		if(f!=null && f.classHeader!=null){
+			fatherClassName = f.classHeader.classNameSelf;
+		}
+
 	}
 
 	// ------------------------classHeader --------------------- 
@@ -561,29 +582,31 @@ public class SmaliEntry {
 	/**
 	 * 它使用了谁
 	 * */
-	public void putItRefClass(SmaliEntry clzName){
-		itRefClassNames.add(clzName);
+	public void putItRefClass(SmaliEntry clz){
+		itRefClass.add(clz);
+		itRefClassNames.add(clz.classHeader.classNameSelf);
 	}
 	
 	/**
 	 * 谁使用了它
 	 * */
-	public void putRefItClass(SmaliEntry clzName){
-		refItClassNames.add(clzName);
+	public void putRefItClass(SmaliEntry clz){
+		refItClass.add(clz);
+		refItClassNames.add(clz.classHeader.classNameSelf);
 	}
 	
 	/**
 	 * @return 返回该smali里面涉及到的类名（它使用了谁，但是谁使用了它不知道）
 	 * */
 	public Set<SmaliEntry> getItRefClassList(){
-		return itRefClassNames;
+		return itRefClass;
 	}
 	
 	/**
 	 * @return 返回该谁使用了它
 	 * */
 	public Set<SmaliEntry> getRefItClassList(){
-		return refItClassNames;
+		return refItClass;
 	}
 	
 	
@@ -711,7 +734,34 @@ public class SmaliEntry {
 
 
 
+	public static void main(String[] args){
+		try {
+			String content = FileUtils.readFileToString(new File("D:\\android\\crack\\AndroidKiller_v1.3.1\\projects\\weixin637android660_20151231\\Project\\smali\\com\\tencent\\mm\\m\\a$a.smali"));
 
+			Pattern p = Pattern.compile(SmaliLoader.clzRegexPatten);
+			Matcher match = p.matcher(content);
+			Set<String> set = new HashSet<String>();
+			while(match.find()){
+				int startIndex = match.start();
+				int endIndex = match.end();
+				String matchStr = content.substring(startIndex, endIndex);
+				if(!set.contains(matchStr)){
+					set.add(matchStr);
+//					System.out.println("find:" + matchStr);
+				}
+
+			}
+			
+			
+			for(String item : set){
+				System.out.println("find:" + item);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 
 

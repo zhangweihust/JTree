@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ProgressMonitor;
 
@@ -38,6 +40,7 @@ public class SmaliLoader {
 	private Map<String, SmaliEntry> packageSet = new HashMap<String, SmaliEntry>();
 	
 
+	public static String clzRegexPatten = "L[0-9|a-z|A-Z|$|/|_|-]+;";
 	
 	private SmaliLoader(){
 		fileList = new ArrayList<File>();
@@ -271,10 +274,57 @@ public class SmaliLoader {
 		// TODO Auto-generated method stub
 		globeClassSet = state.globeClassSet;
 		this.root = state.root;
+		this.confPath = state.confPath;
 
 		monitor = new ProgressMonitor(parent, "Loading Progress", "Getting Started...", 0, globeClassSet.size());
 
 		if (globeClassSet.size() > 0 && !monitor.isCanceled()) {
+			
+			//init from saveConf
+			Iterator<SmaliEntry> iterator0 = globeClassSet.iterator();
+			iterator0 = globeClassSet.iterator();
+			Map<String, SmaliEntry> map = new HashMap<String, SmaliEntry>();
+
+			while (iterator0.hasNext()) {
+				SmaliEntry se = iterator0.next();
+				if(se!=null && se.classHeader!=null && se.classHeader.classNameSelf!=null){
+					map.put(se.classHeader.classNameSelf, se);
+					
+					se.postConstructFromGson();
+				}
+
+			}
+			
+			
+			//build relation names
+			Iterator<SmaliEntry> iterator1 = globeClassSet.iterator();
+			iterator1 = globeClassSet.iterator();
+
+			while (iterator1.hasNext()) {
+				Pattern p = Pattern.compile(clzRegexPatten);
+				SmaliEntry se = iterator1.next();
+				if(se!=null && se.classHeader!=null && se.classHeader.classNameSelf!=null){
+
+					Matcher match = p.matcher(se.content);
+					while(match.find()){
+
+						int startIndex = match.start();
+						int endIndex = match.end();
+						String matchStr = se.content.substring(startIndex, endIndex);
+						if(matchStr!=null && map.containsKey(matchStr)){
+							if(!se.itRefClassNames.contains(matchStr)){
+								se.itRefClassNames.add(matchStr);
+							}
+							
+						}
+
+					
+					}
+				}
+
+			}
+			
+
 
 			monitor = new ProgressMonitor(parent, "Buld smali relationship", "Getting Started...", 0, globeClassSet.size());
 			progress = 0;
@@ -296,7 +346,7 @@ public class SmaliLoader {
 					continue;
 				}
 				
-				se.postConstructFromGson();
+
 				
         		SmaliEntry packageEntry = findEntry(se.packageName); //查找该节点的父节点，即包
         		
@@ -310,33 +360,59 @@ public class SmaliLoader {
             	//add leaf
             	packageEntry.leafChildren.add(se);
             	
+            	//build relation2
+            	if(se.itRefClassNames!=null && se.itRefClassNames.size()>0){
+                	for(String clzName : se.itRefClassNames){
+                		SmaliEntry one = map.get(clzName);
+                		if(one!=null){
+                    		se.itRefClass.add(one);
+                    		one.refItClass.add(se);
+                		}
+
+                	}
+            	}
+
+//            	if(se.refItClassNames!=null && se.refItClassNames.size()>0){
+//                	for(String clzName : se.refItClassNames){
+//                		SmaliEntry one = map.get(clzName);
+//                		if(one!=null){
+//                    		se.refItClass.add(one);
+//                    		one.itRefClass.add(se);
+//                		}
+//
+//                	}
+//            	}
             	
-            	
-
-				Set<SmaliEntry> tmpClassSet = new HashSet<SmaliEntry>();
-				tmpClassSet.addAll(globeClassSet);
-
-				Iterator<SmaliEntry> iterator2 = tmpClassSet.iterator();
-				while (iterator2.hasNext()) {
-					SmaliEntry se2 = iterator2.next();
-					if (se2 != null && se != se2) {
-						if (se2.classHeader == null || se2.content == null) {
-							continue;
-						}
-
-						if (se2.content.contains(se.classHeader.classNameSelf)) {
-							// se在 se2的文件中，说明 se被se2使用， se2使用了se
-							se.putRefItClass(se2);
-							se2.putItRefClass(se);
-						}
-
-						// 构建父类关系
-						if (se2.classHeader.classNameSuper != null && se2.classHeader.classNameSuper.equals(se.classHeader.classNameSelf)) {
-							// se2's father == se
-							se2.setFatherClass(se);
-						}
-					}
-				}
+            	if(se.fatherClassName!=null){
+            		SmaliEntry fe = map.get(se.fatherClassName);
+            		se.setFatherClass(fe);
+            	}
+        
+            	//build relation
+//				Set<SmaliEntry> tmpClassSet = new HashSet<SmaliEntry>();
+//				tmpClassSet.addAll(globeClassSet);
+//
+//				Iterator<SmaliEntry> iterator2 = tmpClassSet.iterator();
+//				while (iterator2.hasNext()) {
+//					SmaliEntry se2 = iterator2.next();
+//					if (se2 != null && se != se2) {
+//						if (se2.classHeader == null || se2.content == null) {
+//							continue;
+//						}
+//
+//						if (se2.content.contains(se.classHeader.classNameSelf)) {
+//							// se在 se2的文件中，说明 se被se2使用， se2使用了se
+//							se.putRefItClass(se2);
+//							se2.putItRefClass(se);
+//						}
+//
+//						// 构建父类关系
+//						if (se2.classHeader.classNameSuper != null && se2.classHeader.classNameSuper.equals(se.classHeader.classNameSelf)) {
+//							// se2's father == se
+//							se2.setFatherClass(se);
+//						}
+//					}
+//				}
 
 			}
 
@@ -394,6 +470,8 @@ public class SmaliLoader {
 		
 		SmaliEntry.rootPath = root_path;
 		
+		Map<String, SmaliEntry> map = new HashMap<String, SmaliEntry>();
+		
 		if(fileList!=null){
 			fileList.clear();
 		}
@@ -406,11 +484,14 @@ public class SmaliLoader {
 		String errFileName = null;
 		
 		try{
+
 			
 			if(fileList.size()>0){
 				monitor = new ProgressMonitor(parent, "Loading Progress", "Getting Started...", 0, fileList.size());
 
 				progress = 0;
+				
+
 				
 	            for (File file : fileList) {
 	            	progress++;
@@ -443,6 +524,10 @@ public class SmaliLoader {
     	            	//add leaf
     	            	packageEntry.leafChildren.add(smaliEntry);
     	            	globeClassSet.add(smaliEntry);
+    	            	if(smaliEntry.classHeader!=null && smaliEntry.classHeader.classNameSelf!=null){
+        	            	map.put(smaliEntry.classHeader.classNameSelf, smaliEntry);
+    	            	}
+
                 	}else{
                 		break; //abort if has error in parsing
                 	}
@@ -467,6 +552,8 @@ public class SmaliLoader {
 			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
 			iterator = globeClassSet.iterator();
 			
+			Pattern p = Pattern.compile(clzRegexPatten);
+
 			while(iterator.hasNext()){
 				SmaliEntry se = iterator.next();
 				
@@ -480,32 +567,58 @@ public class SmaliLoader {
             	if(se==null || se.classHeader==null){
             		continue;
             	}
-    			
-            	Set<SmaliEntry> tmpClassSet = new HashSet<SmaliEntry>();
-    			tmpClassSet.addAll(globeClassSet);
-    			
-    			Iterator<SmaliEntry> iterator2 = tmpClassSet.iterator();
-    			while(iterator2.hasNext()){
-    				SmaliEntry se2 = iterator2.next();
-    				if(se2!=null && se!=se2){
-    					if(se2.classHeader==null || se2.content==null){
-    						continue;
-    					}
-    					
-    					if(se2.content.contains(se.classHeader.classNameSelf)){
-    						//se在 se2的文件中，说明 se被se2使用， se2使用了se
-    						se.putRefItClass(se2);
-    						se2.putItRefClass(se);
-    					}
-    					
+            	
+            	Matcher match = p.matcher(se.content);
+				while(match.find()){
+					int startIndex = match.start();
+					int endIndex = match.end();
+					String matchStr = se.content.substring(startIndex, endIndex);
+					if(matchStr!=null && map.containsKey(matchStr)){
+						if(!se.itRefClassNames.contains(matchStr)){
+							se.itRefClassNames.add(matchStr);
+						}
+						
+						SmaliEntry se2 = map.get(matchStr);
+						if(se2!=null){
+							se.putRefItClass(se2);
+							se2.putItRefClass(se);
+						}
 
+						
     					//构建父类关系
     					if(se2.classHeader.classNameSuper!=null && se2.classHeader.classNameSuper.equals(se.classHeader.classNameSelf)){
     						//se2's father == se
     						se2.setFatherClass(se);
     					}
-    				}
-    			}
+					}
+
+				}
+    			
+//            	Set<SmaliEntry> tmpClassSet = new HashSet<SmaliEntry>();
+//    			tmpClassSet.addAll(globeClassSet);
+//    			
+//    			Iterator<SmaliEntry> iterator2 = tmpClassSet.iterator();
+//    			while(iterator2.hasNext()){
+//    				SmaliEntry se2 = iterator2.next();
+//    				if(se2!=null && se!=se2){
+//    					if(se2.classHeader==null || se2.content==null){
+//    						continue;
+//    					}
+//    					
+//    					if(se2.content.contains(se.classHeader.classNameSelf)){
+//    						//se在 se2的文件中，说明 se被se2使用， se2使用了se
+//    						se.putRefItClass(se2);
+//    						se2.putItRefClass(se);
+//    					}
+//    					
+//
+//    					//构建父类关系
+//    					if(se2.classHeader.classNameSuper!=null && se2.classHeader.classNameSuper.equals(se.classHeader.classNameSelf)){
+//    						//se2's father == se
+//    						se2.setFatherClass(se);
+//    					}
+//    				}
+//    			}
     			
 
 			}
