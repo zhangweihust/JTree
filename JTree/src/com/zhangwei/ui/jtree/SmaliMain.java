@@ -98,7 +98,7 @@ public class SmaliMain {
 				// File->Command, M - Mnemonic
 				JMenuItem commandMenuItem = new JMenuItem(Command, KeyEvent.VK_M);
 				commandMenuItem.addActionListener(treePane);
-				fileMenu.add(delMenuItem);
+				fileMenu.add(commandMenuItem);
 				
 		        // Separator
 		        fileMenu.addSeparator();

@@ -1,0 +1,10 @@
+{
+  "Type": "rename",
+  "srcClzName": "Lcom/tencent/mm/pointers/PString;",
+  "dstClzName": "Lcom/tencent/mm/pointers/PString2;",
+  "startClzPattern": "Lcom/tencent/mm/",
+  "exceptClzPattern": [
+    "Lcom/tencent/mm/pointers/",
+    "Lcom/tencent/mm/o/"
+  ]
+}
