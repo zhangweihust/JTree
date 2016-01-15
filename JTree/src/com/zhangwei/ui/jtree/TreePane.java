@@ -280,7 +280,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                 LoadThread t = new LoadThread();
                 t.startThread(selectedFiles);
             } 
-        }if(action.equals(SmaliMain.Load)){
+        }else if(action.equals(SmaliMain.Load)){
             JFileChooser fileChooser = new JFileChooser(last_file_for_chose);
             //fileChooser.setAccessory(new LabelAccessory(fileChooser));
             FileView view = new JavaFileView();
@@ -293,6 +293,19 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                 LoadConfThread t = new LoadConfThread();
                 t.startThread(selectedFile);
             } 
+        }else if(action.equals(SmaliMain.Command)){
+            JFileChooser fileChooser = new JFileChooser(last_file_for_chose);
+            //fileChooser.setAccessory(new LabelAccessory(fileChooser));
+            FileView view = new JavaFileView();
+            fileChooser.setFileView (view);
+            fileChooser.setDialogTitle("选择command json");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int status = fileChooser.showOpenDialog(parent);
+            if (status == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                CommandThread t = new CommandThread();
+                t.startThread(selectedFile);
+            } 
         }else if(action.equals(SmaliMain.SAVE)){
         	SaveConfThread t = new SaveConfThread();
         	t.startThread();
@@ -302,10 +315,137 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
         }else if(action.equals(SmaliMain.AUTO_PUBLIC)){
         	UpPublicThread t = new UpPublicThread();
         	t.startThread();
+        }else if(action.equals(SmaliMain.Add)){
+            JFileChooser fileChooser = new JFileChooser(last_dir_for_chose);
+            //fileChooser.setAccessory(new LabelAccessory(fileChooser));
+            FileView view = new JavaFileView();
+            fileChooser.setFileView (view);
+            fileChooser.setDialogTitle("add - 选择smali根目录");
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setMultiSelectionEnabled(true);
+            int status = fileChooser.showOpenDialog(parent);
+            if (status == JFileChooser.APPROVE_OPTION) {
+//                File selectedFile = fileChooser.getSelectedFile();
+            	File[] selectedFiles = fileChooser.getSelectedFiles();
+                AddThread t = new AddThread();
+                t.startThread(selectedFiles);
+            } 
+        }else if(action.equals(SmaliMain.Del)){
+            JFileChooser fileChooser = new JFileChooser(last_dir_for_chose);
+            //fileChooser.setAccessory(new LabelAccessory(fileChooser));
+            FileView view = new JavaFileView();
+            fileChooser.setFileView (view);
+            fileChooser.setDialogTitle("del - 选择smali根目录");
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setMultiSelectionEnabled(true);
+            int status = fileChooser.showOpenDialog(parent);
+            if (status == JFileChooser.APPROVE_OPTION) {
+//                File selectedFile = fileChooser.getSelectedFile();
+            	File[] selectedFiles = fileChooser.getSelectedFiles();
+                DelThread t = new DelThread();
+                t.startThread(selectedFiles);
+            } 
         }
         
 
     
+	}
+	
+	class DelThread extends Thread {
+		
+		private File[] selectedFiles;
+
+		void startThread(File[] selectedFiles ){
+			this.selectedFiles = selectedFiles;
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            
+			if(selectedFiles.length>0){
+
+	            SmaliEntry root = tree.getRoot();
+	            
+	            if(root==null){
+	            	System.err.println("root null");
+	            	return;
+	            }
+	            
+	            last_dir_for_chose = selectedFiles[0].getParentFile().getAbsolutePath();
+	           
+				
+	            SmaliLoader.getInstance().delRoot(TreePane.this, root, selectedFiles);
+	            SmaliLoader.getInstance().sortTree();
+	            tree.Refresh();
+
+			}
+
+
+		}
+	}
+	
+	class AddThread extends Thread {
+		
+		private File[] selectedFiles;
+
+		void startThread(File[] selectedFiles ){
+			this.selectedFiles = selectedFiles;
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            
+			if(selectedFiles.length>0){
+
+	            SmaliEntry root = tree.getRoot();
+	            
+	            if(root==null){
+	            	System.err.println("root null");
+	            	return;
+	            }
+	            
+	            last_dir_for_chose = selectedFiles[0].getParentFile().getAbsolutePath();
+	           
+	            SmaliLoader.getInstance().addRoot(TreePane.this, root, selectedFiles);
+	            SmaliLoader.getInstance().sortTree();
+	            
+	            tree.Refresh();
+
+			}
+
+
+		}
+	}
+	
+	class CommandThread extends Thread {
+		
+		private File selectedFile;
+
+		void startThread(File selectedFile ){
+			this.selectedFile = selectedFile;
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            
+			if(selectedFile!=null && selectedFile.isFile()){
+	            last_file_for_chose = selectedFile.getParentFile().getAbsolutePath();
+
+	            SmaliLoader.getInstance().execCommand(TreePane.this, selectedFile);
+
+			}
+
+
+		}
 	}
 	
 	class LoadThread extends Thread {
@@ -328,6 +468,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 	           
 				
 	            SmaliLoader.getInstance().loadRoot(TreePane.this, root, selectedFiles);
+	            SmaliLoader.getInstance().sortTree();
 	            
 	            tree.changeRoot(root);
 	            
@@ -413,7 +554,8 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 			// TODO Auto-generated method stub
 			super.run();
             SmaliLoader.getInstance().autoRename(TreePane.this);
-
+            SmaliLoader.getInstance().sortTree();
+            tree.Refresh();
 		}
 	}
 	
@@ -429,7 +571,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 			// TODO Auto-generated method stub
 			super.run();
             SmaliLoader.getInstance().autoPublic(TreePane.this);
-
+            tree.Refresh();
 		}
 	}
 }

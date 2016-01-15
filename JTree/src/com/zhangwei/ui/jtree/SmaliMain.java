@@ -15,12 +15,15 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 public class SmaliMain {
-	public static final String AUTO_RENAME = "Auto-rename";
-	public static final String AUTO_PUBLIC = "Auto-public";
-	public static final String CLOSE = "Close";
-	public static final String OPEN = "Open";
-	public static final String Load = "Load";
-	public static final String SAVE = "Save";
+	public static final String AUTO_RENAME = "Auto-rename (R)";
+	public static final String AUTO_PUBLIC = "Auto-public (U)";
+	public static final String CLOSE = "Close (C)";
+	public static final String OPEN = "Open (O)";
+	public static final String Load = "Load (L)";
+	public static final String SAVE = "Save (S)";
+	public static final String Add = "Add (A)";
+	public static final String Del = "Del (D)";
+	public static final String Command = "Command (M)";
 	
 	static JFrame frame;
 
@@ -64,7 +67,7 @@ public class SmaliMain {
 		        fileMenu.addSeparator();
 		        
 				// File->Open, O - Mnemonic
-				JMenuItem autoMenuItem = new JMenuItem( AUTO_RENAME, KeyEvent.VK_A);
+				JMenuItem autoMenuItem = new JMenuItem( AUTO_RENAME, KeyEvent.VK_R);
 				autoMenuItem.addActionListener(treePane);
 				fileMenu.add(autoMenuItem);
 				
@@ -75,6 +78,27 @@ public class SmaliMain {
 				JMenuItem publicMenuItem = new JMenuItem( AUTO_PUBLIC, KeyEvent.VK_U);
 				publicMenuItem.addActionListener(treePane);
 				fileMenu.add(publicMenuItem);
+				
+		        // Separator
+		        fileMenu.addSeparator();
+		        
+				// File->Add, A - Mnemonic
+				JMenuItem addMenuItem = new JMenuItem(Add, KeyEvent.VK_A);
+				addMenuItem.addActionListener(treePane);
+				fileMenu.add(addMenuItem);
+				
+				// File->Del, D - Mnemonic
+				JMenuItem delMenuItem = new JMenuItem(Del, KeyEvent.VK_D);
+				delMenuItem.addActionListener(treePane);
+				fileMenu.add(delMenuItem);
+				
+		        // Separator
+		        fileMenu.addSeparator();
+		        
+				// File->Command, M - Mnemonic
+				JMenuItem commandMenuItem = new JMenuItem(Command, KeyEvent.VK_M);
+				commandMenuItem.addActionListener(treePane);
+				fileMenu.add(delMenuItem);
 				
 		        // Separator
 		        fileMenu.addSeparator();

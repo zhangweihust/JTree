@@ -1,0 +1,181 @@
+#####################
+# Smali ABNF grammar
+# Author: Dmitry Vorobiev
+# Naming conventions:
+# dirXXX - smali directives .XXX
+# classXXX - class entity (field, method etc)
+# methodXXX - method entitiy (directive lines)
+# codeXXX - piece of code
+# cmdXXX - smali command with parameters and optional comment
+#####################
+
+$include "basic.abnf";
+
+#####COMMON RULES#####
+padding = 1*(SP / HTAB);
+optPadding = [padding];
+widePadding = 1*(padding / CRLF);
+optWidePadding = [widePadding];
+listSeparator = *padding COMMA *padding;
+escSymbol = ALPHA / DIGIT / SP / %x21 / %x5c %x22 / %x23-2f / %x3a-40 / %x5b / %x5c %x5c / %x5d-60 / %x7b-7e / %x5c %x72 / %x5c %x6e / %x5c %x74;
+#zhw
+#qualifier = (ALPHA / UNDERSCORE) *(ALPHA / DIGIT / UNDERSCORE);
+qualifier = 1*(ALPHA / DIGIT / UNDERSCORE / SUB / "$");
+#zhw
+className = "L" qualifier *("/" qualifier ["$" qualifier]) SEMICOLON;
+#className = "L" (qualifier / "$") *(%x2f (qualifier / "$")) *("$" /  qualifier) SEMICOLON;
+anySeq = "    " *(padding / VCHAR) CRLF;
+commentSequence = "#" *(padding / VCHAR);
+comment = optPadding [commentSequence] CRLF;
+emptyLine = optPadding CRLF;
+skipLine = comment / emptyLine;
+fileName = QUOT qualifier [ DOT ] *(ALPHA / DIGIT) QUOT;
+accessMode = "public" / "private" / "protected" / "static" / "final" / "abstract" / "transient" / "synthetic" / "enum" / "annotation" / "declared-synchronized" / "bridge" / "varargs" / "volatile" / "native" / "synchronized";
+interfaceMode = "interface";
+type = "V" / "Z" / "B" / "S" / "C" / "I" / "J" / "F" / "D" / className / "[" type;
+boolValue = "true" / "false";
+charValue = SINGLE_QUOT [["\"] (VCHAR_WITHOUT_QUOT / QUOT)] SINGLE_QUOT;
+byteValue = intValue %x74;
+shortValue = intValue %x73;
+intDecValue = [%x2d] 1*DIGIT;
+intHexValue = [%x2d] %x30 %x78 1*HEXDIG;
+longDecValue = [%x2d] 1*DIGIT  ("l" / "L");
+longHexValue = [%x2d] %x30 %x78 1*HEXDIG ("l" / "L");
+intValue = intHexValue / intDecValue;
+doubleValue = intDecValue DOT *(DIGIT);
+floatValue = doubleValue %x66;
+longValue = longHexValue / longDecValue;
+strValue = QUOT *(("\" QUOT) / SINGLE_QUOT / VCHAR_WITHOUT_QUOT ) QUOT;
+nullValue = "null";
+enumValue = ".enum" optPadding type "->" qualifier COLON type;
+value = byteValue / longValue / boolValue / shortValue / floatValue / doubleValue / nullValue / intValue / charValue / strValue / enumValue;
+codeLabel = COLON qualifier;
+codeRegisterP = "p" intDecValue;
+codeRegisterP64 = "p" intDecValue;
+codeRegisterV = "v" intDecValue;
+codeRegisterV64 = "v" intDecValue;
+codeRegisterVDst = "v" intDecValue;
+codeRegisterV64Dst = "v" intDecValue;
+codeRegister = codeRegisterP / codeRegisterV;
+codeRegister64 = codeRegisterP64 / codeRegisterV64;
+codeRegisterRet = codeRegisterP / codeRegisterV;
+codeRegisterRet64 = codeRegisterP64 / codeRegisterV64;
+codeRegisterGroup = "{" optPadding (codeRegisterP / codeRegisterV) optPadding *(COMMA optPadding (codeRegisterP / codeRegisterV) optPadding) "}";
+
+#####SMALI DIRECTIVE RULES#####
+dirAnnotation = ".annotation";
+dirClass = ".class";
+dirEnd = ".end";
+dirEndAnnotation = dirEnd padding "annotation";
+dirEndField = dirEnd padding "field";
+dirEndMethod = dirEnd padding "method";
+dirEndSubannotation = dirEnd padding "subannotation";
+dirParameter = ".parameter" / ".param";
+dirEndParameter = dirEnd padding ("parameter" / "param");
+dirImplements = ".implements";
+dirField = ".field";
+dirLocal = ".local";
+dirMethod = ".method";
+dirRegisters = ".registers";
+dirSubannotation = ".subannotation";
+dirSuper = ".super";
+dirSource = ".source";
+
+dirArrayData = ".array-data";
+dirEndArrayData = dirEnd optPadding "array-data";
+
+dirSparseswitch = ".sparse-switch";
+dirEndSparseswitch = dirEnd padding "sparse-switch";
+
+#####SMALI GENERAL RULES#####
+smali = classHeader *(classField / skipLine / classMethod);
+
+classHeader = classClass classSuper [classSource] *classImplements *skipLine;
+
+#class directive statements
+classClass = dirClass padding *((accessMode / interfaceMode) padding) optPadding classNameSelf comment;
+classSuper = dirSuper padding classNameSuper optPadding comment;
+classSource = dirSource padding fileName optPadding comment;
+classImplements = dirImplements padding className optPadding comment;
+
+classNameSelf = className;
+classNameSuper = className;
+
+
+
+todoStubLine = *(VCHAR / padding);
+
+#####SMALI HEADER RULES#####
+
+#method directive statements
+methodLocals = optPadding ".locals" padding intValue optPadding comment;
+methodParam = optPadding dirParameter [(padding (value / qualifier))] [ "," padding strValue] [comment] [annotation] [optPadding dirEndParameter] [comment];
+
+###    .param p3    # Ljava/lang/String;
+###        .annotation build Lorg/eclipse/jdt/annotation/NonNull;
+###        .end annotation
+###    .end param
+#methodParam =/ optPadding ".param" optPadding qualifier optPadding comment;
+
+
+#methodParam =/ ((optPadding ".parameter" optPadding comment) [annotation] (optPadding dirEndParameter optPadding comment));
+methodPrologue = optPadding ".prologue" optPadding comment;
+methodLine = optPadding ".line" padding intValue optPadding comment;
+methodRegisters = optPadding ".registers" padding intValue optPadding comment;
+methodLocal = optPadding ".local" padding todoStubLine comment;
+methodLocal =/ optPadding ".local" padding qualifier ["," qualifier ":" className] optPadding comment;
+methodLocal =/ optPadding ".restart" padding "local" padding qualifier ["," qualifier ":" className] optPadding comment ;
+methodLocal =/ optPadding ".end" padding "local" padding qualifier optPadding comment ;
+
+annotation = dirAnnotation [optPadding annotationVisibility] padding type optPadding comment *(annotationBody) optPadding dirEndAnnotation optPadding [comment];
+annotationVisibility = "build" / "system" / "runtime";
+annotationBody = *(anySeq);
+
+
+#####SMALI FIELD RULES#####
+classFieldName = qualifier;
+classFieldType = type;
+classField = optPadding dirField padding *(accessMode padding) classFieldName COLON classFieldType optPadding [EQ optPadding value] optPadding comment  [annotation] [dirEndField optPadding comment];
+
+array = arrayHead *arrayBody arrayTail;
+arrayHead = optPadding dirArrayData optPadding [value] optPadding comment;
+arrayValue = value ["t" / "x" / "d" / "b" / "s"];
+arrayBody = *(padding / arrayValue)  comment;
+arrayTail = optPadding  dirEndArrayData optPadding comment;
+
+switch = optPadding "packed-switch" optPadding value listSeparator codeLabel optPadding comment;
+#packedswitch =  [optPadding ".end"] optPadding [ "packed-switch" / (".packed-switch" optPadding value) ] optPadding comment;
+packedswitch = (optPadding ".end" optPadding "packed-switch" optPadding comment);
+packedswitch =/ (optPadding "packed-switch" optPadding  comment);
+packedswitch =/ (optPadding ".packed-switch" optPadding value optPadding comment);
+
+#0x1 -> :sswitch_7
+SparseswitchBody = *(optPadding intValue optPadding "->" optPadding codeLabel optPadding comment);
+Sparseswitch = optPadding dirSparseswitch optPadding comment  SparseswitchBody optPadding dirEndSparseswitch optPadding comment;
+
+#.catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
+#.catchall {:try_start_1 .. :try_end_1} :catchall_1
+catchClause = BRACE_PRE optPadding codeLabel  optPadding DOT DOT optPadding codeLabel optPadding BRACE_POS optPadding codeLabel optPadding comment;
+catch = optPadding ".catch" optPadding className optPadding catchClause;
+catchall = optPadding ".catchall" optPadding catchClause;
+
+#####SMALI METHOD RULES#####
+classMethodName = qualifier;
+classMethodProtoOfMethod = classMethodProto;
+classMethod = optPadding dirMethod padding *(accessMode padding) (classConstructorName / classMethodName) optPadding classMethodProtoOfMethod optPadding comment methodBody optPadding dirEndMethod optPadding [comment];
+classMethod =/ annotation;
+classConstructorName = "constructor" padding smaliConstructorName;
+classMethodProto = %x28 *type %x29 type;
+#methodBody = *(methodLocals / methodRegisters / methodParam / annotation / methodPrologue / methodLine / methodLocal / cmdAny / label / catch / catchall / switch / packedswitch / Sparseswitch / array / skipLine);
+methodBody = *(anySeq);
+
+label = optPadding codeLabel optPadding comment;
+
+
+
+smaliConstructorName = ("<init>" / "<clinit>");
+smaliClassRef = className;
+smaliFieldRef = className "->" qualifier COLON type;
+smaliMethodRef = className "->" (smaliConstructorName / qualifier) classMethodProto;
+
+$include "commands.abnf";

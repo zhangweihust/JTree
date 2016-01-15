@@ -26,5 +26,14 @@ public class SmaliTree extends JTree {
     
     public void changeRoot(SmaliEntry newRoot){
     	((SmaliTreeModel)this.getModel()).ChangeRoot(newRoot);
+
+    }
+    
+    public SmaliEntry getRoot(){
+    	return  (SmaliEntry) ((SmaliTreeModel)this.getModel()).getRoot();
+    }
+    
+    public void Refresh(){
+    	((SmaliTreeModel)this.getModel()).Refresh();
     }
 }

@@ -21,7 +21,7 @@ import com.zhangwei.utils.StringHelper;
  *  代表一个smali文件
  * */
 public class SmaliEntry {
-	public static String rootPath = "";
+//	public static String rootPath = "";
 	
 
 //    public String fileName; //xyz.smali
@@ -42,7 +42,7 @@ public class SmaliEntry {
 	public transient SmaliEntry fatherClass; //父类的SmaliEntry，可能为null，即在root下找不到smali文件
 	
 	public Set<String> itRefClassNames; //这个smali中用到的className, 它使用了谁，但是谁使用了它不知道
-	public Set<String> refItClassNames; //谁使用了它
+//	public Set<String> refItClassNames; //谁使用了它
 //	public Vector<String> leafChildrenName; //!isFile 才有效, 对应目录下的smali文件
 	public String fatherClassName; //父类的SmaliEntry，可能为null，即在root下找不到smali文件
 	
@@ -54,7 +54,7 @@ public class SmaliEntry {
 		refItClass = new HashSet<SmaliEntry>();
 		leafChildren = new Vector<SmaliEntry>(); 
 		itRefClassNames = new HashSet<String>();
-		refItClassNames = new HashSet<String>();
+//		refItClassNames = new HashSet<String>();
 	}
 	
 	public void postConstructFromGson(){
@@ -334,8 +334,9 @@ public class SmaliEntry {
 					SmaliLoader.getInstance().changePackage(this , packageOfOld, packageOfNew);
 				}
 
-				FileUtils.copyFile(file, newFile);
-				FileUtils.deleteQuietly(file);
+				FileUtils.moveFile(file, newFile);
+//				FileUtils.copyFile();
+//				FileUtils.deleteQuietly(file);
 //				file.renameTo(newFile);
 				file = newFile; 
 
@@ -592,7 +593,7 @@ public class SmaliEntry {
 	 * */
 	public void putRefItClass(SmaliEntry clz){
 		refItClass.add(clz);
-		refItClassNames.add(clz.classHeader.classNameSelf);
+//		refItClassNames.add(clz.classHeader.classNameSelf);
 	}
 	
 	/**
@@ -697,17 +698,6 @@ public class SmaliEntry {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-//			try{
-//				BufferedWriter out = new BufferedWriter(new FileWriter(file, false));
-//
-//			    out.write(this.content);
-//
-//			    out.close();
-//			    needWrite = false;
-//			    return /*out.toString()*/;
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
 			
 			return /*null*/;
 		}
