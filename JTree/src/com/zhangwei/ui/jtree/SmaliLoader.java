@@ -256,12 +256,12 @@ public class SmaliLoader {
 						continue;
 					}
 					
-					if(se_item.classHeader.classNameSelf.contains("plugin")){
-				    	progress++;
-				    	monitor.setProgress(progress);
-				    	monitor.setNote("Renamed num:" + progress + "\n ingore:" + se_item.classHeader.classNameSelf);
-						continue;
-					}
+//					if(se_item.classHeader.classNameSelf.contains("plugin")){
+//				    	progress++;
+//				    	monitor.setProgress(progress);
+//				    	monitor.setNote("Renamed num:" + progress + "\n ingore:" + se_item.classHeader.classNameSelf);
+//						continue;
+//					}
 					
 //					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/protocal")){
 					
@@ -279,7 +279,11 @@ public class SmaliLoader {
 //							se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/model/") || 
 //							se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/storage/") ||
 //							se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/pb/") ){		
-					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/")){	
+					
+					
+//					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/")){
+					
+					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/pluginsdk")){		
 						
 						try {
 							autoRename(se_item);
@@ -449,18 +453,7 @@ public class SmaliLoader {
 	}
 	
 	public void sortTree(){
-		Collections.sort(root.leafChildren, new Comparator<SmaliEntry>() {
-
-
-			@Override
-			public int compare(SmaliEntry o1, SmaliEntry o2) {
-				// TODO Auto-generated method stub
-				
-				return o1.toString().compareTo(o2.toString());
-			}
-		});
-		
-		for(SmaliEntry p : packageSet.values()){
+		for(SmaliEntry p : root.leafChildren){
 			
 			Collections.sort(p.leafChildren, new Comparator<SmaliEntry>() {
 
@@ -473,6 +466,19 @@ public class SmaliLoader {
 				}
 			});
 		}
+		
+		Collections.sort(root.leafChildren, new Comparator<SmaliEntry>() {
+
+
+			@Override
+			public int compare(SmaliEntry o1, SmaliEntry o2) {
+				// TODO Auto-generated method stub
+				
+				return o1.toString().compareTo(o2.toString());
+			}
+		});
+		
+
 	}
 	
 	public void saveState(Component parent) {

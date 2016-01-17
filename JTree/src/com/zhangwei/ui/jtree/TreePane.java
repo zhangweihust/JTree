@@ -277,7 +277,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
             if (status == JFileChooser.APPROVE_OPTION) {
 //                File selectedFile = fileChooser.getSelectedFile();
             	File[] selectedFiles = fileChooser.getSelectedFiles();
-                LoadThread t = new LoadThread();
+                OpenThread t = new OpenThread();
                 t.startThread(selectedFiles);
             } 
         }else if(action.equals(SmaliMain.Load)){
@@ -448,7 +448,7 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 		}
 	}
 	
-	class LoadThread extends Thread {
+	class OpenThread extends Thread {
 		
 		private File[] selectedFiles;
 
@@ -522,6 +522,8 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 	            
 	            SmaliEntry root = state.root;
 	            SmaliLoader.getInstance().loadState(TreePane.this, state);
+	            
+	            SmaliLoader.getInstance().sortTree();
 
 	            tree.changeRoot(root);
 	            
