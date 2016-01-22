@@ -1,8 +1,16 @@
 package com.zhangwei.utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
 
 public class StringHelper {
+
+	
 	/**
 	 * @param className  La/b/c/d;
 	 * @return packageName La/b/c
@@ -157,18 +165,51 @@ public class StringHelper {
     	return newClzNameSelf;
 	}
 	
-//	public static boolean needInnerClassRename(String name){
-//		String basicName = name.replaceAll(".smali", "");
-//		if(basicName.contains("$")){
-//			String[] array = basicName.split("\\$");
-//			if(array.length==2){
-//				String innerName = array[1];
-//				return checkHunXiaoName(innerName);
-//			}
-//		}
-//		
-//		return false;
-//	}
+	public static String innerClzNameRegexPatten = "(\\s+)name(\\s+)=(\\s+)([0-9|a-z|A-Z|$|_|-|\"]+)";
+	
+	/**
+	 * .annotation system Ldalvik/annotation/InnerClass;
+	 *     accessFlags = 0x8
+	 *     name = null
+	 * .end annotation
+	 * */
+	public static String RenameInnerClassName(String content, String name){
+		int startIndex = content.indexOf(".annotation system Ldalvik/annotation/InnerClass;");
+		if(startIndex<0){
+			return content;
+		}
+		
+		
+		int endIndex = content.substring(startIndex).indexOf(".end annotation") + startIndex;
+		if(endIndex<0){
+			return content;
+		}
+		
+		String content_mid = content.substring(startIndex, endIndex);
+		
+		Pattern p = Pattern.compile(innerClzNameRegexPatten);
+		
+    	Matcher match = p.matcher(content_mid);
+		while(match.find()){
+			int startIndex2 = match.start();
+			int endIndex2 = match.end();
+			String foundStr = content_mid.substring(startIndex2, endIndex2+1);
+//			System.out.println("foundStr:" + foundStr);
+			String contentLeft = content.substring(0, startIndex);
+			String content_mid_left = content_mid.substring(0, startIndex2);
+			String content_mid_right = content_mid.substring(endIndex2);
+			String contentRight = content.substring(endIndex);
+			return  contentLeft + 
+					content_mid_left + 
+					"\r\n    name = \"" + name + "\"" + 
+					content_mid_right + 
+					contentRight;
+		}
+		
+		return content;
+		
+
+	}
 	
 	public static String getMD5OfStr(String inStr){
 		MessageDigest md5 = null;  
@@ -195,7 +236,7 @@ public class StringHelper {
         return hexValue.toString();
 	}
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
 		String key = "Lcom/tencent/mm/d/a/cx$a;";
 		String regStr = "Lcom/tencent/mm/d/a/cx\\$";
 		String replcaseStr = "Lcom/tencent/mm/d/a/cx_b\\$";
@@ -205,7 +246,17 @@ public class StringHelper {
 		
 //		System.out.println("out -" + getOutClzNameSef("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI;"));
 		
-		System.out.println("out - " + getBasicClzNameStr("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$1;"));
+//		System.out.println("out - " + getBasicClzNameStr("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$1;"));
+		
+		File file  = new File("D:\\test\\LauncherUI$InnerB$Inner1.smali");
+		
+		String content = FileUtils.readFileToString(file);
+		
+		///Lcom/tencent/mm/ui/Uclz$Inner1;
+
+		String content2 = RenameInnerClassName(content, "Inner8");
+		
+		FileUtils.write(file, content2);
 	}
 	
 

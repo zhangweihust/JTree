@@ -146,11 +146,13 @@ public class SmaliEntry {
 						content = content.replace(oldOutClz, newOutClz);
 					}
 					
-//					String basicOldClzNameStr = StringHelper.getBasicClzNameStr(src_className);
-//					String basicNewClzNameStr = StringHelper.getBasicClzNameStr(dst_className);
-//					if(!basicOldClzNameStr.equals(basicNewClzNameStr)){
-//						name = "AnchorData"
-//					}
+					String basicOldClzNameStr = StringHelper.getBasicClzNameStr(src_className);
+					String basicNewClzNameStr = StringHelper.getBasicClzNameStr(dst_className);
+					if(!basicOldClzNameStr.equals(basicNewClzNameStr)){
+						//name = "AnchorData" name = null  "    name = null"
+						content = StringHelper.RenameInnerClassName(content, basicNewClzNameStr);
+
+					}
 				}
 				
 				needWrite = true;
