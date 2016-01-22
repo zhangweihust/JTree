@@ -151,7 +151,7 @@ public class SmaliEntry {
 					if(!basicOldClzNameStr.equals(basicNewClzNameStr)){
 						//name = "AnchorData" name = null  "    name = null"
 						content = StringHelper.RenameInnerClassName(content, basicNewClzNameStr);
-
+  
 					}
 				}
 				
