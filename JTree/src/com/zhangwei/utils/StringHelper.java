@@ -127,7 +127,7 @@ public class StringHelper {
 	public static String getBasicClzNameStr(String clzNameSelf){
 		if(clzNameSelf.contains("$")){
 			int index = clzNameSelf.lastIndexOf("$");
-			String old_tmp_name_left = clzNameSelf.substring(index+1, clzNameSelf.length()); //Inner1
+			String old_tmp_name_left = clzNameSelf.substring(index+1, clzNameSelf.length() - 1); //Inner1
 			return old_tmp_name_left;
 		}else{
 			return clzNameSelf;
@@ -246,17 +246,17 @@ public class StringHelper {
 		
 //		System.out.println("out -" + getOutClzNameSef("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI;"));
 		
-//		System.out.println("out - " + getBasicClzNameStr("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$1;"));
+		System.out.println("out - " + getBasicClzNameStr("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$12;"));
 		
-		File file  = new File("D:\\test\\LauncherUI$InnerB$Inner1.smali");
-		
-		String content = FileUtils.readFileToString(file);
-		
-		///Lcom/tencent/mm/ui/Uclz$Inner1;
-
-		String content2 = RenameInnerClassName(content, "Inner8");
-		
-		FileUtils.write(file, content2);
+//		File file  = new File("D:\\test\\LauncherUI$InnerB$Inner1.smali");
+//		
+//		String content = FileUtils.readFileToString(file);
+//		
+//		///Lcom/tencent/mm/ui/Uclz$Inner1;
+//
+//		String content2 = RenameInnerClassName(content, "Inner8");
+//		
+//		FileUtils.write(file, content2);
 	}
 	
 
