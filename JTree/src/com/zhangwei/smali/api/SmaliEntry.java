@@ -137,6 +137,22 @@ public class SmaliEntry {
 				String dst_className2 = dst_className; //StringHelper.escapeExprSpecialWord(dst_className);
 				/*String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));*/
 				content = content.replace(src_className2, dst_className2);
+				
+				if(StringHelper.isInnerClass(src_className)){
+					String oldOutClz = StringHelper.getOutClzNameSef(src_className);
+					String newOutClz = StringHelper.getOutClzNameSef(dst_className);
+
+					if(!oldOutClz.equals(newOutClz)){
+						content = content.replace(oldOutClz, newOutClz);
+					}
+					
+//					String basicOldClzNameStr = StringHelper.getBasicClzNameStr(src_className);
+//					String basicNewClzNameStr = StringHelper.getBasicClzNameStr(dst_className);
+//					if(!basicOldClzNameStr.equals(basicNewClzNameStr)){
+//						name = "AnchorData"
+//					}
+				}
+				
 				needWrite = true;
 //				setFileContent(content);
 				return true;
@@ -309,6 +325,16 @@ public class SmaliEntry {
 	
 	/**
 	 * 将该类中出现的src类名或方法，替换为dst的类名或方法
+	 * 
+	 * Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$1;  --- > Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$Inner8$Inner1;
+	 * 
+	 * .annotation system Ldalvik/annotation/EnclosingMethod;
+	 * value = Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8;->onCancel(Landroid/content/DialogInterface;)V
+	 * --->  Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$Inner8
+	 * 
+	 * .annotation system Ldalvik/annotation/InnerClass;
+	 *      name = null
+	 * ---> name = "Inner1"
 	 * 
 	 * @param src_className eg: "Lcom/a/b/c;"
 	 * @param dst_className eg: "Lcom/d/e/f/g;"
@@ -618,7 +644,9 @@ public class SmaliEntry {
 //		}
 		
 		if(isFile){
-			return file.getName();
+			String rename_item_str = file.getName();
+			rename_item_str = rename_item_str.replace(".smali", "");
+			return rename_item_str;
 		}else{
 //			String packageName = StringHelper.getPackageNameFromCLz(classHeader.classNameSelf);
 			if(packageName==null){

@@ -116,7 +116,6 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
               SmaliEntry item = (SmaliEntry)tp.getLastPathComponent();
               String rename_item_str = item.toString();
               if(item.isFile()){ //rename class
-            	  rename_item_str = rename_item_str.replace(".smali", "");
                   
                   String s = "NULL";
                   Pattern pattern = Pattern.compile("^L.*;$");

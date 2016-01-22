@@ -158,7 +158,7 @@ public class SmaliLoader {
 	 * @return 返回SmaliEntry ,  已应用新的命名 Lx/y/z;
 	 * @throws IOException 
 	 * */
-	private void autoRename(SmaliEntry it) throws IOException{
+	private void autoRenameStandClass(SmaliEntry it) throws IOException{
 
     	if(monitor.isCanceled()){
     		return ;
@@ -222,6 +222,107 @@ public class SmaliLoader {
 
 	}
 	
+	/**
+	 * (1)
+	 * com.tencent.mm.protocal.Hclz$a;
+	 * # annotations
+	 * .annotation system Ldalvik/annotation/EnclosingClass;
+	 *     value = Lcom/tencent/mm/protocal/Hclz;
+	 * .end annotation
+	 * 
+	 * .annotation system Ldalvik/annotation/InnerClass;
+	 *     accessFlags = 0x609
+	 *     name = "a"
+	 * .end annotation
+	 * 
+	 * (2)
+	 * .class public Lcom/tencent/smtt/export/external/interfaces/IX5WebViewBase$HitTestResult$AnchorData;
+	 * .super Ljava/lang/Object;
+	 * .source "SourceFile"
+	 * 
+	 * # annotations
+	 * .annotation system Ldalvik/annotation/EnclosingClass;
+	 *      value = Lcom/tencent/smtt/export/external/interfaces/IX5WebViewBase$HitTestResult;
+	 * .end annotation
+	 *       
+	 * .annotation system Ldalvik/annotation/InnerClass;
+	 *      accessFlags = 0x1
+	 *      name = "AnchorData"
+	 * .end annotation
+	 * 
+	 * (3)
+	 * .class final Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8;
+	 * .super Ljava/lang/Object;
+	 * .source "SourceFile"
+	 * 
+	 * # interfaces
+	 * .implements Landroid/content/DialogInterface$OnCancelListener;
+	 * 
+	 * # annotations
+	 * .annotation system Ldalvik/annotation/EnclosingMethod;
+	 *     value = Lcom/tencent/mm/ui/transmit/MsgRetransmitUI;->bcf()V
+	 * .end annotation
+	 * 
+	 * .annotation system Ldalvik/annotation/InnerClass;
+	 *    accessFlags = 0x0
+	 *    name = null
+	 * .end annotation
+	 * 
+	 * (4)
+	 * .class final Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$1;
+	 * .super Ljava/lang/Object;
+	 * .source "SourceFile"
+	 * 
+	 * # interfaces
+	 * .implements Landroid/content/DialogInterface$OnClickListener;
+	 * 
+	 * 
+	 * # annotations
+	 * .annotation system Ldalvik/annotation/EnclosingMethod;
+	 *     value = Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8;->onCancel(Landroid/content/DialogInterface;)V
+	 * .end annotation
+	 * 
+	 * .annotation system Ldalvik/annotation/InnerClass;
+	 *     accessFlags = 0x0
+	 *     name = null
+	 * .end annotation
+	 * 
+	 * 
+	 * @return 返回SmaliEntry ,  已应用新的命名 Lx/y/z;
+	 * @throws IOException 
+	 * */
+	private void autoRenameStandAndInnerClass(SmaliEntry it) throws IOException{
+
+    	if(monitor.isCanceled()){
+    		return ;
+    	}
+    	
+
+    	if(StringHelper.needRename(it.toString())){//only rename the a,b,c,d ...or ab
+        	if(it.classHeader==null || it.classHeader.classNameSelf==null){
+        		System.err.println("class parse null:" + it.toString() + ", classHeader:" + it.classHeader);
+        		return ;
+        	}
+        	
+
+			String new_dst_className = StringHelper.getNewClassNameSelf(it.classHeader.classNameSelf);
+//			it.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/sdk/platformtools/Vclz");
+			
+			//2. rename本身
+			renameClass(it, it.classHeader.classNameSelf, new_dst_className, true);
+			
+	    	progress++;
+	    	monitor.setProgress(progress);
+	    	monitor.setNote("Renamed num:" + progress + "\n file:" + it.file.getAbsolutePath());
+    	}else{
+//    		new_classMap.put(it.classHeader.classNameSelf, it);
+	    	progress++;
+	    	monitor.setProgress(progress);
+	    	monitor.setNote("No Need to rename \n file:" + it.file.getAbsolutePath());
+    	}
+
+	}
+	
 	
 	public void autoRename(Component parent) {
 		if(root!=null && root.leafChildren!=null && root.leafChildren.size()>0){
@@ -235,7 +336,7 @@ public class SmaliLoader {
 					
 
 					
-					if(se_item.classHeader.classNameSelf.contains("$")){
+					if(!se_item.classHeader.classNameSelf.contains("$")){
 				    	progress++;
 				    	monitor.setProgress(progress);
 				    	monitor.setNote("Renamed num:" + progress + "\n ingore:" + se_item.classHeader.classNameSelf);
@@ -281,12 +382,18 @@ public class SmaliLoader {
 //							se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/pb/") ){		
 					
 					
-//					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/")){
+					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/")){
 					
-					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/pluginsdk")){		
+//					if(se_item.classHeader.classNameSelf.startsWith("Lcom/tencent/mm/pluginsdk")){		
 						
 						try {
-							autoRename(se_item);
+							if(se_item.classHeader.classNameSelf.contains("$")){
+								autoRenameStandAndInnerClass(se_item);
+							}else{
+								autoRenameStandClass(se_item);
+							}
+							
+							
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -760,6 +867,161 @@ public class SmaliLoader {
 	}
 	
 	public void addRoot(Component parent, SmaliEntry root, File[] dirs){
+		
+		if(dirs.length<=0){
+			return;
+		}
+		
+		
+		Map<String, SmaliEntry> mapAll = new HashMap<String, SmaliEntry>();
+		
+		List<File> fileList = new ArrayList<File>();
+
+		for(File dir : dirs){
+			loadChildren(dir, fileList);
+		}
+
+		
+		String errFileName = null;
+		
+		try{
+
+			
+			if(fileList.size()>0){
+				monitor = new ProgressMonitor(parent, "Adding Progress", "Getting Started...", 0, fileList.size());
+
+				progress = 0;
+				
+				Map<String, SmaliEntry> mapOld = new HashMap<String, SmaliEntry>();
+				if(globeClassSet.size()>0){
+					for(SmaliEntry se : globeClassSet){
+						mapOld.put(se.classHeader.classNameSelf, se);
+					}
+				}
+				
+	            for (File file : fileList) {
+	            	progress++;
+	            	monitor.setProgress(progress);
+	            	monitor.setNote("Loaded num:" + progress + "\n file:" + file.getAbsolutePath());
+
+	            	if(monitor.isCanceled()){
+	            		break;
+	            	}
+	            	
+	            	errFileName = file.getAbsolutePath();
+	            	
+                	SmaliEntry packageEntry = null;
+                	SmaliEntry smaliEntry = new SmaliEntry(file, null, true);
+                	boolean Parse_success = myParser.paser(smaliEntry);
+                	
+                	
+                	if(Parse_success){
+                		if(mapOld.containsKey(smaliEntry.classHeader.classNameSelf)){
+                			continue;
+                		}
+                		
+                		smaliEntry.postProcess();
+                		
+                		packageEntry = findEntry(smaliEntry.packageName); //查找该节点的父节点，即包
+                		
+                		//add non-leaf package if not exist
+    	            	if(packageEntry==null){
+    	            		packageEntry = new SmaliEntry(null, smaliEntry.packageName, false);
+    	            		root.leafChildren.add(packageEntry);
+    	            		packageSet.put(smaliEntry.packageName, packageEntry);
+    	            	}
+    	            	
+    	            	//add leaf
+    	            	packageEntry.leafChildren.add(smaliEntry);
+    	            	globeClassSet.add(smaliEntry);
+    	            	if(smaliEntry.classHeader!=null && smaliEntry.classHeader.classNameSelf!=null){
+        	            	mapAll.put(smaliEntry.classHeader.classNameSelf, smaliEntry);
+    	            	}
+
+                	}else{
+                		break; //abort if has error in parsing
+                	}
+
+               
+	            }
+
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			monitor.setProgress(0);
+        	monitor.setNote("Loaded fail:" + progress + "\n errFileName:" + errFileName);
+		} 
+		
+		System.out.println("Add Done and build refItClassName Map...");
+
+		if(globeClassSet.size()>0 && !monitor.isCanceled()){
+			
+			monitor = new ProgressMonitor(parent, "Buld smali relationship", "Getting Started...", 0, globeClassSet.size());
+			progress = 0;
+			
+			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
+			iterator = globeClassSet.iterator();
+			
+			Pattern p = Pattern.compile(clzRegexPatten);
+
+			while(iterator.hasNext()){
+				SmaliEntry se = iterator.next();
+				
+				progress++;
+            	monitor.setProgress(progress);
+            	monitor.setNote("buld relation(1) num:" + progress + "\n SmaliEntry:" + se.toString());
+            	if(monitor.isCanceled()){
+            		break;
+            	}
+            	
+            	if(se==null || se.classHeader==null){
+            		continue;
+            	}
+            	
+            	Matcher match = p.matcher(se.content);
+				while(match.find()){
+					int startIndex = match.start();
+					int endIndex = match.end();
+					String matchStr = se.content.substring(startIndex, endIndex);
+					if(matchStr!=null && mapAll.containsKey(matchStr)){
+						if(!se.itRefClassNames.contains(matchStr)){
+							se.itRefClassNames.add(matchStr);
+						}
+						
+						SmaliEntry se2 = mapAll.get(matchStr);
+						if(se2!=null){
+							se.putRefItClass(se2);
+							se2.putItRefClass(se);
+						}
+
+						
+    					//构建父类关系
+    					if(se2.classHeader.classNameSuper!=null && se2.classHeader.classNameSuper.equals(se.classHeader.classNameSelf)){
+    						//se2's father == se
+    						se2.setFatherClass(se);
+    					}
+					}
+
+				}
+    			
+    			
+
+			}
+			
+
+			
+			monitor.close();
+		}
+		
+
+		
+		System.out.println("All Done!");
+	}
+	
+	/**
+	 * 可以overwrite，并且将不同root目录的smali，
+	 * */
+	public void add2Root(Component parent, SmaliEntry root, File[] dirs){
 	
 		if(dirs.length<=0){
 			return;
