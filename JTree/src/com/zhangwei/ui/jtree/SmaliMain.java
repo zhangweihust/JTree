@@ -24,6 +24,7 @@ public class SmaliMain {
 	public static final String Add = "Add (A)";
 	public static final String Del = "Del (D)";
 	public static final String Command = "Command (M)";
+	public static final String Shrink = "Shrink (K)";
 	
 	static JFrame frame;
 
@@ -99,6 +100,11 @@ public class SmaliMain {
 				JMenuItem commandMenuItem = new JMenuItem(Command, KeyEvent.VK_M);
 				commandMenuItem.addActionListener(treePane);
 				fileMenu.add(commandMenuItem);
+				
+				// File->Shrink, K - Mnemonic
+				JMenuItem shrinkMenuItem = new JMenuItem(Shrink, KeyEvent.VK_M);
+				shrinkMenuItem.addActionListener(treePane);
+				fileMenu.add(shrinkMenuItem);
 				
 		        // Separator
 		        fileMenu.addSeparator();

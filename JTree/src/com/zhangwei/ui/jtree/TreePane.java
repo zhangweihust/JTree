@@ -292,6 +292,19 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
                 LoadConfThread t = new LoadConfThread();
                 t.startThread(selectedFile);
             } 
+        }else if(action.equals(SmaliMain.Shrink)){
+            JFileChooser fileChooser = new JFileChooser(last_file_for_chose);
+            //fileChooser.setAccessory(new LabelAccessory(fileChooser));
+            FileView view = new JavaFileView();
+            fileChooser.setFileView (view);
+            fileChooser.setDialogTitle("选择shrink json");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int status = fileChooser.showOpenDialog(parent);
+            if (status == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                ShrinkThread t = new ShrinkThread();
+                t.startThread(selectedFile);
+            } 
         }else if(action.equals(SmaliMain.Command)){
             JFileChooser fileChooser = new JFileChooser(last_file_for_chose);
             //fileChooser.setAccessory(new LabelAccessory(fileChooser));
@@ -415,6 +428,31 @@ public class TreePane extends JPanel implements ActionListener, TreeSelectionLis
 	            SmaliLoader.getInstance().sortTree();
 	            
 	            tree.Refresh();
+
+			}
+
+
+		}
+	}
+	
+	class ShrinkThread extends Thread {
+		
+		private File selectedFile;
+
+		void startThread(File selectedFile ){
+			this.selectedFile = selectedFile;
+			this.start();
+		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+            
+			if(selectedFile!=null && selectedFile.isFile()){
+	            last_file_for_chose = selectedFile.getParentFile().getAbsolutePath();
+
+	            SmaliLoader.getInstance().execShrink(TreePane.this, selectedFile);
 
 			}
 

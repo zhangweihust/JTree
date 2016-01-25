@@ -1,0 +1,6 @@
+com.tencent.mm.ui.LauncherUI
+com.tencent.mm.ui.account.mobile.MobileInputUI
+com.tencent.mm.plugin.profile.ui.ContactInfoUI
+com.tencent.mm.ui.chatting.ChattingUI
+
+

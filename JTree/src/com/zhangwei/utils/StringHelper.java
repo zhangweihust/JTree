@@ -1,12 +1,9 @@
 package com.zhangwei.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
 
 public class StringHelper {
 
@@ -236,6 +233,28 @@ public class StringHelper {
         return hexValue.toString();
 	}
 	
+	public static String getClzNameFromJavaClzName(String javaClzName){
+		StringBuilder sb = new StringBuilder();
+		sb.append("L");
+		
+		if(javaClzName.contains(".")){
+
+			String[] members = javaClzName.split("\\.");
+			for(int index=0; index<members.length; index++){
+				sb.append(members[index]);
+				if(index<members.length-1){
+					sb.append("/");
+				}
+			}
+		}else{
+			sb.append(javaClzName);
+		}
+		
+		sb.append(";");
+		
+		return sb.toString();
+	}
+	
 	public static void main(String[] args) throws IOException{
 		String key = "Lcom/tencent/mm/d/a/cx$a;";
 		String regStr = "Lcom/tencent/mm/d/a/cx\\$";
@@ -246,7 +265,7 @@ public class StringHelper {
 		
 //		System.out.println("out -" + getOutClzNameSef("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI;"));
 		
-		System.out.println("out - " + getBasicClzNameStr("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$12;"));
+//		System.out.println("out - " + getBasicClzNameStr("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$12;"));
 		
 //		File file  = new File("D:\\test\\LauncherUI$InnerB$Inner1.smali");
 //		
@@ -257,6 +276,8 @@ public class StringHelper {
 //		String content2 = RenameInnerClassName(content, "Inner8");
 //		
 //		FileUtils.write(file, content2);
+		
+		System.out.println("out - " + getClzNameFromJavaClzName("com.tencent.mm.booter.MMReceivers$ToolsProcessReceiver"));
 	}
 	
 

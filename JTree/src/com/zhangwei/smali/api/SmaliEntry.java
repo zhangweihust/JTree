@@ -126,7 +126,7 @@ public class SmaliEntry {
 	 * 
 	 * @return 是否需要有被替换的，让ui更新
 	 * */
-	public boolean renameClassContent(String src_className, String dst_className){
+	public boolean renameClassContent(String src_className, String dst_className, boolean isItSelf){
 		if(isFile){
 			//step1 process content:
 
@@ -138,7 +138,7 @@ public class SmaliEntry {
 				/*String newContent = content.replaceAll(Matcher.quoteReplacement(src_className), Matcher.quoteReplacement(dst_className));*/
 				content = content.replace(src_className2, dst_className2);
 				
-				if(StringHelper.isInnerClass(src_className)){
+				if(isItSelf && StringHelper.isInnerClass(src_className)){
 					String oldOutClz = StringHelper.getOutClzNameSef(src_className);
 					String newOutClz = StringHelper.getOutClzNameSef(dst_className);
 

@@ -27,6 +27,7 @@ import com.zhangwei.smali.api.MyParser;
 import com.zhangwei.smali.api.SmaliEntry;
 import com.zhangwei.smali.json.Command;
 import com.zhangwei.smali.json.SaveState;
+import com.zhangwei.smali.json.ShrinkCommand;
 import com.zhangwei.utils.StringHelper;
 
 public class SmaliLoader {
@@ -87,7 +88,7 @@ public class SmaliLoader {
 						se_item.classHeader.classSuper.replace(src_className2, dst_className2);
 						se_item.classHeader.classNameSuper = dst_className;
 					}
-					se_item.renameClassContent(src_className, dst_className);
+					se_item.renameClassContent(src_className, dst_className, false);
 					if(needSyncDisk){
 						se_item.setFileContent();
 					}
@@ -97,7 +98,7 @@ public class SmaliLoader {
 			
 			
 			se.renameClass(src_className, dst_className);
-			se.renameClassContent(src_className, dst_className);
+			se.renameClassContent(src_className, dst_className, true);
 			
 			if(needSyncDisk){
 				se.setFileContent();
@@ -771,6 +772,96 @@ public class SmaliLoader {
 		System.out.println("All Done!");
 	}
 	
+	public void execShrink(Component parent, File commandFile){
+		if(commandFile==null || !commandFile.isFile()){
+			return;
+		}
+		
+
+		
+		Map<String, SmaliEntry> map = new HashMap<String, SmaliEntry>();
+		Iterator<SmaliEntry> iterator = globeClassSet.iterator();
+		while (iterator.hasNext()) {
+			SmaliEntry se = iterator.next();
+	    	map.put(se.classHeader.classNameSelf, se);
+		}
+		
+		HashSet<SmaliEntry> beginSet = new HashSet<SmaliEntry>();
+		
+		
+		String commandContent = null;
+		try {
+			commandContent = FileUtils.readFileToString(commandFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(commandContent==null){
+			return;
+		}
+		
+		ShrinkCommand comm = new Gson().fromJson(commandContent, ShrinkCommand.class);
+		
+		HashSet<SmaliEntry> endClzNameSet = new HashSet<SmaliEntry>();
+		
+		for(String javaClzNameItem : comm.beginClzName){
+			String clzNameSelf = StringHelper.getClzNameFromJavaClzName(javaClzNameItem);
+			SmaliEntry item = map.get(clzNameSelf);
+			if(item!=null){
+				beginSet.add(item);
+			}
+
+		}
+		
+		for(String javaClzNameItem : comm.endClzName){
+			String clzNameSelf = StringHelper.getClzNameFromJavaClzName(javaClzNameItem);
+			SmaliEntry item = map.get(clzNameSelf);
+			if(item!=null){
+				endClzNameSet.add(item);
+			}
+
+		}
+		
+		System.out.println("beginSet.size:" + beginSet.size() + ", endClzNameSet.size:" + endClzNameSet.size());
+		
+		HashSet<SmaliEntry> refSet = new HashSet<SmaliEntry>();
+		refSet.addAll(beginSet);
+		
+		while(true){
+			int refClzNumber1 = refSet.size();
+
+			HashSet<SmaliEntry> refSet2 = new HashSet<SmaliEntry>();
+			
+			for(SmaliEntry item : refSet){
+				for(SmaliEntry refItem :item.itRefClass){
+					if(!endClzNameSet.contains(refItem)){
+						refSet2.add(refItem);
+					}
+				}
+			}
+			
+			refSet.addAll(refSet2);
+			
+			int refClzNumber2 = refSet.size();
+			
+			if(refClzNumber1==refClzNumber2){
+				break;
+			}
+		}
+		
+		refSet.addAll(endClzNameSet);
+		
+		System.out.println("All size :" + globeClassSet.size() + ", After Shrink size:" + refSet.size());
+		
+		for(SmaliEntry refItem : refSet){
+			System.out.println(refItem.classHeader.classNameSelf);
+		}
+		
+		System.out.println("All size :" + globeClassSet.size() + ", After Shrink size:" + refSet.size());
+		
+	}
+	
 	public void execCommand(Component parent, File commandFile){
 
 		if(commandFile==null || !commandFile.isFile()){
@@ -854,7 +945,7 @@ public class SmaliLoader {
 	            				}
 	            			}
 	            		}
-	            		se.renameClassContent(comm.srcClzName, comm.dstClzName);
+	            		se.renameClassContent(comm.srcClzName, comm.dstClzName, true);
 	            	}
 	            	
 				}
