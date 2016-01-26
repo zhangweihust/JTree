@@ -2,6 +2,7 @@ package com.zhangwei.utils;
 
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,12 +63,21 @@ public class StringHelper {
 		return false;
 	}
 	
+	
+	
 	/**
 	 * @param str : a, 1, ab, 12
 	 * */
 	private static String transSimpleStr(String prefix, String str, String postfix){
 		if(str.length()<=2){
-			return prefix + str.toUpperCase() + postfix; 
+			try{
+				Integer m = Integer.valueOf(str);
+				return "Number" + m + postfix; 
+//				return str;   //纯数字不动
+			}catch(Exception e){
+				return prefix + str.toUpperCase() + postfix; 
+			}
+			
 		}else{
 			return str;
 		}
@@ -108,6 +118,11 @@ public class StringHelper {
 	}
 	
 	public static boolean needRename(String name){
+//		if(name.indexOf("$")!=name.lastIndexOf("$")){
+//			return false;
+//		}
+		
+		
 		String newName = GetAutoRenameSmali(name);
 		if(newName.equals(name)){
 			return false;
@@ -261,7 +276,7 @@ public class StringHelper {
 		String replcaseStr = "Lcom/tencent/mm/d/a/cx_b\\$";
 //		String out = key.replaceAll(regStr, replcaseStr);
 		
-//		System.out.println("out - " + getNewClassNameSelf("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$1;"));
+		System.out.println("out - " + getNewClassNameSelf("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI$8$1;"));
 		
 //		System.out.println("out -" + getOutClzNameSef("Lcom/tencent/mm/ui/transmit/MsgRetransmitUI;"));
 		
@@ -277,7 +292,7 @@ public class StringHelper {
 //		
 //		FileUtils.write(file, content2);
 		
-		System.out.println("out - " + getClzNameFromJavaClzName("com.tencent.mm.booter.MMReceivers$ToolsProcessReceiver"));
+//		System.out.println("out - " + getClzNameFromJavaClzName("com.tencent.mm.booter.MMReceivers$ToolsProcessReceiver"));
 	}
 	
 

@@ -324,7 +324,6 @@ public class SmaliLoader {
 
 	}
 	
-	
 	public void autoRename(Component parent) {
 		if(root!=null && root.leafChildren!=null && root.leafChildren.size()>0){
 			if(globeClassSet!=null && globeClassSet.size()>0){
@@ -337,12 +336,12 @@ public class SmaliLoader {
 					
 
 					
-					if(!se_item.classHeader.classNameSelf.contains("$")){
-				    	progress++;
-				    	monitor.setProgress(progress);
-				    	monitor.setNote("Renamed num:" + progress + "\n ingore:" + se_item.classHeader.classNameSelf);
-						continue;
-					}
+//					if(!se_item.classHeader.classNameSelf.contains("$")){
+//				    	progress++;
+//				    	monitor.setProgress(progress);
+//				    	monitor.setNote("Renamed num:" + progress + "\n ingore:" + se_item.classHeader.classNameSelf);
+//						continue;
+//					}
 					
 					if(se_item.classHeader.classNameSelf.contains("google")){
 				    	progress++;
@@ -409,6 +408,51 @@ public class SmaliLoader {
 					
 					//sync map after every rename
 //					refacoterGlobeClassMap(parent);
+				}
+				
+				monitor.close();
+				
+			}
+		}
+		
+
+		System.out.println("autoRename done");
+	}
+	
+	public void autoRename(Component parent, String path) {
+		
+		System.out.println("autoRename path:" + path);
+		
+		if(path!=null && root!=null && root.leafChildren!=null && root.leafChildren.size()>0){
+			if(globeClassSet!=null && globeClassSet.size()>0){
+				monitor = new ProgressMonitor(parent, "Renaming Progress", "path prefix - " + path, 0, globeClassSet.size());
+				progress = 0;
+				
+				Iterator<SmaliEntry> iterator = globeClassSet.iterator();
+				while(iterator.hasNext()){
+					SmaliEntry se_item = iterator.next();
+					
+
+					if(se_item.classHeader.classNameSelf.startsWith(path)){
+	
+						
+						try {
+							if(se_item.classHeader.classNameSelf.contains("$")){
+								autoRenameStandAndInnerClass(se_item);
+							}else{
+								autoRenameStandClass(se_item);
+							}
+							
+							
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}else{
+				    	progress++;
+				    	monitor.setProgress(progress);
+					}
+					
 				}
 				
 				monitor.close();
