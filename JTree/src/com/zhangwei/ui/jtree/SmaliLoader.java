@@ -601,6 +601,18 @@ public class SmaliLoader {
 //			sortTree();
 
 			monitor.close();
+			
+			printPackageChildren();
+		}
+	}
+	
+	private void printPackageChildren(){
+		if(packageSet!=null && packageSet.size()>0){
+			for(SmaliEntry item : packageSet.values()){
+				if(item!=null && item.leafChildren!=null && item.leafChildren.size()>0){
+					System.out.println(item.toString() + " - has " + item.leafChildren.size() + " children");
+				}
+			}
 		}
 	}
 	
