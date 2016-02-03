@@ -159,14 +159,14 @@ public class SmaliLoader {
 	 * @return 返回SmaliEntry ,  已应用新的命名 Lx/y/z;
 	 * @throws IOException 
 	 * */
-	private void autoRenameStandClass(SmaliEntry it) throws IOException{
+	private void autoRenameStandClass2(SmaliEntry it) throws IOException{
 
     	if(monitor.isCanceled()){
     		return ;
     	}
     	
 
-    	if(StringHelper.needRename(it.toString())){//only rename the a,b,c,d ...or ab
+    	if(StringHelper.needRename(it)){//only rename the a,b,c,d ...or ab
         	if(it.classHeader==null || it.classHeader.classNameSelf==null){
         		System.err.println("class parse null:" + it.toString() + ", classHeader:" + it.classHeader);
         		return ;
@@ -299,7 +299,7 @@ public class SmaliLoader {
     	}
     	
 
-    	if(StringHelper.needRename(it.toString())){//only rename the a,b,c,d ...or ab
+    	if(StringHelper.needRename(it)){//only rename the a,b,c,d ...or ab
         	if(it.classHeader==null || it.classHeader.classNameSelf==null){
         		System.err.println("class parse null:" + it.toString() + ", classHeader:" + it.classHeader);
         		return ;
@@ -357,6 +357,13 @@ public class SmaliLoader {
 						continue;
 					}
 					
+					if(se_item.classHeader.classNameSelf.contains("ui")){
+				    	progress++;
+				    	monitor.setProgress(progress);
+				    	monitor.setNote("Renamed num:" + progress + "\n ingore:" + se_item.classHeader.classNameSelf);
+						continue;
+					}
+					
 //					if(se_item.classHeader.classNameSelf.contains("plugin")){
 //				    	progress++;
 //				    	monitor.setProgress(progress);
@@ -390,7 +397,8 @@ public class SmaliLoader {
 							if(se_item.classHeader.classNameSelf.contains("$")){
 								autoRenameStandAndInnerClass(se_item);
 							}else{
-								autoRenameStandClass(se_item);
+//								autoRenameStandClass(se_item);
+								autoRenameStandAndInnerClass(se_item);
 							}
 							
 							
@@ -440,7 +448,8 @@ public class SmaliLoader {
 							if(se_item.classHeader.classNameSelf.contains("$")){
 								autoRenameStandAndInnerClass(se_item);
 							}else{
-								autoRenameStandClass(se_item);
+//								autoRenameStandClass(se_item);
+								autoRenameStandAndInnerClass(se_item);
 							}
 							
 							
@@ -476,6 +485,7 @@ public class SmaliLoader {
 					progress++;
 	            	monitor.setProgress(progress);
 	            	monitor.setNote("Up-Public num:" + progress + "\n file:" + se_item.file.getAbsolutePath());
+
 	            	if(monitor.isCanceled()){
 	            		break;
 	            	}	            	
@@ -502,16 +512,27 @@ public class SmaliLoader {
 			iterator0 = globeClassSet.iterator();
 			Map<String, SmaliEntry> map = new HashMap<String, SmaliEntry>();
 
+			boolean loadGsonSuc = true;
 			while (iterator0.hasNext()) {
 				SmaliEntry se = iterator0.next();
 				if(se!=null && se.classHeader!=null && se.classHeader.classNameSelf!=null){
 					map.put(se.classHeader.classNameSelf, se);
 					
-					se.postConstructFromGson();
+					try {
+						se.postConstructFromGson();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						loadGsonSuc = false;
+						break;
+					}
 				}
 
 			}
 			
+			if(!loadGsonSuc){
+				return;
+			}
 			
 			//build relation names
 			Iterator<SmaliEntry> iterator1 = globeClassSet.iterator();
@@ -1507,6 +1528,10 @@ public class SmaliLoader {
 					
 				}
 			}
+		}else if(parent.isFile() && parent.getName().endsWith(".smali")){
+			//EntryVector 里装的必定是文件或函数
+			fileList.add(parent);
+
 		}
 	}
 

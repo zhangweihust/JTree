@@ -374,7 +374,7 @@ public class TreePane extends JPanel implements ActionListener,
 			FileView view = new JavaFileView();
 			fileChooser.setFileView(view);
 			fileChooser.setDialogTitle("add - 选择smali根目录");
-			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 			fileChooser.setMultiSelectionEnabled(true);
 			int status = fileChooser.showOpenDialog(parent);
 			if (status == JFileChooser.APPROVE_OPTION) {
@@ -389,7 +389,7 @@ public class TreePane extends JPanel implements ActionListener,
 			FileView view = new JavaFileView();
 			fileChooser.setFileView(view);
 			fileChooser.setDialogTitle("del - 选择smali根目录");
-			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 			fileChooser.setMultiSelectionEnabled(true);
 			int status = fileChooser.showOpenDialog(parent);
 			if (status == JFileChooser.APPROVE_OPTION) {

@@ -26,7 +26,8 @@ public class SmaliEntry {
 
 //    public String fileName; //xyz.smali
 
-	public File file;
+	public transient File file;
+	public String filePath;
 	public boolean isFile;
 	
 	public String packageName; //Lcom/a/b/c
@@ -57,16 +58,17 @@ public class SmaliEntry {
 //		refItClassNames = new HashSet<String>();
 	}
 	
-	public void postConstructFromGson(){
-		if(file!=null){
-			file = new File(file.getPath());
-			try {
-				content = FileUtils.readFileToString(file);
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	public void postConstructFromGson() throws Exception{
+		file = new File(filePath);
+		if(!file.exists()){
+			throw new Exception("file not exists:" + filePath);
+		}
+		try {
+			content = FileUtils.readFileToString(file);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		if(classHeader!=null){
@@ -151,6 +153,7 @@ public class SmaliEntry {
 					if(!basicOldClzNameStr.equals(basicNewClzNameStr)){
 						//name = "AnchorData" name = null  "    name = null"
 						content = StringHelper.RenameInnerClassName(content, basicNewClzNameStr);
+//						content = StringHelper.breakInnerClassContent(content);
   
 					}
 				}
@@ -370,9 +373,9 @@ public class SmaliEntry {
 
 				int new_file_number = parentOfOld.listFiles().length;
 
-				if(old_file_number==new_file_number){
-					System.out.println("renameClassFile - old_file_number==new_file_number! " + old_file_number +  " src_className:" + src_className + ", dst_className:" + dst_className);
-				}
+//				if(old_file_number==new_file_number){
+//					System.out.println("renameClassFile - old_file_number==new_file_number! " + old_file_number +  " src_className:" + src_className + ", dst_className:" + dst_className);
+//				}
 				cleanEmptyDir(parentOfOld);
 				
 				return true;
