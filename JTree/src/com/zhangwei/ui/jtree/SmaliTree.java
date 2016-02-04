@@ -9,6 +9,11 @@ import com.zhangwei.smali.api.SmaliEntry;
 
 public class SmaliTree extends JTree {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	SmaliTreeModel model;
 	
     public SmaliTree() {

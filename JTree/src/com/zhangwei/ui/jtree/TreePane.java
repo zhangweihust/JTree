@@ -57,8 +57,8 @@ public class TreePane extends JPanel implements ActionListener,
 
 	private ArrayList<SmaliEntryChanged> JListDataNotify;
 
-	private String last_dir_for_chose = "D:\\android\\crack\\AndroidKiller_v1.3.1\\projects"; // "D:\\android\\crack\\test1\\guosen3.6";//"D:\\android\\crack\\guosen_dir\\examples";
-	private String last_file_for_chose = "D:\\android\\crack\\AndroidKiller_v1.3.1\\projects\\test\\saveState.conf";// "D:\\android\\crack\\guosen_dir\\examples";
+	private String last_dir_for_chose = "D:\\android\\crack\\AndroidKiller_v1.3.1\\projects\\weixin637android660_20151231\\Project"; // "D:\\android\\crack\\test1\\guosen3.6";//"D:\\android\\crack\\guosen_dir\\examples";
+	private String last_file_for_chose = "D:\\android\\crack\\AndroidKiller_v1.3.1\\projects\\weixin637android660_20151231\\Project\\saveState.conf";// "D:\\android\\crack\\guosen_dir\\examples";
 
 	private static final String ACTION_F2_KEY = "theJTreeAction_F2";
 	private static final String ACTION_F3_KEY = "theJTreeAction_F3";
