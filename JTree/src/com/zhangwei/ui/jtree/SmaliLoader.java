@@ -120,6 +120,7 @@ public class SmaliLoader {
 		while(iterator.hasNext()){
 			SmaliEntry se_item = iterator.next();
 			se_item.renameFieldContent(className, oldFieldName, newFieldName, fe.classFieldType);
+			se_item.setFileContent();
 		}
 		
 		
@@ -141,6 +142,7 @@ public class SmaliLoader {
 			while(iterator.hasNext()){
 				SmaliEntry se_item = iterator.next();
 				se_item.renameMethodContent(className, oldMethodName, newMethodName, me.classMethodProto);
+				se_item.setFileContent();
 			}
 			
 			me.RenameName(className, oldMethodName, newMethodName, me.classMethodProto);
@@ -155,73 +157,7 @@ public class SmaliLoader {
 		se.setFileContent();
 	}
 	
-	/**
-	 * @return 返回SmaliEntry ,  已应用新的命名 Lx/y/z;
-	 * @throws IOException 
-	 * */
-	private void autoRenameStandClass2(SmaliEntry it) throws IOException{
 
-    	if(monitor.isCanceled()){
-    		return ;
-    	}
-    	
-
-    	if(StringHelper.needRename(it)){//only rename the a,b,c,d ...or ab
-        	if(it.classHeader==null || it.classHeader.classNameSelf==null){
-        		System.err.println("class parse null:" + it.toString() + ", classHeader:" + it.classHeader);
-        		return ;
-        	}
-        	
-        	//src_className:Lcom/tencent/mm/plugin/search/ui/b/f;, dst_className:Lcom/tencent/mm/plugin/search/ui/b//Fclz;
-        	String old_base_className = it.classHeader.classNameSelf; //  La/b/c;
-        	int index = old_base_className.lastIndexOf("/");
-        	String old_tmp_name1 = old_base_className.substring(0, index+1); //La/b/
-        	String old_tmp_name2 = old_base_className.substring(index+1, old_base_className.length()-1); //去掉; c
-        	String new_tmp_name = old_tmp_name1 + old_tmp_name2.toUpperCase() + "clz";//La/b/CClz // + StringHelper.getShortNameOfSmali(it.classHeader.classNameSuper); //La/b/c_Object
-			String new_dst_className = new_tmp_name + ";"; //La/b/c_Object;
-			
-        	String old_base_className_prefix = old_tmp_name1 + old_tmp_name2 + "$";  //La/b/c$
-        	String new_base_className_prefix = new_tmp_name + "$";  //La/b/c_Object$
-        	
-
-			
-			//1. rename本类内部实现的匿名类
-			Iterator<SmaliEntry> iterator = globeClassSet.iterator();
-			while(iterator.hasNext()){
-				SmaliEntry value = iterator.next();
-				String clzName = value.classHeader.classNameSelf;
-
-				String regStr = null;
-				String new_base_className_prefix2 = null;
-				if(clzName.startsWith(old_base_className_prefix)){
-					try{
-						regStr = old_base_className_prefix; //StringHelper.escapeExprSpecialWord(old_base_className_prefix);
-						new_base_className_prefix2 = new_base_className_prefix; //StringHelper.escapeExprSpecialWord(new_base_className_prefix);
-						String newKey = clzName.replace(regStr, new_base_className_prefix2);
-						renameClass(value, clzName, newKey, true);
-					}catch (Exception e){
-					  e.printStackTrace();
-					  System.out.println("value:" + value.toString() + ", clzName:" + clzName + ", old_base_className_prefix:" + old_base_className_prefix + ", new_base_className_prefix2:" + new_base_className_prefix2 + ", regStr:" + regStr);
-					}
-
-					
-				}
-			}
-			
-			//2. rename本身
-			renameClass(it, it.classHeader.classNameSelf, new_dst_className, true);
-			
-	    	progress++;
-	    	monitor.setProgress(progress);
-	    	monitor.setNote("Renamed num:" + progress + "\n file:" + it.file.getAbsolutePath());
-    	}else{
-//    		new_classMap.put(it.classHeader.classNameSelf, it);
-	    	progress++;
-	    	monitor.setProgress(progress);
-	    	monitor.setNote("No Need to rename \n file:" + it.file.getAbsolutePath());
-    	}
-
-	}
 	
 	/**
 	 * (1)
