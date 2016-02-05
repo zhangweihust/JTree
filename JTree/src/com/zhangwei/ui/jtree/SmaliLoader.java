@@ -459,6 +459,7 @@ public class SmaliLoader {
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						System.err.println("se:" + se.classHeader.classNameSelf);
 						loadGsonSuc = false;
 						break;
 					}
