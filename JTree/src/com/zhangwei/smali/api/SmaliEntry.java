@@ -94,6 +94,10 @@ public class SmaliEntry {
 		
 		this.file = file;	
 		this.isFile = isFile;
+		if(isFile && file!=null && file.exists()){
+			this.filePath = file.getAbsolutePath();
+		}
+
 //		this.fileName = name;
 		this.packageName = packageName;
 	

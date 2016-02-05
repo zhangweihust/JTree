@@ -630,7 +630,7 @@ public class SmaliLoader {
 		
 	}
 	
-	public void loadRoot(Component parent, SmaliEntry root, File[] dirs){
+	public void openRoot(Component parent, SmaliEntry root, File[] dirs){
 		this.root = root;
 		String root_path = root.file.getAbsolutePath();
 		

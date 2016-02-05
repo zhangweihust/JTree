@@ -547,7 +547,7 @@ public class TreePane extends JPanel implements ActionListener,
 				SmaliEntry root = new SmaliEntry(
 						selectedFiles[0].getParentFile(), "defalut", false);
 
-				SmaliLoader.getInstance().loadRoot(TreePane.this, root,
+				SmaliLoader.getInstance().openRoot(TreePane.this, root,
 						selectedFiles);
 				SmaliLoader.getInstance().sortTree();
 

@@ -58,7 +58,13 @@ public class JText extends JPanel implements SmaliEntryChanged, SmaliMemberChang
 		if(content!=null){
 
 			float percent = (float)offset / content.length();
-			verticalScrollBar.setValue((int) (percent*verticalScrollBar.getMaximum()));
+			int scrollPercent = (int) (percent*verticalScrollBar.getMaximum());
+
+			verticalScrollBar.setValue(scrollPercent);
+			
+			
+			System.out.println("JText MemberChanged - offset:" + offset + ", content.len:" + content.length() + ", percent:" + percent + ", verticalScrollBar.getMaximum():" + verticalScrollBar.getMaximum() + ", scrollPercent:" + scrollPercent);
+			
 
 		}else{
 			verticalScrollBar.setValue(0);
